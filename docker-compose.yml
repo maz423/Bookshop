@@ -12,6 +12,7 @@ services:
     container_name: Server_ecom
     ports:
       - "8000:8000"
+      - "443:443"
     volumes:
       - "./server:/app/src"
 
