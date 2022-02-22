@@ -4,6 +4,14 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
+const path = require('path');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+var options = {
+    key : fs.readFileSync(path.join(__dirname, "perms", "client-key.pem")),
+    cert : fs.readFileSync(path.join(__dirname, "perms", "client-cert.pem"))
+}
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,17 +34,18 @@ const HOST = '0.0.0.0';
 // Helper
 const panic = (err) => console.error(err)
 
-//Database stuff
-const MongoClient = require('mongodb').MongoClient;
-const DB_Url = "mongodb://admin:admin@mongodb1:3306/";
-var con;
-// Connect to database
-MongoClient.connect(DB_Url, (err, db) =>{
-    //This will connec thte node server to the mongo server on startup
-    if (err) throw err;
-    //We can change the name later
-    con = db.db("ecomDB");
-});
+//TODO: make this work with https
+// //Database stuff
+// const MongoClient = require('mongodb').MongoClient;
+// const DB_Url = "mongodb://admin:admin@mongodb1:3306/";
+// var con;
+// // Connect to database
+// MongoClient.connect(DB_Url, (err, db) =>{
+//     //This will connec thte node server to the mongo server on startup
+//     if (err) throw err;
+//     //We can change the name later
+//     con = db.db("ecomDB");
+// });
 
 
 
@@ -91,13 +100,19 @@ app.post("/register", (req, res)=> {
     });
 });
  
-
+//This is just to test if https server is working
+app.get('/', (req, res) => {
+    res.send("Success");
+});
 
 app.use('/', express.static('pages'));
 
+//FIXME: HTTPS server giving Error code: SSL_ERROR_RX_RECORD_TOO_LONG on firefox
+//Create the Http server
+http.createServer(app).listen(PORT);
+//Create the identical https server
+https.createServer(options, app).listen(443);
 
-app.listen(PORT, HOST);
+//app.listen(PORT, HOST);
 
 console.log('up and running');
-
-
