@@ -4,6 +4,7 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
+const bcrypt = require("bcryptjs");
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
@@ -57,6 +58,17 @@ app.use(session({
     store : store
 }));
 
+//This can be used to redirect users from pages the cannot access without be logged in
+//E.G. app.get('/', isAuth, (req, res) =>
+const isAuth = (req, res, next) => {
+    if (req.session.isAuth) {
+        next();
+    } else {
+        //We can change this later
+        res.send("not logged in");
+    }
+}
+
 //Login and Registration stuff
 app.post("/login", (req, res)=>{
     //Get the password and username
@@ -65,9 +77,18 @@ app.post("/login", (req, res)=>{
 
     new Promise((resolve, reject) => {
         //Query the database with the provided values
-        con.collection("users").find({"username" : username, "password" : password}, (err, result) => {
+        con.collection("users").find({"username" : username}, (err, result) => {
             if (err) { reject(err) } else {resolve(result)}
         });
+    })
+    .then((result) => {
+        //Now we check if the encrypted passwords match
+        var isMatch = bcrypt.compare(password, result.password);
+
+        if (!isMatch) throw "Not a match"
+        //Temporary just to make the session logged in
+        //May want to change this to something that also includes account type later
+        req.session.isAuth = true
     })
     .then((result) => {
         //Filler until we implement cookies
@@ -83,7 +104,6 @@ app.post("/register", (req, res)=> {
     //TODO make a proper implemetation 
     let username = req.body.username;
     let password = req.body.password;
-    let newUser = {"username" : username, "password" : password};
 
     new Promise((resolve, reject) => { 
         //Check if username is already in use
@@ -95,22 +115,32 @@ app.post("/register", (req, res)=> {
     })
     .then((result)=>{
         //If not in use add to users collection
-        con.collection("users").insertOne(newUser, (err, result) =>{
-            if (err) { reject(err) } else { resolve(result) }
+        const hasedPass = bcrypt.hash(password, 12);
+        let newUser = {"username" : username, "password" : hasedPass};
+
+        con.collection("users").insertOne(newUser, (err, result2) =>{
+            if (err) { reject(err) } else { resolve(result2) }
         });
     })
     .then((result) => {
-        //Maybe return a different value
+        //Maybe return a different value or ridirect to a new page
         res.send(result);
     })
     .catch((error) => {
         res.send(error);
     });
 });
+
+app.post('/logout', (req, res) => {
+    res.session.destroy((err) => {
+        if (err) throw err;
+        //We can use this to redirect to landing page later
+        res.send("logged out")
+    });
+});
  
 //This is just to testing stuff
 app.get('/', (req, res) => {
-    req.session.isAuth = true;
     console.log(req.session);
     res.send("Success");
 });
