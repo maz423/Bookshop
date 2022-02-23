@@ -36,6 +36,15 @@ MongoClient.connect(DB_Url, (err, db) =>{
     if (err) throw err;
     //We can change the name later
     con = db.db("ecomDB");
+
+    // create collections
+    con.createCollection("users", (err, res) =>{
+        if(err) throw err;
+    })
+
+    con.createCollection("listings", (err, res) =>{
+        if(err) throw err;
+    })
 });
 
 
