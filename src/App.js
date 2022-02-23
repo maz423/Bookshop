@@ -30,14 +30,16 @@ function App() {
     
     <div className="App">
 
-    <Navi/>
+      <Navi/>
+
+    
      
 
             
       
       
       <header className="App-header">
-      
+        
         <p>
         <Router>
 
@@ -48,10 +50,12 @@ function App() {
          <Routes>
          
          <Route exact path='/Login' element={<Login />} />
+       
+      
          <Route exact path='/register' element={<Register/>} />
          <Route exact path='/homepage' element={<Homepage/>} />
          <Route exact path='/signup' element={<Register/>} />
-        
+         
        
            </Routes>
          
