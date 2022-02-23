@@ -5,10 +5,10 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 
-import {Navi} from './components/Navi'
-import {Login} from './components/Login';
-import {Register} from './components/Register'
-import {Homepage} from './components/Homepage'
+import {Navi} from './components/Navi.js'
+import {Login} from './components/Login.js';
+import {Register} from './components/Register.js'
+import {Homepage} from './components/Homepage.js'
 
 
 function App() {  
