@@ -19,7 +19,21 @@ const [password,setPassword] = useState('');
 const navigate = useNavigate();
 
 const handleSubmitClick = (e) => { //handle submit event.
+  e.preventDefault();
+  const requestOptions = {
+    method: 'POST',
+    headers: {'Content-Type' : 'application/json'},
+    body : JSON.stringify({username : e.target.ID.value, password : e.target.password.value})
+  };
 
+  fetch('https://localhost:443/login', requestOptions)
+  .then((response) => {
+    console.log(response)
+  });
+
+  console.log(e.target.ID.value);
+  console.log(e.target.password.value);
+  console.log(e.target);
 }
 
    
@@ -40,6 +54,7 @@ return (
       <label for="password">Password:</label>
       <input type="password" id="password" value={password} onChange={(e)=>setPassword(e.target.value)} name="password"></input><br></br><br></br>
       <Button variant="primary" size='sm'>Login</Button>  
+      <input type="submit" />
      </form>
 
      
