@@ -79,11 +79,11 @@ const isAuth = (req, res, next) => {
 }
 
 //Login and Registration stuff
-app.post("/login", (req, res)=>{
+app.post('/login', (req, res)=>{
     //Get the password and username
     let username = req.body.username;
     let password = req.body.password;
-
+    
     new Promise((resolve, reject) => {
         //Query the database with the provided values
         con.collection("users").find({"username" : username}, (err, result) => {
@@ -133,7 +133,7 @@ app.post("/register", (req, res)=> {
     })
     .then((result) => {
         //Maybe return a different value or ridirect to a new page
-        res.send(result);
+        res.redirect("http://localhost:3000/");
     })
     .catch((error) => {
         res.send(error);
@@ -151,7 +151,9 @@ app.post('/logout', (req, res) => {
 //This is just to testing stuff
 app.get('/', (req, res) => {
     console.log(req.session);
-    res.send("Success");
+    //res.redirect("http://localhost:3000/");
+    //res.send("Hey");
+    res.redirect("https://localhost:3000/register");
 });
 
 app.use('/', express.static('pages'));
