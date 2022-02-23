@@ -4,16 +4,18 @@ import './App.css';
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-//Wasn't working with .js
-//If issues arise, need to use npm install -S if a package is missing
-import {Login} from './components/Login.js'
-import {Register} from './components/Register.js';
+
+import {Navi} from './components/Navi'
+import {Login} from './components/Login';
+import {Register} from './components/Register'
+import {Homepage} from './components/Homepage'
+
 
 function App() {  
   
   
  
-  
+ 
 
   
 
@@ -21,10 +23,15 @@ function App() {
   
   return (
 
-    
+   
 
     
+    
+    
     <div className="App">
+
+    <Navi/>
+     
 
             
       
@@ -40,8 +47,12 @@ function App() {
              
          <Routes>
          
-         <Route exact path='/' element={<Login />} />        
+         <Route exact path='/Login' element={<Login />} />
          <Route exact path='/register' element={<Register/>} />
+         <Route exact path='/homepage' element={<Homepage/>} />
+         <Route exact path='/signup' element={<Register/>} />
+        
+       
            </Routes>
          
          
