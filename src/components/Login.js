@@ -26,7 +26,7 @@ const handleSubmitClick = (e) => { //handle submit event.
     body : JSON.stringify({username : e.target.ID.value, password : e.target.password.value})
   };
 
-  fetch('https://localhost:443/login', requestOptions)
+  fetch('http://localhost:443/login', requestOptions)
   .then((response) => {
     console.log(response)
   });
