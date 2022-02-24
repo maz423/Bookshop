@@ -142,7 +142,6 @@ app.post("/register", (req, res)=> {
     })
     .then((result) => {
         //Maybe return a different value or ridirect to a new page
-        //res.redirect("https://localhost:3000/login");
         res.send("success");
     })
     .catch((error) => {

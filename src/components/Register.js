@@ -28,7 +28,7 @@ const handleSubmitClick = (e) => { //handle submit event.
     body : JSON.stringify(body)
   };
 
-  fetch('http://localhost:443/register', requestOptions)
+  fetch('http://localhost:8000/register', requestOptions)
   .then((result) => {
     console.log(result);
   })
