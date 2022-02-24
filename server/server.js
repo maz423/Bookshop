@@ -45,14 +45,6 @@ MongoClient.connect(DB_Url, (err, db) =>{
     //We can change the name later
     con = db.db("ecomDB");
 
-    // create collections
-    con.createCollection("users", (err, res) =>{
-        if(err) throw err;
-    })
-
-    con.createCollection("listings", (err, res) =>{
-        if(err) throw err;
-    })
     console.log("MongoDB Connected");
 });
 const store = new MongoDBSession({
@@ -64,7 +56,11 @@ app.use(session({
     secret : 'key that will sign cookie',
     resave : false,
     saveUninitialized : false,
-    store : store
+    store : store,
+    cookie : {
+        httpOnly : true,
+        maxAge : 3600000
+    }
 }));
 
 //This can be used to redirect users from pages the cannot access without be logged in
@@ -113,10 +109,15 @@ app.post("/register", (req, res)=> {
     //TODO make a proper implemetation 
     let username = req.body.username;
     let password = req.body.password;
+    let email = req.body.email;
+    let address1 = req.body.address1;
+    let address2 = req.body.address2;
+    let fName = req.body.fName;
+    let lName = req.body.lName;
 
     new Promise((resolve, reject) => { 
-        //Check if username is already in use
-        if (0 < con.collection("users").find({"username" : username}).count()){
+        //Check if username or email is already in use
+        if (0 < con.collection("users").find({$or : [{username : username}, {email : email}]}).count()){
             throw "Username already in use";
         } else {
             resolve("");
@@ -124,16 +125,23 @@ app.post("/register", (req, res)=> {
     })
     .then((result)=>{
         //If not in use add to users collection
-        const hasedPass = bcrypt.hash(password, 12);
-        let newUser = {"username" : username, "password" : hasedPass};
-
+        const hashedPass = bcrypt.hash(password, 12);
+        let newUser = {
+            username : username,
+            password : hashedPass,
+            email : email,
+            address1 : address1,
+            address2 : address2,
+            fName : fName,
+            lName : lName
+            };
         con.collection("users").insertOne(newUser, (err, result2) =>{
             if (err) { reject(err) } else { resolve(result2) }
         });
     })
     .then((result) => {
         //Maybe return a different value or ridirect to a new page
-        res.redirect("http://localhost:3000/");
+        res.redirect("https://localhost:3000/");
     })
     .catch((error) => {
         res.send(error);
