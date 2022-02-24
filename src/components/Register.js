@@ -10,8 +10,32 @@ import { Link } from 'react-router-dom';
 export const Register = (props) => {
 
 const handleSubmitClick = (e) => { //handle submit event.
+  e.preventDefault();
+  const formItems = e.target.elements;
+  const body = {
+    username : formItems.formUsername.value, 
+    password : formItems.formGridPassword.value,
+    fNmae : formItems.formFirstName.value,
+    lName : formItems.formLastName.value,
+    email : formItems.formGridEmail.value,
+    address1 : formItems.formGridAddress1.value,
+    address2 : formItems.formGridAddress2.value 
+  }
 
-    }
+  const requestOptions = {
+    method: 'POST',
+    headers: {'Content-Type' : 'application/json'},
+    body : JSON.stringify(body)
+  };
+
+  fetch('https://localhost:443/register', requestOptions)
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
         
 
 return (
@@ -19,8 +43,13 @@ return (
    
 <div className="mb-3">
 
-<Form>
+<Form onSubmit={handleSubmitClick}>
   <Row >
+    <Form.Group as={Col} controlId="formUsername">
+      <Form.Label>Username</Form.Label>
+      <Form.Control size='sm' type="text" placeholder="Enter Username" />
+    </Form.Group>
+
    <Form.Group as={Col} controlId="formFirstName">
       <Form.Label>First Name</Form.Label>
       <Form.Control size='sm' type="text" placeholder="Enter First Name" />

@@ -115,6 +115,7 @@ app.post("/register", (req, res)=> {
     let fName = req.body.fName;
     let lName = req.body.lName;
 
+    console.log(req.body);
     new Promise((resolve, reject) => { 
         //Check if username or email is already in use
         if (0 < con.collection("users").find({$or : [{username : username}, {email : email}]}).count()){
@@ -136,12 +137,13 @@ app.post("/register", (req, res)=> {
             lName : lName
             };
         con.collection("users").insertOne(newUser, (err, result2) =>{
-            if (err) { reject(err) } else { resolve(result2) }
+            if (err) { reject(err) }
         });
     })
     .then((result) => {
         //Maybe return a different value or ridirect to a new page
-        res.redirect("https://localhost:3000/");
+        //res.redirect("https://localhost:3000/login");
+        res.send("success");
     })
     .catch((error) => {
         res.send(error);
