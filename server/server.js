@@ -155,7 +155,61 @@ app.post('/logout', (req, res) => {
         res.send("logged out")
     });
 });
- 
+
+app.post('/search', (req, res) =>{
+
+    let keyword = req.body.keyword;
+    let subject = req.body.subject;
+    let price = req.body.price;
+    let author = req.body.author;
+    let location = req.body.location;
+
+    new Promise((resolve, reject) =>{
+
+        // query the database for all the listings that match the filters
+       
+        con.collection("listings").find({"subject": subject, "price": price, "author": author, "location": location}).toArray((err, result) =>{
+
+            if(err){
+                reject(err);
+            }
+            else{
+                resolve(result);
+            }
+        });
+    })
+    .then((result) =>{
+
+        // iterate through the results of the query and add the listings whose titles contain the keyword to an array
+
+        var searchResults = [];
+
+        result.array.forEach(element => {
+
+            // if the title contains the keyword inputted by the user
+            if(element.title.search(keyword) != -1){
+                searchResults.push(element);
+            }
+            
+        });
+    })
+    .then((result) =>{
+
+        // return the results of the search
+
+        if(searchResults.length == 0){
+            res.send("Sorry, we couldn't find anything that matches those search criteria.");
+        }
+        else{
+            res.send(searchResults);
+        }
+
+    })
+    .catch((error) =>{
+        res.send(error);
+    });
+});
+
 //This is just to testing stuff
 app.get('/', (req, res) => {
     console.log(req.session);
