@@ -1,6 +1,6 @@
 .bg{
 
-    background-color: rgb(250, 244, 244);
+    background-color: rgb(7, 12, 24);
     border-radius: 25px;
     box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
 }
@@ -18,4 +18,11 @@
     padding-left: 2;
     padding-right: 2;
 
+}
+
+.logo{
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    color: green;
+    font-weight: bold;
+    font-variant: small-caps;
 }
