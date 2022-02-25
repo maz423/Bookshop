@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const cors = require('cors');
+const { resolve } = require('path');
 app.use(cors());
 
 
@@ -73,7 +74,19 @@ const isAuth = (req, res, next) => {
         res.send("not logged in");
     }
 }
-
+app.get('/users', (req, res) => {
+    new Promise((resolve, reject) => {
+        console.log(con.collection("users").find({}).toArray((err, result) =>{
+            if (err) {reject(err)} else {resolve(result)}
+        })
+    )})
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.send(error);
+    })
+});
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
@@ -82,30 +95,37 @@ app.post('/login', (req, res)=>{
     
     new Promise((resolve, reject) => {
         //Query the database with the provided values
-        con.collection("users").find({"username" : username}, (err, result) => {
+        console.log(con.collection("users").find({}).toArray());
+        con.collection("users").find({username : username}).toArray((err, result) => {
             if (err) { reject(err) } else {resolve(result)}
         });
     })
     .then((result) => {
+        console.log(result);
         //Now we check if the encrypted passwords match
         var isMatch = bcrypt.compare(password, result.password);
 
-        if (!isMatch) throw "Not a match"
+        if (!isMatch) {
+            console.log("Not a match");
+            throw "Not a match"
+        }
         //Temporary just to make the session logged in
         //May want to change this to something that also includes account type later
-        req.session.isAuth = true
+        
     })
     .then((result) => {
         //Filler until we implement cookies
+        req.session.isAuth = true;
         res.send("Logged in");
     })
     .catch((error) => {
+        console.log(error);
         res.send(error)
     });
 });
 
 
-app.post("/register", (req, res)=> {
+app.post("/register", async (req, res)=> {
     //TODO make a proper implemetation 
     let username = req.body.username;
     let password = req.body.password;
@@ -114,19 +134,20 @@ app.post("/register", (req, res)=> {
     let address2 = req.body.address2;
     let fName = req.body.fName;
     let lName = req.body.lName;
+    
+    const hashedPass = await bcrypt.hash(password, 12);
+    let q =await con.collection("users").countDocuments({$or : [{username : username}, {email : email}]});
 
-    console.log(req.body);
     new Promise((resolve, reject) => { 
         //Check if username or email is already in use
-        if (0 < con.collection("users").find({$or : [{username : username}, {email : email}]}).count()){
-            throw "Username already in use";
+        if (0 < q){
+            reject("Username already in use");
         } else {
             resolve("");
         }
     })
     .then((result)=>{
-        //If not in use add to users collection
-        const hashedPass = bcrypt.hash(password, 12);
+        //If not in use add to users collection   
         let newUser = {
             username : username,
             password : hashedPass,
@@ -145,6 +166,7 @@ app.post("/register", (req, res)=> {
         res.send("success");
     })
     .catch((error) => {
+        console.log(error);
         res.send(error);
     });
 });
@@ -213,9 +235,6 @@ app.post('/search', (req, res) =>{
 
 //This is just to testing stuff
 app.get('/', (req, res) => {
-    console.log(req.session);
-    //res.redirect("http://localhost:3000/");
-    //res.send("Hey");
     res.redirect("http://localhost:3000");
 });
 
