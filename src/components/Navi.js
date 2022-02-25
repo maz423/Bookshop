@@ -1,4 +1,5 @@
-import './Register.css'
+
+import './Navi.css'
 import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -14,6 +15,7 @@ import { useState } from 'react';
 
 
 
+
 export const Navi = (props) => {
 
 const handleSubmitClick = (e) => { //handle submit event.
@@ -26,12 +28,22 @@ const handleSubmitClick = (e) => { //handle submit event.
 
 return (
 
+
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-    <Container>
-    <Navbar.Brand href="/">Home</Navbar.Brand>
+    <Container fluid>
+    {/* <div className='logobox'>
+    <h1 className='logo'>Bookshop</h1>
+    </div>   */}
+    
+    {/* <Nav.Item className="ml-auto">
+      <Nav.Link>Hi fname lname!</Nav.Link>
+    </Nav.Item> */}
+    <Navbar.Brand className='logo' ><h1 className='txt'>Bookshop</h1></Navbar.Brand>
+    
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="me-auto">
+       <Nav.Link href="/">Home</Nav.Link>
         <Nav.Link href="/Login">Login</Nav.Link>
         <Nav.Link href="/signup">Signup</Nav.Link>
         {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">

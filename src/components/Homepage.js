@@ -23,21 +23,20 @@ return (
     
     <div className='bg'>
         
-       
-        <h1 className='logo'>Bookshop</h1>
-    <Form className="d-flex">
-        <Form.Control
-          type="search"
-          placeholder="Enter your location to get started"
-          className="me-2"
-          aria-label="Search"
-          size='md'
-        />
-       <Button variant="success">Submit</Button>{' '}
-    
-      </Form>
+       <h1 className='h1'>Welcome to Bookshop </h1>
+       <h2 className='h2'>The one stop shop for buying and selling used books in Saskatoon </h2>
+        
+      {/* <div className='current'>
+          <p className='text-para'> Current Listings
+              </p>
+          </div> */}
 
       </div>
+      
+
+
+    
+
 
 
     
