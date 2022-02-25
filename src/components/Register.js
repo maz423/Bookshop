@@ -15,7 +15,7 @@ const handleSubmitClick = (e) => { //handle submit event.
   const body = {
     username : formItems.formUsername.value, 
     password : formItems.formGridPassword.value,
-    fNmae : formItems.formFirstName.value,
+    fName : formItems.formFirstName.value,
     lName : formItems.formLastName.value,
     email : formItems.formGridEmail.value,
     address1 : formItems.formGridAddress1.value,
