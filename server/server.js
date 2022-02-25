@@ -103,7 +103,7 @@ app.post('/login', (req, res)=>{
     .then((result) => {
         console.log(result);
         //Now we check if the encrypted passwords match
-        var isMatch = bcrypt.compare(password, result.password);
+        var isMatch = bcrypt.compare(password, result[0].password);
 
         if (!isMatch) {
             console.log("Not a match");
@@ -116,6 +116,7 @@ app.post('/login', (req, res)=>{
     .then((result) => {
         //Filler until we implement cookies
         req.session.isAuth = true;
+        console.log("Suc");
         res.send("Logged in");
     })
     .catch((error) => {
@@ -134,7 +135,7 @@ app.post("/register", async (req, res)=> {
     let address2 = req.body.address2;
     let fName = req.body.fName;
     let lName = req.body.lName;
-    
+
     const hashedPass = await bcrypt.hash(password, 12);
     let q =await con.collection("users").countDocuments({$or : [{username : username}, {email : email}]});
 
