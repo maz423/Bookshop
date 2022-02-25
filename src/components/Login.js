@@ -53,8 +53,8 @@ return (
       <input type="text" id="ID" value={ID} onChange={(e)=>setID(e.target.value)} name="User ID"></input><br></br><br></br>
       <label for="password">Password:</label>
       <input type="password" id="password" value={password} onChange={(e)=>setPassword(e.target.value)} name="password"></input><br></br><br></br>
-      <Button variant="primary" size='sm'>Login</Button>  
-      <input type="submit" />
+      <Button variant="success" size='sm'>Login</Button>  
+      {/* <input type="submit" /> */}
      </form>
 
      
