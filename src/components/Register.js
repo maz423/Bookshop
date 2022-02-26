@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Link } from 'react-router-dom';
+import {Navi} from './Navi.js'
 
 
 export const Register = (props) => {
@@ -40,8 +41,10 @@ const handleSubmitClick = (e) => { //handle submit event.
 
 return (
 
-   
+  
 <div className="mb-3">
+
+
 
 <Form onSubmit={handleSubmitClick}>
   <Row >

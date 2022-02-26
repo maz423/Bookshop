@@ -1,12 +1,12 @@
 .Login{
-     background-color: #101011;
+    background-color: #252529;
      box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
      border-radius: 25px;
 }
 
 .form{
     font-size: small;
-    background-color: #101011;
+    background-color: #252529;
     padding-bottom: 5%;
     border-radius: 25px;
 }

@@ -9,6 +9,7 @@ import {Navi} from './components/Navi.js'
 import {Login} from './components/Login.js';
 import {Register} from './components/Register.js'
 import {Homepage} from './components/Homepage.js'
+import {search} from './components/search'
 
 
 function App() {  
@@ -24,13 +25,16 @@ function App() {
   return (
 
    
-
+  
     
     
     
     <div className="App">
 
-      <Navi/>
+    <Navi/>
+    
+
+      
 
     
      
@@ -53,7 +57,7 @@ function App() {
        
       
          <Route exact path='/register' element={<Register/>} />
-         <Route exact path='/homepage' element={<Homepage/>} />
+         <Route exact path='/' element={<Homepage/>} />
          <Route exact path='/signup' element={<Register/>} />
          
        

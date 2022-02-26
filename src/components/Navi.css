@@ -1,0 +1,16 @@
+
+.logo{
+    box-shadow: 5px 5px 5px rgba(1, 68, 1, 0.5);
+    border-radius: 25px;
+    
+    
+  
+    
+}
+
+.txt{
+    font-size: x-large;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: green;
+}
