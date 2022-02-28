@@ -29,12 +29,11 @@ const handleSubmitClick = (e) => { //handle submit event.
 
   fetch('http://localhost:8000/login', requestOptions)
   .then((response) => {
-    console.log(response)
+    console.log(response);
+  })
+  .catch((error) => {
+    console.log(error);
   });
-
-  console.log(e.target.ID.value);
-  console.log(e.target.password.value);
-  console.log(e.target);
 }
 
    
@@ -55,8 +54,7 @@ return (
       <input type="text" id="ID" value={ID} onChange={(e)=>setID(e.target.value)} name="User ID"></input><br></br><br></br>
       <label for="password">Password:</label>
       <input type="password" id="password" value={password} onChange={(e)=>setPassword(e.target.value)} name="password"></input><br></br><br></br>
-      <Button variant="success" size='sm'>Login</Button>  
-      {/* <input type="submit" /> */}
+      <Button variant="success" size='sm' type="submit">Login</Button>  
      </form>
 
      
