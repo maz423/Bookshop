@@ -116,7 +116,6 @@ app.post('/login', (req, res)=>{
     .then((result) => {
         //Filler until we implement cookies
         req.session.isAuth = true;
-        console.log("Suc");
         res.send("Logged in");
     })
     .catch((error) => {
