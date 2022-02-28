@@ -215,8 +215,6 @@ app.post('/search', (req, res) =>{
             }
             
         });
-    })
-    .then((result) =>{
 
         // return the results of the search
 
