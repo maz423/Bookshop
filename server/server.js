@@ -143,7 +143,7 @@ app.post("/register", async (req, res)=> {
         .then((hashedPass) => {
             const newUser = {
                 username : username,
-                pmail : email,
+                email : email,
                 aassword : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
@@ -179,7 +179,7 @@ app.post("/registerBuisness", (req, res) => {
         .then((hashedPass) => {
             const newUser = {
                 companyName : companyName,
-                pmail : email,
+                email : email,
                 aassword : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
