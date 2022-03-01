@@ -1,4 +1,3 @@
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -10,6 +9,7 @@ import {Login} from './components/Login.js';
 import {Register} from './components/Register.js'
 import {Homepage} from './components/Homepage.js'
 import {search} from './components/search'
+import Createlisting from './components/Createlisting';
 
 
 function App() {  
@@ -55,7 +55,7 @@ function App() {
          
          <Route exact path='/Login' element={<Login />} />
        
-      
+         <Route exact path='/createlisting' element={<Createlisting/>}/>
          <Route exact path='/register' element={<Register/>} />
          <Route exact path='/' element={<Homepage/>} />
          <Route exact path='/signup' element={<Register/>} />
