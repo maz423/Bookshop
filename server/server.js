@@ -129,40 +129,44 @@ app.post("/register", async (req, res)=> {
     //TODO make a proper implemetation 
     const {username, password, email, address1, address2, fName, lName} = req.body;
 
-    const hashedPass = await bcrypt.hash(password, 12);
-    let q =await con.collection("users").countDocuments({$or : [{username : username}, {email : email}]});
-
-    new Promise((resolve, reject) => { 
-        //Check if username or email is already in use
-        if (0 < q){
-            reject("Username already in use");
-        } else {
-            resolve("");
-        }
-    })
-    .then((result)=>{
-        //If not in use add to users collection   
-        let newUser = {
-            username : username,
-            password : hashedPass,
-            email : email,
-            address1 : address1,
-            address2 : address2,
-            fName : fName,
-            lName : lName
-            };
-        con.collection("users").insertOne(newUser, (err, result2) =>{
-            if (err) { reject(err) }
+    new Promise((resolve, reject) => {
+        con.collection("users").countDocuments({$or : [{username : username}, {email : email}]}, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
         });
     })
     .then((result) => {
-        //Maybe return a different value or ridirect to a new page
-        res.send("success");
+        if (result > 0) {
+            throw "Username or email already in use"
+        }
+        bcrypt.hash(password, 12)
+        .then((hashedPass) => {
+            const newUser = {
+                username : username,
+                password : hashedPass,
+                email : email,
+                address1 : address1,
+                address2 : address2,
+                fName : fName,
+                lName : lName
+                };
+            con.collection("users").insertOne(newUser, (err, result) =>{
+                if (err) { throw err } else {res.send("Success")}
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.send(error);
+        });
     })
     .catch((error) => {
         console.log(error);
         res.send(error);
     });
+});
+
+app.post("/registerBuisness", (req, res) => {
+    const {companyName, password, email, address1, address2} = req.body;
+    res.send("Not yet implemented");
 });
 
 app.post('/logout', (req, res) => {
