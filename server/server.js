@@ -90,8 +90,7 @@ app.get('/users', (req, res) => {
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
-    let username = req.body.username;
-    let password = req.body.password;
+    const {username, password} = req.body;
     
     new Promise((resolve, reject) => {
         //Query the database with the provided values
@@ -128,13 +127,7 @@ app.post('/login', (req, res)=>{
 
 app.post("/register", async (req, res)=> {
     //TODO make a proper implemetation 
-    let username = req.body.username;
-    let password = req.body.password;
-    let email = req.body.email;
-    let address1 = req.body.address1;
-    let address2 = req.body.address2;
-    let fName = req.body.fName;
-    let lName = req.body.lName;
+    const {username, password, email, address1, address2, fName, lName} = req.body;
 
     const hashedPass = await bcrypt.hash(password, 12);
     let q =await con.collection("users").countDocuments({$or : [{username : username}, {email : email}]});
