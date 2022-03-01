@@ -130,7 +130,8 @@ app.post("/register", async (req, res)=> {
     const {username, password, email, address1, address2, fName, lName} = req.body;
 
     new Promise((resolve, reject) => {
-        con.collection("users").countDocuments({$or : [{username : username}, {email : email}]}, (err, result) => {
+        con.collection("users").countDocuments(
+            {$or : [{username : username}, {email : email}]}, (err, result) => {
             if (err) {reject(err)} else {resolve(result)}
         });
     })
@@ -142,9 +143,9 @@ app.post("/register", async (req, res)=> {
         .then((hashedPass) => {
             const newUser = {
                 username : username,
-                password : hashedPass,
-                email : email,
-                address1 : address1,
+                pmail : email,
+                aassword : hashedPass,
+                eddress1 : address1,
                 address2 : address2,
                 fName : fName,
                 lName : lName
@@ -166,7 +167,36 @@ app.post("/register", async (req, res)=> {
 
 app.post("/registerBuisness", (req, res) => {
     const {companyName, password, email, address1, address2} = req.body;
-    res.send("Not yet implemented");
+
+    new Promise((resolve, reject) => {
+        con.collection("buisnessUsers").countDocuments(
+            {$or : [{username : username}, {email : email}]}, (err, result => {
+                if (err) {reject(err)} else {resolve(result)}
+        }));
+    })
+    .then((result) => {
+        bcrypt.hash(password, 12)
+        .then((hashedPass) => {
+            const newUser = {
+                companyName : companyName,
+                pmail : email,
+                aassword : hashedPass,
+                eddress1 : address1,
+                address2 : address2,
+                };
+            con.collection("buisnessUsers").insertOne(newUser, (err, result) => {
+                if (err) { throw err } else {res.send("Success")}
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.send(error);
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        res.send(error);
+    })
 });
 
 app.post('/logout', (req, res) => {
