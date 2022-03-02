@@ -30,7 +30,7 @@ export const SidebarBookstore = (props) => {
     
   return (
         <div>
-          <Button variant="success" onClick={handleShow}>
+          <Button variant="outline-success" onClick={handleShow}>
             Registered bookstores
           </Button>
           

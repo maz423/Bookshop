@@ -14,3 +14,8 @@
     font-variant: small-caps;
     color: green;
 }
+
+.dropdown{
+    border-radius: 7px;
+    background-color: white;
+}

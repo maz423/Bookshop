@@ -44,10 +44,10 @@ const handleSubmitClick = (e) => { //handle submit event.
 return (
 <div className='Login'>
 <p className='para'>
-<h3 > Welcome to Bookshop. </h3>
+{/* <h3 className='welcome'> Welcome to Bookshop. </h3> */}
 
         
-        Please Login with your registered ID and Password to continue.
+        <h1 className='prompt'>Please Login with your registered ID and Password to continue.</h1>
     </p>  
     <form className='form' onSubmit={handleSubmitClick}>
       
