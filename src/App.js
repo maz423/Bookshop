@@ -9,6 +9,7 @@ import {Navi} from './components/Navi.js'
 import {Login} from './components/Login.js';
 import {Register} from './components/Register.js'
 import {Homepage} from './components/Homepage.js'
+import {RegisterbookStore} from './components/RegisterbookStore'
 import {search} from './components/search'
 import {Login_Nav} from './components/Login_Nav'
 
@@ -58,6 +59,7 @@ function App() {
        
       
          <Route exact path='/register' element={<Register/>} />
+         <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
          <Route exact path='/' element={<Homepage/>} />
          <Route exact path='/signup' element={<Register/>} />
          
