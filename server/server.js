@@ -76,9 +76,22 @@ const isAuth = (req, res, next) => {
 }
 app.get('/users', (req, res) => {
     new Promise((resolve, reject) => {
-        console.log(con.collection("users").find({}).toArray((err, result) =>{
+        con.collection("users").find({}).toArray((err, result) =>{
             if (err) {reject(err)} else {resolve(result)}
-        })
+        }
+    )})
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.send(error);
+    })
+});
+app.get('/bookStoreUsers', (_, res) => {
+    new Promise((resolve, reject) => {
+        con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
+            if (err) {reject(err)} else {resolve(result)}
+        }
     )})
     .then((result) => {
         res.send(result);
@@ -164,14 +177,14 @@ app.post("/register", async (req, res)=> {
     });
 });
 
-app.post("/registerBuisness", (req, res) => {
+app.post("/registerBookStore", (req, res) => {
     const {companyName, password, email, address1, address2} = req.body;
 
     new Promise((resolve, reject) => {
-        con.collection("buisnessUsers").countDocuments(
-            {$or : [{username : username}, {email : email}]}, (err, result => {
+        con.collection("bookStoreUsers").countDocuments(
+            {$or : [{companyName : companyName}, {email : email}]}, (err, result) => {
                 if (err) {reject(err)} else {resolve(result)}
-        }));
+        });
     })
     .then((result) => {
         bcrypt.hash(password, 12)
@@ -183,7 +196,7 @@ app.post("/registerBuisness", (req, res) => {
                 eddress1 : address1,
                 address2 : address2,
                 };
-            con.collection("buisnessUsers").insertOne(newUser, (err, result) => {
+            con.collection("bookStoreUsers").insertOne(newUser, (err, result) => {
                 if (err) { throw err } else {res.send("Success")}
             });
         })

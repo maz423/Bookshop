@@ -15,10 +15,8 @@ const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
   const formItems = e.target.elements;
   const body = {
-    username : formItems.formUsername.value, 
+    companyName : formItems.formCompanyName.value, 
     password : formItems.formGridPassword.value,
-    fName : formItems.formFirstName.value,
-    lName : formItems.formLastName.value,
     email : formItems.formGridEmail.value,
     address1 : formItems.formGridAddress1.value,
     address2 : formItems.formGridAddress2.value 
@@ -30,7 +28,7 @@ const handleSubmitClick = (e) => { //handle submit event.
     body : JSON.stringify(body)
   };
 
-  fetch('http://localhost:8000/register', requestOptions)
+  fetch('http://localhost:8000/registerBookStore', requestOptions)
   .then((result) => {
     console.log(result);
   })
@@ -49,19 +47,9 @@ return (
 
 <Form onSubmit={handleSubmitClick}>
   <Row >
-    <Form.Group as={Col} controlId="formUsername">
+    <Form.Group as={Col} controlId="formCompanyName">
       <Form.Label>Username</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Enter Username" />
-    </Form.Group>
-
-   <Form.Group as={Col} controlId="formFirstName">
-      <Form.Label>First Name</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Enter First Name" />
-    </Form.Group>
-
-    <Form.Group as={Col} controlId="formLastName">
-      <Form.Label>Last Name</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Enter Last Name" />
+      <Form.Control size='sm' type="text" placeholder="Enter Company Name" />
     </Form.Group>
 
     <Form.Group as={Col} controlId="formGridEmail">
