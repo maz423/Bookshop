@@ -10,6 +10,7 @@ import {Login} from './components/Login.js';
 import {Register} from './components/Register.js'
 import {Homepage} from './components/Homepage.js'
 import {search} from './components/search'
+import {Login_Nav} from './components/Login_Nav'
 
 
 function App() {  
@@ -31,7 +32,7 @@ function App() {
     
     <div className="App">
 
-    <Navi/>
+    <Login_Nav/>
     
 
       

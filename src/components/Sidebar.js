@@ -30,7 +30,8 @@ export const Sidebar = (props) => {
     
   return (
         <div>
-          <Button variant="success" onClick={handleShow}>
+          
+          <Button variant="outline-success" onClick={handleShow}>
             Active listings
           </Button>
           
