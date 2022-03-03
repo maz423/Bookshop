@@ -164,7 +164,7 @@ app.post("/register", async (req, res)=> {
                 username : username,
                 email : email,
                 password : hashedPass,
-                eddress1 : address1,
+                address1 : address1,
                 address2 : address2,
                 fName : fName,
                 lName : lName
@@ -200,7 +200,7 @@ app.post("/registerBookStore", (req, res) => {
                 companyName : companyName,
                 email : email,
                 password : hashedPass,
-                eddress1 : address1,
+                address1 : address1,
                 address2 : address2,
                 };
             con.collection("bookStoreUsers").insertOne(newUser, (err, result) => {
