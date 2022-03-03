@@ -24,7 +24,12 @@ app.use(bodyParser.json());
 
 const cors = require('cors');
 const { resolve } = require('path');
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:3000',  //Your Client, do not write '*'
+    credentials: true,
+};
+app.use(cors(corsOptions));
+
 
 
 const PORT = 8000;
@@ -115,20 +120,22 @@ app.post('/login', (req, res)=>{
     .then((result) => {
         console.log(result);
         //Now we check if the encrypted passwords match
-        var isMatch = bcrypt.compare(password, result[0].password);
-
-        if (!isMatch) {
-            console.log("Not a match");
-            throw "Not a match"
-        }
-        //Temporary just to make the session logged in
-        //May want to change this to something that also includes account type later
-        
-    })
-    .then((result) => {
-        //Filler until we implement cookies
-        req.session.isAuth = true;
-        res.send("Logged in");
+        console.log("Hey2");
+        bcrypt.compare(password, result[0].password)
+        .then((result) => {
+            if (result) {
+                console.log("Good");
+                req.session.isAuth = true;
+                req.session.test = "This is test text";
+                res.send("Success");
+            } else {
+                console.log("Oop");
+                res.send("Password does not match");
+            }
+        })
+        .catch((error) => {
+            res.send(error);
+        });
     })
     .catch((error) => {
         console.log(error);
@@ -156,7 +163,7 @@ app.post("/register", async (req, res)=> {
             const newUser = {
                 username : username,
                 email : email,
-                aassword : hashedPass,
+                password : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
                 fName : fName,
@@ -192,7 +199,7 @@ app.post("/registerBookStore", (req, res) => {
             const newUser = {
                 companyName : companyName,
                 email : email,
-                aassword : hashedPass,
+                password : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
                 };
