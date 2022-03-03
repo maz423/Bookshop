@@ -22,6 +22,7 @@ const navigate = useNavigate();
 const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
   const requestOptions = {
+    credentials: 'include',
     method: 'POST',
     headers: {'Content-Type' : 'application/json'},
     body : JSON.stringify({username : e.target.ID.value, password : e.target.password.value})

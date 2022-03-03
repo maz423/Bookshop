@@ -25,6 +25,7 @@ const handleSubmitClick = (e) => { //handle submit event.
   }
 
   const requestOptions = {
+    credentials: 'include',
     method: 'POST',
     headers: {'Content-Type' : 'application/json'},
     body : JSON.stringify(body)
