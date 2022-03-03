@@ -79,8 +79,7 @@ const isAuth = (req, res, next) => {
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
-    let username = req.body.username;
-    let password = req.body.password;
+    const {username, password} = req.body;
     
     new Promise((resolve, reject) => {
         //Query the database with the provided values
@@ -109,33 +108,75 @@ app.post('/login', (req, res)=>{
 
 app.post("/register", (req, res)=> {
     //TODO make a proper implemetation 
-    let username = req.body.username;
-    let password = req.body.password;
+    const {username, password, email, address1, address2, fName, lName} = req.body;
 
-    new Promise((resolve, reject) => { 
-        //Check if username is already in use
-        if (0 < con.collection("users").find({"username" : username}).count()){
-            throw "Username already in use";
-        } else {
-            resolve("");
-        }
-    })
-    .then((result)=>{
-        //If not in use add to users collection
-        const hasedPass = bcrypt.hash(password, 12);
-        let newUser = {"username" : username, "password" : hasedPass};
-
-        con.collection("users").insertOne(newUser, (err, result2) =>{
-            if (err) { reject(err) } else { resolve(result2) }
+    new Promise((resolve, reject) => {
+        con.collection("users").countDocuments(
+            {$or : [{username : username}, {email : email}]}, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
         });
     })
     .then((result) => {
-        //Maybe return a different value or ridirect to a new page
-        res.redirect("http://localhost:3000/");
+        if (result > 0) {
+            throw "Username or email already in use"
+        }
+        bcrypt.hash(password, 12)
+        .then((hashedPass) => {
+            const newUser = {
+                username : username,
+                email : email,
+                aassword : hashedPass,
+                eddress1 : address1,
+                address2 : address2,
+                fName : fName,
+                lName : lName
+                };
+            con.collection("users").insertOne(newUser, (err, result) =>{
+                if (err) { throw err } else {res.send("Success")}
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.send(error);
+        });
     })
     .catch((error) => {
         res.send(error);
     });
+});
+
+app.post("/registerBuisness", (req, res) => {
+    const {companyName, password, email, address1, address2} = req.body;
+
+    new Promise((resolve, reject) => {
+        con.collection("buisnessUsers").countDocuments(
+            {$or : [{username : username}, {email : email}]}, (err, result => {
+                if (err) {reject(err)} else {resolve(result)}
+        }));
+    })
+    .then((result) => {
+        bcrypt.hash(password, 12)
+        .then((hashedPass) => {
+            const newUser = {
+                companyName : companyName,
+                email : email,
+                aassword : hashedPass,
+                eddress1 : address1,
+                address2 : address2,
+                };
+            con.collection("buisnessUsers").insertOne(newUser, (err, result) => {
+                if (err) { throw err } else {res.send("Success")}
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.send(error);
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        res.send(error);
+    })
 });
 
 app.post('/logout', (req, res) => {
