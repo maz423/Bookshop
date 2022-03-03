@@ -12,7 +12,12 @@ const https = require('https');
 const bodyParser = require("body-parser");
 const MongoDBSession = require('connect-mongodb-session')(session);
 const cors = require('cors');
-app.use(cors());
+
+const corsOptions = {
+    origin: 'http://localhost:3000',  //Your Client, do not write '*'
+    credentials: true,
+};
+app.use(cors(corsOptions));
 
 var options = {
     key : fs.readFileSync(path.join(__dirname, "perms", "client-key.pem")),
@@ -53,8 +58,12 @@ const store = new MongoDBSession({
 app.use(session({
     secret : 'key that will sign cookie',
     resave : false,
-    saveUninitialized : false,
-    store : store
+    saveUninitialized : true,
+    store : store,
+    cookie : {
+        httpOnly : true,
+        maxage : 360000
+    }
 }));
 
 //This can be used to redirect users from pages the cannot access without be logged in
@@ -68,29 +77,40 @@ const isAuth = (req, res, next) => {
     }
 }
 
+const sessionTest = (req, res, next) => {
+    console.log(req.session);
+    next();
+}
+
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
     const {username, password} = req.body;
-    
+    console.log(req.session);
     new Promise((resolve, reject) => {
         //Query the database with the provided values
-        con.collection("users").find({"username" : username}, (err, result) => {
+        con.collection("users").find({username : username}).toArray((err, result) => {
             if (err) { reject(err) } else {resolve(result)}
         });
     })
     .then((result) => {
         //Now we check if the encrypted passwords match
-        var isMatch = bcrypt.compare(password, result.password);
-
-        if (!isMatch) throw "Not a match"
-        //Temporary just to make the session logged in
-        //May want to change this to something that also includes account type later
-        req.session.isAuth = true
-    })
-    .then((result) => {
-        //Filler until we implement cookies
-        res.send("Logged in");
+        console.log("Hey2");
+        bcrypt.compare(password, result[0].password)
+        .then((result) => {
+            if (result) {
+                console.log("Good");
+                req.session.isAuth = true;
+                req.session.test = "This is test text";
+                res.send("Success");
+            } else {
+                console.log("Oop");
+                res.send("Password does not match");
+            }
+        })
+        .catch((error) => {
+            res.send(error);
+        });
     })
     .catch((error) => {
         res.send(error)
@@ -117,7 +137,7 @@ app.post("/register", (req, res)=> {
             const newUser = {
                 username : username,
                 email : email,
-                aassword : hashedPass,
+                password : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
                 fName : fName,
@@ -152,7 +172,7 @@ app.post("/registerBuisness", (req, res) => {
             const newUser = {
                 companyName : companyName,
                 email : email,
-                aassword : hashedPass,
+                password : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
                 };
@@ -179,11 +199,40 @@ app.post('/logout', (req, res) => {
     });
 });
 
+app.get('/users', (req, res) => {
+    new Promise((resolve, reject) => {
+        con.collection("users").find({}).toArray((err, result) =>{
+            if (err) {reject(err)} else {resolve(result)}
+        }
+    )})
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.send(error);
+    })
+});
+app.get('/bookStoreUsers', (_, res) => {
+    new Promise((resolve, reject) => {
+        con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
+            if (err) {reject(err)} else {resolve(result)}
+        }
+    )})
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.send(error);
+    })
+});
+
+
 
 //All the implementation are from typing TODO change to button
 
 //no picture implementation yet.TODO add a way to add pictures to the mongodb db
-app.post('/make-lis',(req,res)=>{
+app.post('/make-lis', sessionTest ,(req,res)=>{
+    console.log(req.session.test);
 	var textname = req.body.textname;
 	//var condition = req.body.condition;
 	var description = req.body.description;
@@ -207,7 +256,7 @@ app.post('/make-lis',(req,res)=>{
 });
 
 //See the listings on the browser 
-app.get('/listings',(req,res) => {
+app.get('/listings', sessionTest ,(req,res) => {
 	//console.log("here")
     new Promise((resolve, reject) => {
         con.collection("listings").find({}).toArray((err,result) => {
@@ -215,12 +264,27 @@ app.get('/listings',(req,res) => {
         }
     )}).then((result) => {
 		//console.log("got here"+result.json)
+        console.log(req.session.test);
         res.send(result);
     }).catch((error)=>{
         console.log("error!!!!!!!!!!!!!!!!!!!")
         res.send(error);
     })
 });
+
+app.get('/sessions', (req, res) =>{
+    new Promise((resolve, reject) => {
+        con.collection("mySessions").find({}).toArray((err, result) =>{
+            if (err) {reject(err)} else {resolve(result)}
+        }
+    )})
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.send(error);
+    })
+})
 
 
 

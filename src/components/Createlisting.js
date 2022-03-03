@@ -17,6 +17,7 @@ function Createlisting(){
     //NOT TESTING CONDITION YET.  
     const handleClick = (e) => {
         const requestOptions = {
+            credentials: 'include',
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
             body : JSON.stringify({textname: textname, description:description})
