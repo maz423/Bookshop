@@ -28,11 +28,12 @@ services:
       - "3000:3000"
     volumes:
       - ".:/app"
+      - "/app/node_modules"
       
     
 
   mongodb:
-    image: mongo:4.0.4
+    image: mongo:latest
     container_name: Db_ecom
     ports:
       - "27017:27017"
