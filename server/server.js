@@ -238,40 +238,39 @@ app.post('/search', (req, res) =>{
 
         // query the database for all the listings that match the filters
        
-        con.collection("listings").find({"subject": subject, "price": price, "author": author, "location": location}).toArray((err, result) =>{
+        con.listings.aggregate([
 
+            {
+                $match: { title: { $regex: keyword, $options: "i" }, subject: subject, price: price, author: author, location: location }
+            },
+
+            {
+                $group: { _id: "$title"}
+            }
+
+        ], (err, result) =>{
             if(err){
                 reject(err);
             }
             else{
                 resolve(result);
             }
-        });
+        })
+
+        // the aggregate pipeline should output an array of listings that match the criteria of the search
+
     })
     .then((result) =>{
 
-        // iterate through the results of the query and add the listings whose titles contain the keyword to an array
+        //return the results of the search
 
-        var searchResults = [];
-
-        result.array.forEach(element => {
-
-            // if the title contains the keyword inputted by the user
-            if(element.title.search(keyword) != -1){
-                searchResults.push(element);
-            }
-            
-        });
-
-        // return the results of the search
-
-        if(searchResults.length == 0){
+        if(result.length == 0){
             res.send("Sorry, we couldn't find anything that matches those search criteria.");
         }
         else{
-            res.send(searchResults);
+            res.send(result);
         }
-
+        
     })
     .catch((error) =>{
         res.send(error);
