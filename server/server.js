@@ -226,7 +226,54 @@ app.post('/logout', (req, res) => {
     });
 });
 
-app.post('/search', (req, res) =>{
+app.post('/regularSearch', (req, res) =>{
+
+    let keyword = req.body.keyword;
+
+    new Promise((resolve, reject) =>{
+
+        // query the database for all the listings that match just the keyword
+       
+        con.listings.aggregate([
+
+            {
+                $match: { title: { $regex: keyword, $options: "i" } }
+            },
+
+            {
+                $group: { _id: "$title"}
+            }
+
+        ], (err, result) =>{
+            if(err){
+                reject(err);
+            }
+            else{
+                resolve(result);
+            }
+        })
+
+        // the aggregate pipeline should output an array of listings that match the criteria of the search
+
+    })
+    .then((result) =>{
+
+        //return the results of the search
+
+        if(result.length == 0){
+            res.send("Sorry, we couldn't find anything that matches those search criteria.");
+        }
+        else{
+            res.send(result);
+        }
+        
+    })
+    .catch((error) =>{
+        res.send(error);
+    });
+});
+
+app.post('/advancedSearch', (req, res) =>{
 
     let keyword = req.body.keyword;
     let subject = req.body.subject;
@@ -236,7 +283,7 @@ app.post('/search', (req, res) =>{
 
     new Promise((resolve, reject) =>{
 
-        // query the database for all the listings that match the filters
+        // query the database for all the listings that match the keyword and the filters
        
         con.listings.aggregate([
 
