@@ -78,7 +78,7 @@ const isAuth = (req, res, next) => {
 }
 
 const sessionTest = (req, res, next) => {
-    console.log(req.session);
+    console.log(req.session.user);
     next();
 }
 
@@ -86,7 +86,6 @@ const sessionTest = (req, res, next) => {
 app.post('/login', (req, res)=>{
     //Get the password and username
     const {username, password} = req.body;
-    console.log(req.session);
     new Promise((resolve, reject) => {
         //Query the database with the provided values
         con.collection("users").find({username : username}).toArray((err, result) => {
@@ -95,16 +94,21 @@ app.post('/login', (req, res)=>{
     })
     .then((result) => {
         //Now we check if the encrypted passwords match
-        console.log("Hey2");
-        bcrypt.compare(password, result[0].password)
+        const user = result[0];
+        bcrypt.compare(password, user.password)
         .then((result) => {
             if (result) {
-                console.log("Good");
-                req.session.isAuth = true;
-                req.session.test = "This is test text";
+                //Add some user info to the cookie to make stuff easy in future
+                const userInfo = {
+                    isBasic : true,
+                    isBookstore : true,
+                    isAdmin : true,
+                    usernaname : user.username,
+                    _id : user._id
+                }
+                req.session.user = userInfo;
                 res.send("Success");
             } else {
-                console.log("Oop");
                 res.send("Password does not match");
             }
         })
@@ -158,6 +162,7 @@ app.post("/register", (req, res)=> {
 });
 
 app.post("/registerBuisness", (req, res) => {
+    //Get the information
     const {companyName, password, email, address1, address2} = req.body;
 
     new Promise((resolve, reject) => {
@@ -225,6 +230,19 @@ app.get('/bookStoreUsers', (_, res) => {
         res.send(error);
     })
 });
+//This will return user information from the given cookie
+//Will return nothing if there is no cookie with user info
+app.get('/isUser', (req, res) => {
+    if(req.session.body == undefined){
+        console.log("error");
+        res.status(400).send("Not logged in")
+    }
+    else if(req.session.user.isBasic) {
+        res.send("Success");
+    } else {
+        res.status(400).send("Not logged in")
+    }
+});
 
 
 
@@ -232,7 +250,6 @@ app.get('/bookStoreUsers', (_, res) => {
 
 //no picture implementation yet.TODO add a way to add pictures to the mongodb db
 app.post('/make-lis', sessionTest ,(req,res)=>{
-    console.log(req.session.test);
 	var textname = req.body.textname;
 	//var condition = req.body.condition;
 	var description = req.body.description;
@@ -256,7 +273,7 @@ app.post('/make-lis', sessionTest ,(req,res)=>{
 });
 
 //See the listings on the browser 
-app.get('/listings', sessionTest ,(req,res) => {
+app.get('/listings', (req,res) => {
 	//console.log("here")
     new Promise((resolve, reject) => {
         con.collection("listings").find({}).toArray((err,result) => {
@@ -410,7 +427,7 @@ app.get('/', (req, res) => {
     console.log(req.session);
     //res.redirect("http://localhost:3000/");
     //res.send("Hey");
-    res.redirect("https://localhost:3000/register");
+    res.redirect("http://localhost:3000/register");
 });
 
 app.use('/', express.static('pages'));

@@ -32,6 +32,28 @@ function Createlisting(){
         navigate("/homepage");
     }
 
+    //ComponentDid mount
+    useEffect(() => {
+            const requestOptions = {
+                credentials: 'include',
+                method: 'GET',
+                headers: {'Content-Type' : 'application/json'},
+              };
+              fetch('http://localhost:8000/isUser', requestOptions)
+              .then((response) => {
+                if (!response.ok){
+                    navigate("/Login");
+                } else{
+                    console.log(response);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+                navigate("/Login");
+              });
+        
+    })
+
     //THIS IS FOR TESTING PURPOSES getting the data from the listing database and posting on the page 
     //const[listingList,setListinglist] = useState([])
     // useEffect(()=>{

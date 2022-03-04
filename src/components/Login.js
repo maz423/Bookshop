@@ -31,6 +31,7 @@ const handleSubmitClick = (e) => { //handle submit event.
   fetch('http://localhost:8000/login', requestOptions)
   .then((response) => {
     console.log(response);
+    navigate("/")
   })
   .catch((error) => {
     console.log(error);
