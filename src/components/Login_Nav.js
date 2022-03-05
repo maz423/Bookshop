@@ -49,8 +49,8 @@ return (
 
         <img
         src="https://cdn-icons-png.flaticon.com/512/61/61135.png"
-        width="30"
-        height="30"
+        width="20"
+        height="20"
         className="d-inline-block align-top"
         alt="React Bootstrap logo"
         

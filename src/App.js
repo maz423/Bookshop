@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useState } from 'react';
 
 
 import {Navi} from './components/Navi.js'
@@ -17,7 +18,7 @@ import {Login_Nav} from './components/Login_Nav'
 function App() {  
   
   
- 
+  const [LoggedIn, setLoggedIn] = useState(0);  //logged in will be set to 1 when the user Logs in
  
 
   
@@ -33,7 +34,14 @@ function App() {
     
     <div className="App">
 
-    <Login_Nav/>
+
+    {!LoggedIn
+    ? <Navi set = {setLoggedIn}/>
+    : <Login_Nav/>
+    
+    }
+
+    
     
 
       
