@@ -12,7 +12,8 @@ import { Container } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
 import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
-
+import { DropdownAdmin } from './DropdownAdmin';
+import { DropdownUser } from './DropdownUser';
 
 
 
@@ -24,6 +25,7 @@ const handleSubmitClick = (e) => { //handle submit event.
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const Admin = props.admin;
         
 
 return (
@@ -41,29 +43,15 @@ return (
         
         
       </Nav>
+      
+    {!Admin
+    ?   <DropdownUser/>
+    :  <DropdownAdmin/>
+    
+    }
 
-      <div className='dropdown'>
 
-      <Dropdown>
-        <Dropdown.Toggle  variant="success" id="dropdown-basic">
-
-        <img
-        src="https://cdn-icons-png.flaticon.com/512/61/61135.png"
-        width="20"
-        height="20"
-        className="d-inline-block align-top"
-        alt="React Bootstrap logo"
-        
-      />
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Update Profile</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Favourites</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">Log out</Dropdown.Item>
-        </Dropdown.Menu>
-        </Dropdown>
-      </div>
+    
 
       <Nav>
         

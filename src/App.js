@@ -18,7 +18,8 @@ import {Login_Nav} from './components/Login_Nav'
 function App() {  
   
   
-  const [LoggedIn, setLoggedIn] = useState(0);  //logged in will be set to 1 when the user Logs in
+  const [LoggedIn, setLoggedIn] = useState(0);  //logged in will be set to 1 when the user Logs in.
+  const [IsAdmin, setIsAdmin] = useState(0); //if User is Admin Set to 1.
  
 
   
@@ -37,7 +38,7 @@ function App() {
 
     {!LoggedIn
     ? <Navi set = {setLoggedIn}/>
-    : <Login_Nav/>
+    : <Login_Nav admin = {IsAdmin}/>
     
     }
 
