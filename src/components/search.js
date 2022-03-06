@@ -55,6 +55,8 @@ return (
               <label for="keyword">Search for a book by title:</label>
               <input type="text" id="keyword" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="keyword"></input>
 
+              <Button variant="success" size="sm" type="submit">Search</Button>
+
        </form>       
        
        
