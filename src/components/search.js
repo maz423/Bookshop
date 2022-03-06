@@ -14,17 +14,52 @@ import { Container } from 'react-bootstrap';
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-export const search = (props) => {
+export const Search = (props) => {
+
+const [keyword, setKeyword] = useState('');
 
 
+const handleSubmitClick = (e) => {
+
+       e.preventDefault();
+
+       const requestOptions = {
+              credentials: 'include',
+              method: 'POST',
+              headers: {'Content-Type' : 'application/json'},
+              body : JSON.stringify({keyword : e.target.keyword.value})
+       };
+
+       fetch('http://localhost:8000/regularSearch', requestOptions)
+       .then((response) => {
+              console.log(response);
+       })
+       .catch((error) => {
+              console.log(error);
+       });
+
+
+}
    
 
 
 
 return (
-
-       <h1>Hello</h1>
+<div className='Search'>
+       
+       <Link to="/advancedSearch"> <Button variant="link" size="sm" className="advancedSearch"> Advanced Search </Button></Link>
       
+      
+       <form className='form' onSubmit={handleSubmitClick}>
+
+              <label for="keyword">Search for a book by title:</label>
+              <input type="text" id="keyword" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="keyword"></input>
+
+       </form>       
+       
+       
+       
+</div>
       
 
 );
