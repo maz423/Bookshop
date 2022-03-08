@@ -14,6 +14,7 @@ import {search} from './components/search'
 import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
 import ListingView from './components/ListingView';
+import AccountView from './components/AccountView';
 
 
 function App() {  
@@ -73,6 +74,7 @@ function App() {
          <Route exact path='/' element={<Homepage/>} />
          <Route exact path='/signup' element={<Register/>} />
          <Route exact path='/listing/:listingID' element={<ListingView/>}/>
+         <Route exact path='/user' element={<AccountView/>} />
          
        
            </Routes>

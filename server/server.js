@@ -79,19 +79,7 @@ const isAuth = (req, res, next) => {
         res.send("not logged in");
     }
 }
-app.get('/users', (req, res) => {
-    new Promise((resolve, reject) => {
-        con.collection("users").find({}).toArray((err, result) =>{
-            if (err) {reject(err)} else {resolve(result)}
-        }
-    )})
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((error) => {
-        res.send(error);
-    })
-});
+
 app.get('/bookStoreUsers', (_, res) => {
     new Promise((resolve, reject) => {
         con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
@@ -172,7 +160,7 @@ app.post("/register", (req, res)=> {
                 username : username,
                 email : email,
                 password : hashedPass,
-                eddress1 : address1,
+                address1 : address1,
                 address2 : address2,
                 fName : fName,
                 lName : lName,
@@ -209,7 +197,7 @@ app.post("/registerBuisness", (req, res) => {
                 companyName : companyName,
                 email : email,
                 password : hashedPass,
-                eddress1 : address1,
+                address1 : address1,
                 address2 : address2,
                 listings : [],
                 };
@@ -248,6 +236,26 @@ app.get('/users', (req, res) => {
     .catch((error) => {
         res.status(400).send(error);
     })
+});
+
+app.get('/user', (req, res) => {
+    if (req.session.user == undefined) {
+        res.status(400).send("Not logged in");
+    } else {
+        new Promise((resolve, reject) => {
+            const query = {_id : req.session.user._id};
+            con.collection("users").findOne(query, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })
+        .then((result) => {
+            delete result.password;
+            res.send(result);
+        })
+        .catch((error) => {
+            res.status(400).send("User not found");
+        })
+    }
 });
 app.get('/bookStoreUsers', (_, res) => {
     new Promise((resolve, reject) => {

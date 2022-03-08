@@ -19,9 +19,9 @@ function ListingView(){
         };
 
         fetch(listingURL, requestOptions)
-        .then((result) => {
-            if (result.ok) {
-                return result.json();
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
             } else {
             }
         })
