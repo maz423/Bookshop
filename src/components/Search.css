@@ -1,0 +1,18 @@
+.Search{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.form{
+    background-color: #232325;
+    font-size: small;
+    border-radius: 25px;
+}
+
+.advancedSearch{
+    color: white;
+}
+
+.regularSearch{
+    color: white;
+}
