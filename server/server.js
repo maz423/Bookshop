@@ -78,7 +78,7 @@ const isAuth = (req, res, next) => {
 }
 
 const sessionTest = (req, res, next) => {
-    console.log(req.session.user);
+    //console.log(req.session.user);
     next();
 }
 
@@ -103,21 +103,21 @@ app.post('/login', (req, res)=>{
                     isBasic : true,
                     isBookstore : true,
                     isAdmin : true,
-                    usernaname : user.username,
+                    username : user.username,
                     _id : user._id
                 }
                 req.session.user = userInfo;
                 res.send("Success");
             } else {
-                res.send("Password does not match");
+                res.status(400).send("Password does not match");
             }
         })
         .catch((error) => {
-            res.send(error);
+            res.status(400).send(error);
         });
     })
     .catch((error) => {
-        res.send(error)
+        res.status(400).send(error);
     });
 });
 
@@ -145,7 +145,8 @@ app.post("/register", (req, res)=> {
                 eddress1 : address1,
                 address2 : address2,
                 fName : fName,
-                lName : lName
+                lName : lName,
+                listings : []
                 };
             con.collection("users").insertOne(newUser, (err, result) =>{
                 if (err) { throw err } else {res.send("Success")}
@@ -153,11 +154,11 @@ app.post("/register", (req, res)=> {
         })
         .catch((error) => {
             console.log(error);
-            res.send(error);
+            res.status(400).send(error);
         });
     })
     .catch((error) => {
-        res.send(error);
+        res.status(400).send(error);
     });
 });
 
@@ -180,6 +181,7 @@ app.post("/registerBuisness", (req, res) => {
                 password : hashedPass,
                 eddress1 : address1,
                 address2 : address2,
+                listings : [],
                 };
             con.collection("buisnessUsers").insertOne(newUser, (err, result) => {
                 if (err) { throw err } else {res.send("Success")}
@@ -187,12 +189,12 @@ app.post("/registerBuisness", (req, res) => {
         })
         .catch((error) => {
             console.log(error);
-            res.send(error);
+            res.status(400).send(error);
         });
     })
     .catch((error) => {
         console.log(error);
-        res.send(error);
+        res.status(400).send(error);
     })
 });
 
@@ -214,7 +216,7 @@ app.get('/users', (req, res) => {
         res.send(result);
     })
     .catch((error) => {
-        res.send(error);
+        res.status(400).send(error);
     })
 });
 app.get('/bookStoreUsers', (_, res) => {
@@ -227,14 +229,13 @@ app.get('/bookStoreUsers', (_, res) => {
         res.send(result);
     })
     .catch((error) => {
-        res.send(error);
+        res.status(400).send(error);
     })
 });
 //This will return user information from the given cookie
 //Will return nothing if there is no cookie with user info
 app.get('/isUser', (req, res) => {
-    if(req.session.body == undefined){
-        console.log("error");
+    if(req.session.user == undefined){
         res.status(400).send("Not logged in")
     }
     else if(req.session.user.isBasic) {
@@ -249,27 +250,31 @@ app.get('/isUser', (req, res) => {
 //All the implementation are from typing TODO change to button
 
 //no picture implementation yet.TODO add a way to add pictures to the mongodb db
-app.post('/make-lis', sessionTest ,(req,res)=>{
-	var textname = req.body.textname;
-	//var condition = req.body.condition;
-	var description = req.body.description;
-	var datetime = new Date();
-	console.log("the name of the texbook is: "+textname);
-	console.log();
-	function addlisting(varname,vardesc,datetime){
-		MongoClient.connect(DB_Url,function(err,db){
-			var dbo = db.db("ecomDB");
-			var myobj = {name: varname, description: vardesc, timestamp: datetime};
-			dbo.collection("listings").insertOne(myobj, function(err,response){
-				if (err) throw err;
-				console.log("inserted into listings succesfully");
-				db.close();
-			});
-			
-		});
-	}
-	addlisting(textname,description,datetime);
-	res.send("yes")
+app.post('/make-lis' ,(req,res)=>{
+    const {textname, description} = req.body;
+	const datetime = new Date();
+    const newListing = {
+        name: textname,
+        description: description,
+        timestamp: datetime
+    }
+    new Promise((resolve, reject) => {
+        //Add new listing to the database
+        con.collection("listings").insertOne(newListing, (err, result) => {
+            if(err) {reject(err)}  else { resolve(result)}
+        });
+    })
+    .then((result) => {
+        const addListing = {$push: {listings : result.insertedId}};
+        con.collection("users").updateOne({username : req.session.user.username}, addListing);
+    })
+    .then((_) => {
+        res.send("Success");
+    })
+    .catch((error) => {
+        console.log(error);
+        res.status(400).send(error);
+    });
 });
 
 //See the listings on the browser 
@@ -281,28 +286,60 @@ app.get('/listings', (req,res) => {
         }
     )}).then((result) => {
 		//console.log("got here"+result.json)
-        console.log(req.session.test);
         res.send(result);
     }).catch((error)=>{
         console.log("error!!!!!!!!!!!!!!!!!!!")
-        res.send(error);
+        res.status(400).send(error);
     })
 });
 
-app.get('/sessions', (req, res) =>{
-    new Promise((resolve, reject) => {
-        con.collection("mySessions").find({}).toArray((err, result) =>{
-            if (err) {reject(err)} else {resolve(result)}
-        }
-    )})
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((error) => {
-        res.send(error);
-    })
-})
+//This will return all of a users listings
+//Requires user to be logged in to return value
+app.get('/user/listings', (req, res) => {
+    const query = {username : req.session.user.username};
 
+    new Promise((resolve, reject) => {
+        con.collection.findOne(query, (err, result) => {
+            if (err) { reject(err) } else { resolve(result) }
+        });
+    })
+    .then((result) => {
+        const listingIDs = {ids : []}
+        result.listings.forEach(element => {
+            listingIDs.ids.push(element);
+        });
+        const listingQuery = {_id : {$in : listingIDs.ids}};
+        console.log(listingQuery);
+        con.collection("listings").find(listingQuery).toArray((err, result2) => {
+            if (err) {
+                res.status(400).send(err);
+            } else {
+                res.send(result2);
+            }
+        });
+    })
+    .catch((error) =>{
+        res.status(400).send(error);
+    })
+});
+
+//Returns the listing for a given ID
+app.get('/listing/:listingID', (req, res) => {
+     const ObjectId = require('mongodb').ObjectId;
+     const listingOID = new ObjectId(req.params.listingID);
+
+     new Promise((resolve, reject) => {
+         con.collection("listings").findOne({_id : listingOID}, (err, result) => {
+             if (err) {reject(err)} else {resolve(result)}
+         });
+     })
+     .then((result) => {
+         res.send(result);
+     })
+     .catch((error) =>{
+        res.status(400).send(error);
+    })
+});
 
 
 
@@ -424,7 +461,6 @@ app.get('/get-offers',function(req,res){
  
 //This is just to testing stuff
 app.get('/', (req, res) => {
-    console.log(req.session);
     //res.redirect("http://localhost:3000/");
     //res.send("Hey");
     res.redirect("http://localhost:3000/register");
