@@ -13,6 +13,7 @@ import {RegisterbookStore} from './components/RegisterbookStore'
 import {search} from './components/search'
 import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
+import ListingView from './components/ListingView';
 
 
 function App() {  
@@ -71,6 +72,7 @@ function App() {
          <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
          <Route exact path='/' element={<Homepage/>} />
          <Route exact path='/signup' element={<Register/>} />
+         <Route exact path='/listing/:listingID' element={<ListingView/>}/>
          
        
            </Routes>
