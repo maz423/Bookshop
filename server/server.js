@@ -347,7 +347,8 @@ app.post('/advancedSearch', (req, res) =>{
         con.listings.aggregate([
 
             {
-                $match: { title: { $regex: keyword, $options: "i" }, subject: subject, price: price, author: author, location: location }
+                $match: { title: { $regex: keyword, $options: "i" }, subject: { $regex: subject, $options: "i" }, price: { $regex: price, $options: "i" }, 
+                author: { $regex: author, $options: "i" }, location: { $regex: location, $options: "i" } }
             },
 
             {
