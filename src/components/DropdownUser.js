@@ -53,8 +53,9 @@ import { Dropdown } from 'react-bootstrap';
         <Dropdown.Menu>
         <Dropdown.Item href="#/action-1">Update Profile</Dropdown.Item>
         <Dropdown.Item href="#/action-2">Favourites</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">View Posted Listings</Dropdown.Item>
-        <Dropdown.Item href="#/action-4">Log out</Dropdown.Item>
+        <Dropdown.Item href="/createlisting">Create new Listing</Dropdown.Item>
+        <Dropdown.Item href="#/action-4">Manage Listings</Dropdown.Item>
+        <Dropdown.Item href="#/action-5">Log out</Dropdown.Item>
         
         </Dropdown.Menu>
         </Dropdown>

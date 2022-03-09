@@ -15,7 +15,7 @@
    
 }
 .listing-form{
-    font-size:60px;
+    font-size:40px;
     vertical-align:middle;
 
 }
@@ -23,17 +23,17 @@
     font-size: 20px;
 } 
 input[type="radio"]{
-    transform: scale(2);
+    
     margin:15px;
     border-radius:15px;
     top: -2px;
     left: 1px;
     position: relative;
-    background-color:Green;
-    color:green;
+    
+    
     content:'';
     display: inline-block; 
-    border: 2px solid green; 
+   
 
 }
 .condition-form .custom-radio-button .checkmark{
@@ -74,3 +74,9 @@ input[type="radio"]{
     color:white;
     border-color: green;
 }
+
+.input-group {
+    
+    height: 100% !important;
+    padding-top: 4%;
+  }

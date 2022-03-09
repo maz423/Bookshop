@@ -15,6 +15,7 @@ export const Login = (props) => {
 
 const [ID,setID] = useState('');
 const [password,setPassword] = useState('');
+const [role,setRole] = useState('staff'); 
 
 
 const navigate = useNavigate();
@@ -32,6 +33,7 @@ const handleSubmitClick = (e) => { //handle submit event.
   .then((response) => {
     console.log(response);
     navigate("/")
+    props.set(1)
   })
   .catch((error) => {
     console.log(error);
@@ -51,12 +53,24 @@ return (
         <h1 className='prompt'>Please Login with your registered ID and Password to continue.</h1>
     </p>  
     <form className='form' onSubmit={handleSubmitClick}>
+
+   
       
-      <label for="ID">User ID:</label>
+      <label for="ID">User ID : &nbsp;&nbsp;&nbsp;&nbsp;      </label>
       <input type="text" id="ID" value={ID} onChange={(e)=>setID(e.target.value)} name="User ID"></input><br></br><br></br>
-      <label for="password">Password:</label>
+      <label for="password">Password : &nbsp;</label>
       <input type="password" id="password" value={password} onChange={(e)=>setPassword(e.target.value)} name="password"></input><br></br><br></br>
+      <label for="role">Role:</label>&nbsp;
+      <select value={role} onChange={(e)=>setRole(e.target.value)}>
+           <option value= 'Admin'>  Admin  </option>  
+           <option value= 'User'>  User </option>
+           <option value= 'Bookstore'>  Bookstore </option> 
+
+           
+     
+     </select><br></br> <br></br>
       <Button variant="success" size='sm' type="submit">Login</Button>  
+     
      </form>
 
      
