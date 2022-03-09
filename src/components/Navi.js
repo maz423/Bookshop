@@ -19,7 +19,7 @@ import { useState } from 'react';
 export const Navi = (props) => {
 
 const handleSubmitClick = (e) => { //handle submit event.
-
+  
     }
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -53,7 +53,7 @@ return (
           aria-label="Search"
           size='sm'
         />
-        <Button variant="outline-success">Search</Button>
+        <Button variant="outline-success" onClick={handleSubmitClick} href="/search">Search</Button>
       </Form>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
           Contact us

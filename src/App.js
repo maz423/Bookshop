@@ -10,7 +10,8 @@ import {Login} from './components/Login.js';
 import {Register} from './components/Register.js'
 import {Homepage} from './components/Homepage.js'
 import {RegisterbookStore} from './components/RegisterbookStore'
-import {search} from './components/search'
+import {Search} from './components/Search'
+import {AdvancedSearch} from './components/AdvancedSearch'
 import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
 import ListingView from './components/ListingView';
@@ -75,6 +76,8 @@ function App() {
          <Route exact path='/signup' element={<Register/>} />
          <Route exact path='/listing/:listingID' element={<ListingView/>}/>
          <Route exact path='/user' element={<AccountView/>} />
+         <Route exact path='/search' element={<Search/>} />
+         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
          
        
            </Routes>

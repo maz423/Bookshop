@@ -51,7 +51,7 @@ const handleSubmitClick = (e) => {
 return (
 <div className='Search'>
        
-       <Link to="/regularSearch"> <Button variant="link" size="sm" className="regularSearch"> Regular Search </Button></Link>
+       <Link to="/search"> <Button variant="link" size="sm" className="regularSearch"> Regular Search </Button></Link>
       
       
        <form className='form' onSubmit={handleSubmitClick}>
