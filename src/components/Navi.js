@@ -12,6 +12,7 @@ import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
 import { useState } from 'react';
+import { LinkContainer } from 'react-router-bootstrap'
 
 
 
@@ -27,8 +28,8 @@ const handleSubmitClick = (e) => { //handle submit event.
         
 
 return (
-
-
+    <div>
+    
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
     <Container fluid>
     
@@ -37,10 +38,13 @@ return (
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="me-auto">
-       <Nav.Link href="/">Home</Nav.Link>
-        <Nav.Link href="/Login">Login</Nav.Link>
-        <Nav.Link href="/signup">Signup</Nav.Link>
-        <Nav.Link href='/createlisting'>Createlisting</Nav.Link>
+      
+      <Nav.Link as={Link} to='/'>Home</Nav.Link>
+      <Nav.Link as={Link} to="/Login">Login</Nav.Link>
+      <Nav.Link as={Link} to="/signup">Signup</Nav.Link>
+      <Nav.Link as={Link} to='/createlisting'>Createlisting</Nav.Link>
+       
+        
         
       </Nav>
       <Nav>
@@ -67,6 +71,7 @@ return (
                      Fax: +1 3061234568
         </Modal.Body>
         <Modal.Footer>
+        
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
@@ -78,6 +83,9 @@ return (
     </Navbar.Collapse>
     </Container>
   </Navbar>
+
+  </div>
+  
 
   
 

@@ -16,6 +16,8 @@ import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
 import {ListingView} from './components/ListingView';
 import AccountView from './components/AccountView';
+import { LinkContainer } from 'react-router-bootstrap'
+
 
 
 function App() {  
@@ -38,14 +40,14 @@ function App() {
     
     <div className="App">
 
-
-    {!LoggedIn
+    <Router>
+     {!LoggedIn
     ? <Navi set = {setLoggedIn}/>
     : <Login_Nav admin = {IsAdmin}/>
     
-    }
-
-    
+    } 
+      
+   
     
 
       
@@ -57,15 +59,17 @@ function App() {
       
       
       <header className="App-header">
+
+    
         
         <p>
-        <Router>
+        
 
         
-         
         
              
          <Routes>
+         
          
          <Route exact path='/Login' element={<Login set = {setLoggedIn}/>} />
        
@@ -83,11 +87,11 @@ function App() {
            </Routes>
          
          
-        </Router>
+        
         </p>
         
       </header>
-      
+      </Router>
       </div>
   );
 }

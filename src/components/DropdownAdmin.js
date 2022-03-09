@@ -50,10 +50,10 @@ import { Dropdown } from 'react-bootstrap';
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Search User</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">View Reports</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">View website metrics</Dropdown.Item>
-        <Dropdown.Item href="#/action-4">Log out</Dropdown.Item>
+        <Dropdown.Item as={Link} to="#/action-1">Search User</Dropdown.Item>
+        <Dropdown.Item as={Link} to="#/action-2">View Reports</Dropdown.Item>
+        <Dropdown.Item as={Link} to="#/action-3">View website metrics</Dropdown.Item>
+        <Dropdown.Item as={Link} to="#/action-4">Log out</Dropdown.Item>
         
         </Dropdown.Menu>
         </Dropdown>
