@@ -5,7 +5,7 @@ import './ListingView.css'
 function ListingView(){
 
     const {listingID} = useParams();
-    const [bookName, setBookName] = useState('');
+    const [bookTitle, setBookTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
 
 
@@ -27,7 +27,7 @@ function ListingView(){
         })
         .then((data) => {
             console.log(data);
-            setBookName(data.name);
+            setBookTitle(data.title);
         })
         .catch((error) =>{
             console.log(error);
@@ -36,7 +36,7 @@ function ListingView(){
 
     return (
         <div className = "mainContainer">
-            <h1>{bookName}</h1>
+            <h1>{bookTitle}</h1>
         </div>
     )
 }

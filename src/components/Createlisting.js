@@ -20,22 +20,6 @@ function Createlisting(){
 
     //After the button is clicked the the information stored in textname and description will be sent to the database.
     //NOT TESTING CONDITION YET.  
-    const handleClick = (e) => {
-        const requestOptions = {
-            credentials: 'include',
-            method: 'POST',
-            headers: {'Content-Type' : 'application/json'},
-            body : JSON.stringify({textname: textname, description:description})
-        };
-        
-        fetch('http://localhost:8000/make-lis', requestOptions)
-        .then(() => {
-            alert("sent");
-        }).catch( (error)=>{
-            alert(error)
-        });
-        navigate("/homepage");
-    }
 
     //ComponentDid mount
     useEffect(() => {
@@ -59,7 +43,42 @@ function Createlisting(){
         
     })
 
-    const handleSubmitClick = (e) => { }//handle submit event.
+    const handleSubmitClick = (e) => { 
+      e.preventDefault();
+        const formItems = e.target.elements;
+        //TODO check to ensure price is int
+        //TODO File input
+        const body = {
+          title : formItems.formBookTitle.value,
+          authorName : formItems.authorName.value,
+          description : formItems.formDescription.value,
+          price : formItems.formPrice.value,
+          address1 : formItems.formGridAddress1.value,
+          address2 : formItems.formGridAddress2.value,
+          city : formItems.formGridCity.value,
+          province : formItems.formGridState.value,
+          zipCode : formItems.formGridZip.value,
+        };
+        console.log(formItems);
+        console.log(body);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify(body)
+        };
+        
+        fetch('http://localhost:8000/make-lis', requestOptions)
+        .then((response) => {
+          if (!response.ok){
+            console.log("error sending info");
+          } else {
+            navigate('/')
+          }
+        }).catch( (error)=>{
+            console.log(error);
+        });
+    };
 
     //THIS IS FOR TESTING PURPOSES getting the data from the listing database and posting on the page 
     //const[listingList,setListinglist] = useState([])
@@ -83,7 +102,7 @@ function Createlisting(){
       <Form.Control size='sm' type="text" placeholder="Eg. Intro to AI" />
     </Form.Group>
 
-   <Form.Group as={Col} controlId="autherName">
+   <Form.Group as={Col} controlId="authorName">
       <Form.Label>Author</Form.Label>
       <Form.Control size='sm' type="text" placeholder="Name" />
     </Form.Group>
@@ -139,7 +158,7 @@ function Createlisting(){
     <InputGroup as={Col} >
     
     <InputGroup.Text>$</InputGroup.Text>
-    <Form.Control  aria-label="Amount (to the nearest dollar)"  />
+    <Form.Control id="formPrice" aria-label="Amount (to the nearest dollar)"  />
     <InputGroup.Text>.00</InputGroup.Text>
     </InputGroup>
 
@@ -149,8 +168,8 @@ function Createlisting(){
     </Row>
 
     <InputGroup>
-    <InputGroup.Text>Discription:</InputGroup.Text>
-    <Form.Control as="textarea" aria-label="With textarea" />
+    <InputGroup.Text>Description:</InputGroup.Text>
+    <Form.Control id="formDescription" as="textarea" aria-label="With textarea" />
   </InputGroup>
 
   

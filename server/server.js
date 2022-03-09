@@ -388,12 +388,20 @@ app.post('/advancedSearch', (req, res) =>{
 
 //no picture implementation yet.TODO add a way to add pictures to the mongodb db
 app.post('/make-lis' ,(req,res)=>{
-    const {textname, description} = req.body;
+    const {title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
 	const datetime = new Date();
+    //TODO check if location information is given, if not user session info
     const newListing = {
-        name: textname,
+        title: title,
+        authorName : authorName,
         description: description,
-        timestamp: datetime
+        price : price,
+        address1 : address1,
+        address2 : address2,
+        city : city,
+        province : province,
+        zipCode : zipCode,
+        timestamp: datetime,
     }
     new Promise((resolve, reject) => {
         //Add new listing to the database
