@@ -14,7 +14,7 @@ import {Search} from './components/Search'
 import {AdvancedSearch} from './components/AdvancedSearch'
 import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
-import ListingView from './components/ListingView';
+import {ListingView} from './components/ListingView';
 import AccountView from './components/AccountView';
 
 
