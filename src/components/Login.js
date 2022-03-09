@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form'
 
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Alert } from 'bootstrap';
 
 export const Login = (props) => {
 
@@ -33,6 +34,7 @@ const handleSubmitClick = (e) => { //handle submit event.
   .then((response) => {
     if (!response.ok){
       console.log("error");
+      alert("Invalid id or password");
     } else{
       console.log(response);
       props.set(1);

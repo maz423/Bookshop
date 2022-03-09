@@ -42,7 +42,7 @@ return (
       <Nav.Link as={Link} to='/'>Home</Nav.Link>
       <Nav.Link as={Link} to="/Login">Login</Nav.Link>
       <Nav.Link as={Link} to="/signup">Signup</Nav.Link>
-      <Nav.Link as={Link} to='/createlisting'>Createlisting</Nav.Link>
+      {/* <Nav.Link as={Link} to='/createlisting'>Createlisting</Nav.Link> */}
        
         
         
@@ -59,6 +59,7 @@ return (
         />
         <Button variant="outline-success" onClick={handleSubmitClick} href="/search">Search</Button>
       </Form>
+        <Nav.Link as={Link} to="/advancedsearch">Advanced Search</Nav.Link>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
           Contact us
         </Nav.Link>

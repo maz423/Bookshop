@@ -61,30 +61,48 @@ function App() {
       <header className="App-header">
 
     
-        
+       
         <p>
         
+        {!LoggedIn
+        ? ( 
+        <Routes>
+        <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
+        <Route exact path='/' element={<Homepage/>} />
+        <Route exact path='/Login' element={<Login set = {setLoggedIn}/>} />
+        <Route exact path='/signup' element={<Register/>} />
+        <Route exact path='/search' element={<Search/>} />
+        <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
+        </Routes>)
+         : (<Routes>
 
+        
+        <Route exact path='/' element={<Homepage/>} />
+        
+       
+        <Route exact path='/search' element={<Search/>} />
+        <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
+          <Route exact path='/createlisting' element={<Createlisting/>}/>
+          
+          <Route exact path='/' element={<Homepage/>} />
+         
+         
+          <Route exact path='/listing/:listingID' element={<ListingView/>}/>
+          <Route exact path='/user' element={<AccountView/>} />
+         
+          
+            
+            </Routes>)
+    
+    } 
         
         
              
-         <Routes>
          
          
-         <Route exact path='/Login' element={<Login set = {setLoggedIn}/>} />
-       
-         <Route exact path='/createlisting' element={<Createlisting/>}/>
-         <Route exact path='/register' element={<Register/>} />
-         <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
-         <Route exact path='/' element={<Homepage/>} />
-         <Route exact path='/signup' element={<Register/>} />
-         <Route exact path='/listing/:listingID' element={<ListingView/>}/>
-         <Route exact path='/user' element={<AccountView/>} />
-         <Route exact path='/search' element={<Search/>} />
-         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
          
-       
-           </Routes>
+         
+         
          
          
         

@@ -69,6 +69,7 @@ return (
         />
         <Button variant="outline-success">Search</Button>
       </Form>
+        <Nav.Link as={Link} to="/advancedsearch">Advanced Search</Nav.Link>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
           Contact us
         </Nav.Link>
