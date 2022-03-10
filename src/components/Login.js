@@ -16,7 +16,7 @@ export const Login = (props) => {
 
 const [ID,setID] = useState('');
 const [password,setPassword] = useState('');
-const [role,setRole] = useState('staff'); 
+const [role,setRole] = useState('user'); 
 
 
 const navigate = useNavigate();
@@ -81,7 +81,7 @@ return (
 
      
 
-     <Link to="/register">   <Button variant="link" size='sm' className='register-btn'> New user ? Register</Button>   </Link>
+     <Link to="/signup">   <Button variant="link" size='sm' className='register-btn'> New user ? Register</Button>   </Link>
     
 </div>
 );

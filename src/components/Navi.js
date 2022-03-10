@@ -42,7 +42,7 @@ return (
       <Nav.Link as={Link} to='/'>Home</Nav.Link>
       <Nav.Link as={Link} to="/Login">Login</Nav.Link>
       <Nav.Link as={Link} to="/signup">Signup</Nav.Link>
-      {/* <Nav.Link as={Link} to='/createlisting'>Createlisting</Nav.Link> */}
+      <Nav.Link as={Link} to='/registerBookStore'>Bookstore Signup </Nav.Link>
        
         
         

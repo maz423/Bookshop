@@ -8,6 +8,10 @@ import { Nav } from 'react-bootstrap';
 import { Navbar } from 'react-bootstrap';
 import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
+import Col from 'react-bootstrap/Col'
+import InputGroup from 'react-bootstrap/InputGroup'
+import RangeSlider from 'react-bootstrap-range-slider';
+
 
 
 
@@ -20,6 +24,7 @@ const [subject, setSubject] = useState('');
 const [price, setPrice] = useState('');
 const [author, setAuthor] = useState('');
 const [location, setLocation] = useState('');
+const [ value, setValue ] = useState(0);
 
 
 const handleSubmitClick = (e) => {
@@ -44,6 +49,8 @@ const handleSubmitClick = (e) => {
 
 
 }
+
+
    
 
 
@@ -51,27 +58,41 @@ const handleSubmitClick = (e) => {
 return (
 <div className='Search'>
        
-       <Link to="/search"> <Button variant="link" size="sm" className="regularSearch"> Regular Search </Button></Link>
+       {/* <Link to="/search"> <Button variant="link" size="sm" className="regularSearch"> Regular Search </Button></Link> */}
       
-      
+       <h1 className='Adv-search'> Use the following filters for Advanced Search:</h1>
        <form className='form' onSubmit={handleSubmitClick}>
 
-              <label for="keyword">Title:</label>
-              <input type="text" id="keyword" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="keyword"></input>
-              <label for="subject">Subject:</label>
-              <input type="text" id="subject" value={subject} onChange={(e)=>setSubject(e.target.value)} name="subject"></input>
-              <label for="price">Price:</label>
-              <input type="text" id="price" value={price} onChange={(e)=>setPrice(e.target.value)} name="price"></input>
-              <label for="author">Author:</label>
-              <input type="text" id="author" value={author} onChange={(e)=>setAuthor(e.target.value)} name="author"></input>
-              <label for="location">Location:</label>
-              <input type="text" id="location" value={location} onChange={(e)=>setLocation(e.target.value)} name="location"></input>
+          &nbsp;&nbsp;
+          &nbsp;&nbsp;
+             <label for="keyword">Title:</label>&nbsp;&nbsp;
+              <input type="text" id="keyword" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="keyword"></input>&nbsp;&nbsp;&nbsp;&nbsp;
+              <label for="subject">Subject:</label>&nbsp;&nbsp;
+              <input type="text" id="subject" value={subject} onChange={(e)=>setSubject(e.target.value)} name="subject"></input>&nbsp;&nbsp;&nbsp;&nbsp;
+              <label for="author">Author:</label>&nbsp;&nbsp;
+              <input type="text" id="author" value={author} onChange={(e)=>setAuthor(e.target.value)} name="author"></input>&nbsp;&nbsp;&nbsp;&nbsp;
 
-              <Button variant="success" size="sm" type="submit">Search</Button>
+
+              <label for="location">Location:</label>&nbsp;&nbsp;
+              <input type="text" id="location" value={location} onChange={(e)=>setLocation(e.target.value)} name="location"></input> &nbsp;&nbsp;&nbsp;&nbsp;
+             <br></br><br></br>
+              <p>Price range:</p>
+              <RangeSlider
+              value={value}
+              min={1}
+              max={500}
+              tooltipLabel={currentValue => `${currentValue}$`}
+              tooltip='on'
+              onChange={e => setValue(e.target.value)}
+              
+              /><br></br>
+              
+              
+    
+              
+              <Button variant="success" size="sm" type="submit">Advanced Search</Button>
 
        </form>       
-       
-       
        
 </div>
       

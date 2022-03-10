@@ -4,6 +4,9 @@
 }
 
 .form{
+   
+    padding-top: 2%;
+    
     background-color: #232325;
     font-size: small;
     border-radius: 25px;
@@ -16,3 +19,15 @@
 .regularSearch{
     color: white;
 }
+
+.Adv-search{
+    padding-top: 2%;
+    font-size: medium;
+    color: rgb(241, 247, 241);
+    font-weight: bolder;
+    
+    
+
+
+}
+

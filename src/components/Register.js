@@ -7,10 +7,11 @@ import Col from 'react-bootstrap/Col'
 import { Link } from 'react-router-dom';
 import {Navi} from './Navi.js'
 import {Sidebar} from './Sidebar'
+import { useNavigate } from 'react-router-dom';
 
 
 export const Register = (props) => {
-
+const navigate = useNavigate();
 const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
   const formItems = e.target.elements;
@@ -34,6 +35,9 @@ const handleSubmitClick = (e) => { //handle submit event.
   fetch('http://localhost:8000/register', requestOptions)
   .then((result) => {
     console.log(result);
+    alert("Registration succesfull please Log in");
+    navigate("/Login");
+    
   })
   .catch((error) => {
     console.log(error);
