@@ -613,12 +613,7 @@ app.get('/', (req, res) => {
 
 app.use('/', express.static('pages'));
 
-//FIXME: HTTPS server giving Error code: SSL_ERROR_RX_RECORD_TOO_LONG on firefox
-//Create the Http server
-http.createServer(app).listen(PORT, HOST);
-//Create the identical https server
-https.createServer(options, app).listen(443, HOST);
 
-//app.listen(PORT, HOST);
+app.listen(PORT, HOST);
 
 console.log('up and running');
