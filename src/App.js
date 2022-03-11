@@ -14,8 +14,10 @@ import {Search} from './components/Search'
 import {AdvancedSearch} from './components/AdvancedSearch'
 import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
-import ListingView from './components/ListingView';
+import {ListingView} from './components/ListingView';
 import AccountView from './components/AccountView';
+import { LinkContainer } from 'react-router-bootstrap'
+
 
 
 function App() {  
@@ -38,14 +40,14 @@ function App() {
     
     <div className="App">
 
-
-    {!LoggedIn
+    <Router>
+     {!LoggedIn
     ? <Navi set = {setLoggedIn}/>
     : <Login_Nav admin = {IsAdmin}/>
     
-    }
-
-    
+    } 
+      
+   
     
 
       
@@ -57,37 +59,57 @@ function App() {
       
       
       <header className="App-header">
-        
+
+    
+       
         <p>
-        <Router>
+        
+        {!LoggedIn
+        ? ( 
+        <Routes>
+        <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
+        <Route exact path='/' element={<Homepage/>} />
+        <Route exact path='/Login' element={<Login set = {setLoggedIn}/>} />
+        <Route exact path='/signup' element={<Register/>} />
+        <Route exact path='/search' element={<Search/>} />
+        <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
+        </Routes>)
+         : (<Routes>
 
         
+        <Route exact path='/' element={<Homepage/>} />
+        
+       
+        <Route exact path='/search' element={<Search/>} />
+        <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
+          <Route exact path='/createlisting' element={<Createlisting/>}/>
+          
+          <Route exact path='/' element={<Homepage/>} />
          
+         
+          <Route exact path='/listing/:listingID' element={<ListingView/>}/>
+          <Route exact path='/user' element={<AccountView/>} />
+         
+          
+            
+            </Routes>)
+    
+    } 
+        
         
              
-         <Routes>
-         
-         <Route exact path='/Login' element={<Login set = {setLoggedIn}/>} />
-       
-         <Route exact path='/createlisting' element={<Createlisting/>}/>
-         <Route exact path='/register' element={<Register/>} />
-         <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
-         <Route exact path='/' element={<Homepage/>} />
-         <Route exact path='/signup' element={<Register/>} />
-         <Route exact path='/listing/:listingID' element={<ListingView/>}/>
-         <Route exact path='/user' element={<AccountView/>} />
-         <Route exact path='/search' element={<Search/>} />
-         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
-         
-       
-           </Routes>
          
          
-        </Router>
+         
+         
+         
+         
+         
+        
         </p>
         
       </header>
-      
+      </Router>
       </div>
   );
 }

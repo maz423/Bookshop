@@ -10,12 +10,13 @@ import Form from 'react-bootstrap/Form'
 
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Alert } from 'bootstrap';
 
 export const Login = (props) => {
 
 const [ID,setID] = useState('');
 const [password,setPassword] = useState('');
-const [role,setRole] = useState('staff'); 
+const [role,setRole] = useState('user'); 
 
 
 const navigate = useNavigate();
@@ -31,9 +32,14 @@ const handleSubmitClick = (e) => { //handle submit event.
 
   fetch('http://localhost:8000/login', requestOptions)
   .then((response) => {
-    console.log(response);
-    navigate("/")
-    props.set(1)
+    if (!response.ok){
+      console.log("error");
+      alert("Invalid id or password");
+    } else{
+      console.log(response);
+      props.set(1);
+      navigate("/");
+    }
   })
   .catch((error) => {
     console.log(error);
@@ -75,7 +81,7 @@ return (
 
      
 
-     <Link to="/register">   <Button variant="link" size='sm' className='register-btn'> New user ? Register</Button>   </Link>
+     <Link to="/signup">   <Button variant="link" size='sm' className='register-btn'> New user ? Register</Button>   </Link>
     
 </div>
 );

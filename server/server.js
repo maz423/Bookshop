@@ -288,7 +288,6 @@ app.post('/regularSearch', (req, res) =>{
 
     let keyword = req.body.keyword;
 
-    new Promise((resolve, reject) =>{
 
         console.log('hello');
 
@@ -310,33 +309,71 @@ app.post('/regularSearch', (req, res) =>{
 
 
             if(err){
-                reject(err);
+                throw err;
+            }
+            
+            if(result.length == 0){
+                res.send("Sorry, we couldn't find anything that matches those search criteria.");
             }
             else{
-                resolve(result);
+                res.send(result);
             }
+            
         })
 
         // the aggregate pipeline should output an array of listings that match the criteria of the search
 
-    })
-    .then((result) =>{
 
-        console.log('hello again');
-        console.log(JSON.stringify(result));
-        //return the results of the search
 
-        if(result.length == 0){
-            res.send("Sorry, we couldn't find anything that matches those search criteria.");
-        }
-        else{
-            res.send(result);
-        }
+    // new Promise((resolve, reject) =>{
+
+    //     console.log('hello');
+
+    //     // query the database for all the listings that match just the keyword
+       
+    //     con.listings.aggregate([
+
+    //         {
+    //             $match: { title: { $regex: keyword, $options: "i" } }
+    //         },
+
+    //         {
+    //             $group: { _id: "$title"}
+    //         }
+
+    //     ], (err, result) =>{
+
+    //         console.log("helloooooo");
+
+
+    //         if(err){
+    //             reject(err);
+    //         }
+    //         else{
+    //             resolve(result);
+    //         }
+    //     })
+
+    //     // the aggregate pipeline should output an array of listings that match the criteria of the search
+
+    // })
+    // .then((result) =>{
+
+    //     console.log('hello again');
+    //     console.log(JSON.stringify(result));
+    //     //return the results of the search
+
+    //     if(result.length == 0){
+    //         res.send("Sorry, we couldn't find anything that matches those search criteria.");
+    //     }
+    //     else{
+    //         res.send(result);
+    //     }
         
-    })
-    .catch((error) =>{
-        res.send(error);
-    });
+    // })
+    // .catch((error) =>{
+    //     res.send(error);
+    // });
 });
 
 
@@ -625,12 +662,7 @@ app.get('/', (req, res) => {
 
 app.use('/', express.static('pages'));
 
-//FIXME: HTTPS server giving Error code: SSL_ERROR_RX_RECORD_TOO_LONG on firefox
-//Create the Http server
-http.createServer(app).listen(PORT, HOST);
-//Create the identical https server
-https.createServer(options, app).listen(443, HOST);
 
-//app.listen(PORT, HOST);
+app.listen(PORT, HOST);
 
 console.log('up and running');

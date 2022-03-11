@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { DropdownAdmin } from './DropdownAdmin';
 import { DropdownUser } from './DropdownUser';
+import { LinkContainer } from 'react-router-bootstrap'
+
 
 
 
@@ -58,7 +60,9 @@ return (
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="me-auto">
-       <Nav.Link href="/">Home</Nav.Link>
+      <LinkContainer to="/">
+      <Nav.Link>Home</Nav.Link>
+      </LinkContainer>
         
         
       </Nav>
@@ -84,6 +88,7 @@ return (
         />
         <Button variant="outline-success" onClick={handleSubmitClick} href="/search">Search</Button>
       </Form>
+        <Nav.Link as={Link} to="/advancedsearch">Advanced Search</Nav.Link>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
           Contact us
         </Nav.Link>

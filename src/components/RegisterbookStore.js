@@ -4,13 +4,14 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import {Navi} from './Navi.js'
 import {Sidebar} from './Sidebar'
+import { useNavigate } from 'react-router-dom';
 
 
 export const RegisterbookStore = (props) => {
-
+const navigate = useNavigate();
 const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
   const formItems = e.target.elements;
@@ -31,6 +32,10 @@ const handleSubmitClick = (e) => { //handle submit event.
   fetch('http://localhost:8000/registerBookStore', requestOptions)
   .then((result) => {
     console.log(result);
+    alert('Bookstore successfully Registered');
+    navigate("/");
+   
+   
   })
   .catch((error) => {
     console.log(error);
