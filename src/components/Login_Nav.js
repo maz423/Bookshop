@@ -21,7 +21,26 @@ export const Login_Nav = (props) => {
 
 const handleSubmitClick = (e) => { //handle submit event.
 
-    }
+
+  // e.preventDefault();
+
+  // const requestOptions = {
+  //        credentials: 'include',
+  //        method: 'POST',
+  //        headers: {'Content-Type' : 'application/json'},
+  //        body : JSON.stringify({keyword : e.target.keyword.value})
+  // };
+
+  // fetch('http://localhost:8000/regularSearch', requestOptions)
+  // .then((response) => {
+  //        // console.log(response);
+  //        console.log(JSON.stringify(response));
+  // })
+  // .catch((error) => {
+  //        console.log(error);
+  // });
+
+}
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -63,7 +82,7 @@ return (
           aria-label="Search"
           size='sm'
         />
-        <Button variant="outline-success">Search</Button>
+        <Button variant="outline-success" onClick={handleSubmitClick} href="/search">Search</Button>
       </Form>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
           Contact us

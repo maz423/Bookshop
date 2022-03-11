@@ -32,7 +32,8 @@ const handleSubmitClick = (e) => {
 
        fetch('http://localhost:8000/regularSearch', requestOptions)
        .then((response) => {
-              console.log(response);
+              // console.log(response);
+              console.log(JSON.stringify(response));
        })
        .catch((error) => {
               console.log(error);

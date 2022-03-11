@@ -290,6 +290,8 @@ app.post('/regularSearch', (req, res) =>{
 
     new Promise((resolve, reject) =>{
 
+        console.log('hello');
+
         // query the database for all the listings that match just the keyword
        
         con.listings.aggregate([
@@ -303,6 +305,10 @@ app.post('/regularSearch', (req, res) =>{
             }
 
         ], (err, result) =>{
+
+            console.log("helloooooo");
+
+
             if(err){
                 reject(err);
             }
@@ -316,6 +322,8 @@ app.post('/regularSearch', (req, res) =>{
     })
     .then((result) =>{
 
+        console.log('hello again');
+        console.log(JSON.stringify(result));
         //return the results of the search
 
         if(result.length == 0){
@@ -338,17 +346,19 @@ app.post('/advancedSearch', (req, res) =>{
     let subject = req.body.subject;
     let price = req.body.price;
     let author = req.body.author;
-    let location = req.body.location;
+    let city = req.body.city;
 
     new Promise((resolve, reject) =>{
+
+        console.log('hello');
 
         // query the database for all the listings that match the keyword and the filters
        
         con.listings.aggregate([
 
             {
-                $match: { title: { $regex: keyword, $options: "i" }, subject: { $regex: subject, $options: "i" }, price: { $regex: price, $options: "i" }, 
-                author: { $regex: author, $options: "i" }, location: { $regex: location, $options: "i" } }
+                $match: { title: { $regex: keyword, $options: "i" }, price: { $regex: price, $options: "i" }, 
+                authorName: { $regex: author, $options: "i" }, city: { $regex: city, $options: "i" } }
             },
 
             {
@@ -369,6 +379,8 @@ app.post('/advancedSearch', (req, res) =>{
     })
     .then((result) =>{
 
+        console.log("hello again");
+        console.log(JSON.stringify(result));
         //return the results of the search
 
         if(result.length == 0){

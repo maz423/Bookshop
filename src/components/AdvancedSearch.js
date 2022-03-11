@@ -19,7 +19,7 @@ const [keyword, setKeyword] = useState('');
 const [subject, setSubject] = useState('');
 const [price, setPrice] = useState('');
 const [author, setAuthor] = useState('');
-const [location, setLocation] = useState('');
+const [city, setCity] = useState('');
 
 
 const handleSubmitClick = (e) => {
@@ -31,7 +31,7 @@ const handleSubmitClick = (e) => {
               method: 'POST',
               headers: {'Content-Type' : 'application/json'},
               body : JSON.stringify({keyword : e.target.keyword.value, subject : e.target.subject.value, price : e.target.price.value, author : e.target.author.value,
-                location : e.target.location.value})
+                city : e.target.city.value})
        };
 
        fetch('http://localhost:8000/advancedSearch', requestOptions)
@@ -65,7 +65,7 @@ return (
               <label for="author">Author:</label>
               <input type="text" id="author" value={author} onChange={(e)=>setAuthor(e.target.value)} name="author"></input>
               <label for="location">Location:</label>
-              <input type="text" id="location" value={location} onChange={(e)=>setLocation(e.target.value)} name="location"></input>
+              <input type="text" id="location" value={city} onChange={(e)=>setCity(e.target.value)} name="location"></input>
 
               <Button variant="success" size="sm" type="submit">Search</Button>
 

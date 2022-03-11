@@ -19,6 +19,25 @@ import { useState } from 'react';
 export const Navi = (props) => {
 
 const handleSubmitClick = (e) => { //handle submit event.
+
+      // e.preventDefault();
+
+      // const requestOptions = {
+
+      //         credentials: 'include',
+      //         method: 'POST',
+      //         headers: {'Content-Type' : 'application/json'},
+      //         body : JSON.stringify({keyword : e.target.keyword.value})
+      // };
+
+      // fetch('http://localhost:8000/regularSearch', requestOptions)
+      // .then((response) => {
+      //         // console.log(response);
+      //         console.log(JSON.stringify(response));
+      // })
+      // .catch((error) => {
+      //         console.log(error);
+      // });
   
     }
     const [show, setShow] = useState(false);
