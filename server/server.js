@@ -102,11 +102,26 @@ const sessionTest = (req, res, next) => {
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
-    const {username, password} = req.body;
-    
+    const {username, password, accountType} = req.body;
+    //Set a default value of users for collection
+    //Then Switch it if accountType is not user
+    let collection = "users";
+    let query = {username : username};
+    if (accountType == "Bookstore"){
+        collection = "buisnessUsers";
+        query = {companyName : username};
+    } else if (accountType == "Admin"){
+        collection = "admins";
+    }
+    //Now check if we were not given basic send an error 
+    else if (accountType != "User"){
+        res.status(400).send(accountType + " is not a valid account type");
+        return;
+    }
+
     new Promise((resolve, reject) => {
         //Query the database with the provided values
-        con.collection("users").find({username : username}).toArray((err, result) => {
+        con.collection(collection).find(query).toArray((err, result) => {
             if (err) { reject(err) } else {resolve(result)}
         });
     })
@@ -118,12 +133,21 @@ app.post('/login', (req, res)=>{
             if (result) {
                 //Add some user info to the cookie to make stuff easy in future
                 const userInfo = {
-                    isBasic : true,
-                    isBookstore : true,
-                    isAdmin : true,
+                    isBasic : false,
+                    isBookstore : false,
+                    isAdmin : false,
                     username : user.username,
                     _id : user._id
                 }
+                
+                if (accountType == "user") {
+                    userInfo.isBasic = true;
+                } else if (accountType == "bookStore"){
+                    userInfo.isBookstore = true;
+                } else if (accountType == "admin"){
+                    userInfo.isAdmin = true;
+                }
+                
                 req.session.user = userInfo;
                 res.send("Success");
             } else {
@@ -135,14 +159,15 @@ app.post('/login', (req, res)=>{
         });
     })
     .catch((error) => {
+        console.log(error);
         res.status(400).send(error);
     });
 });
 
 
 app.post("/register", (req, res)=> {
-    //TODO make a proper implemetation 
-    const {username, password, email, address1, address2, fName, lName} = req.body;
+    //TODO make register handle both basic and bookstore accounts
+    const {username, password, email, address1, address2, fName, lName, city, province, zipcode} = req.body;
 
     new Promise((resolve, reject) => {
         con.collection("users").countDocuments(
@@ -164,6 +189,9 @@ app.post("/register", (req, res)=> {
                 address2 : address2,
                 fName : fName,
                 lName : lName,
+                city : city,
+                province : province,
+                zipcode: zipcode,
                 listings : []
                 };
             con.collection("users").insertOne(newUser, (err, result) =>{
@@ -239,6 +267,7 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/user', (req, res) => {
+    //TODO make handle different account types
     if (req.session.user == undefined) {
         res.status(400).send("Not logged in");
     } else {
