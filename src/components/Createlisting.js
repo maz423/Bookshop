@@ -13,33 +13,43 @@ function Createlisting(){
     
     const navigate = useNavigate();
 
-     //The info that will be posted into the database 
-     const [textname, settextName] = useState('')
-     const [condition, setCondition] = useState('');
-     const [description, setDescription] = useState('')
+     //The info that will be auto populated when login in
+     const [address1, setAddress1] = useState('');
+     const [address2, setAddress2] = useState('');
+     const [city, setCity] = useState('');
+     const [province, setProvince] = useState('');
+     const [zipcode, setZipcode] = useState('');
 
     //After the button is clicked the the information stored in textname and description will be sent to the database.
     //NOT TESTING CONDITION YET.  
 
     //ComponentDid mount
     useEffect(() => {
-            const requestOptions = {
-                credentials: 'include',
-                method: 'GET',
-                headers: {'Content-Type' : 'application/json'},
-              };
-              fetch('http://localhost:8000/isUser', requestOptions)
-              .then((response) => {
-                if (!response.ok){
-                    navigate("/Login");
-                } else{
-                    console.log(response);
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-                navigate("/Login");
-              });
+      const requestOptions = {
+        credentials: 'include',
+        method: 'GET',
+        headers: {'Content-Type' : 'application/json'},
+      };
+      const URL = 'http://localhost:8000/user'
+      fetch(URL, requestOptions)
+      .then((response) => {
+        if (!response.ok){
+          navigate("/Login");
+        } else{
+          return response.json();
+      }})
+      .then((data) => {
+        console.log(data);
+        setAddress1(data.address1);
+        setAddress2(data.address2);
+        setCity(data.city);
+        setProvince(data.province);
+        setZipcode(data.zipcode);
+      })
+      .catch((error) => {
+        console.log(error);
+        navigate("/Login");
+      });
         
     })
 
@@ -53,11 +63,11 @@ function Createlisting(){
           authorName : formItems.authorName.value,
           description : formItems.formDescription.value,
           price : formItems.formPrice.value,
-          address1 : formItems.formGridAddress1.value,
-          address2 : formItems.formGridAddress2.value,
-          city : formItems.formGridCity.value,
-          province : formItems.formGridState.value,
-          zipCode : formItems.formGridZip.value,
+          address1 : address1,
+          address2 : address2,
+          city : city,
+          province : province,
+          zipcode : zipcode,
         };
         console.log(formItems);
         console.log(body);
@@ -79,17 +89,6 @@ function Createlisting(){
             console.log(error);
         });
     };
-
-    //THIS IS FOR TESTING PURPOSES getting the data from the listing database and posting on the page 
-    //const[listingList,setListinglist] = useState([])
-    // useEffect(()=>{
-    //     const myRequest = {
-    //         method: "GET",
-    //         headers: {'Content-Type':'application/json'},
-    //     }
-    //     fetch('http://localhost:8000/listings',myRequest).then(response => response.json()).then(data=>setListinglist(data)).catch(()=> alert("nope"))
-    // },[])
-
 
     return (  
         
@@ -185,12 +184,12 @@ function Createlisting(){
 
     <Form.Group as={Col}  controlId="formGridAddress1">
     <Form.Label>Pick up Address</Form.Label>
-    <Form.Control size='sm' placeholder="1234 Main St" />
+    <Form.Control size='sm' placeholder="1234 Main St" value={address1} onChange={(e)=>setAddress1(e.target.value)}/>
     </Form.Group>
 
     <Form.Group as={Col}  controlId="formGridAddress2">
     <Form.Label>Address 2</Form.Label>
-    <Form.Control size='sm' placeholder="Apartment, studio, or floor" />
+    <Form.Control size='sm' placeholder="Apartment, studio, or floor" value={address2} onChange={(e)=>setAddress2(e.target.value)} />
     </Form.Group>
 
     
@@ -202,17 +201,17 @@ function Createlisting(){
       
    <Form.Group as={Col} controlId="formGridCity">
       <Form.Label>City</Form.Label>
-      <Form.Control size='sm' placeholder='eg. Saskatoon' />
+      <Form.Control size='sm' placeholder='eg. Saskatoon' value={city} onChange={(e)=>setCity(e.target.value)}/>
     </Form.Group>
 
     <Form.Group as={Col} controlId="formGridState">
       <Form.Label>Provience</Form.Label>
-      <Form.Control size='sm' placeholder='eg. Saskatchewan' />
+      <Form.Control size='sm' placeholder='eg. Saskatchewan' value={province} onChange={(e)=>setProvince(e.target.value)}/>
     </Form.Group>
 
     <Form.Group as={Col} controlId="formGridZip">
       <Form.Label>Zip</Form.Label>
-      <Form.Control size='sm' placeholder='eg. S7N 3CZ' />
+      <Form.Control size='sm' placeholder='eg. S7N 3CZ' value={zipcode} onChange={(e)=>setZipcode(e.target.value)}/>
     </Form.Group>
 
    </Row>
@@ -233,51 +232,6 @@ function Createlisting(){
 </Form>
 
 </div>
-        
-    // <div className="Container">
-        
-    //     <div className="listing-form">
-    //         <input type="text" name="Name" placeholder="Name of textbook" onChange={(e) =>{
-    //                 settextName(e.target.value)
-
-    //         }}/>
-    //     </div>
-    //     <div className="condition-form">
-    //         Condition: &nbsp;
-    //         <label>New </label>
-    //         <label class="custom-radio-button">    
-    //             <input type="radio" 
-    //             checked={condition === "New"}
-    //             value ="New"
-    //             onChange={(e)=>{setCondition(e.target.value)}}/>
-    //         </label>    
-    //         <label class="custom-radio-button"> 
-    //             <label>Used </label>
-    //             <input type="radio" 
-    //             checked={condition === "Used"}
-    //             value ="Used"
-    //             onChange={(e)=>{setCondition(e.target.value)}}/>
-    //         </label>    
-    //     </div>
-    //     <div className="form-description">
-    //         <textarea name="description" placeholder="Description...." rows="10" cols="30" onChange={(e)=>{
-    //             setDescription(e.target.value)
-    //       }}></textarea>
-
-    //      </div>  
-    //     <div className="form-post">
-    //         <button onClick={handleClick} type="button" name="POST">POST</button>
-    //     </div>
-    //     <div className="form-image" div/>
-    //       {/* TESTING USAGE this will display the content of the listing database val.textname and val.description is the actually value we want to display*/}
-    //     {/*<div className="form-display">
-    //         <h1>DIsplay</h1>
-    //         {listingList.map((val)=>{
-    //             return <h1>MovieNames:{val.textname}| Description:{val.description}</h1>
-    //         })}
-    //     </div>*/}
-     
-    // </div>
     );
 }
 
