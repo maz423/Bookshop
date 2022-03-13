@@ -11,6 +11,7 @@ import { Container } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col'
 import InputGroup from 'react-bootstrap/InputGroup'
 import RangeSlider from 'react-bootstrap-range-slider';
+import ReactDOM from 'react-dom';
 
 
 
@@ -27,6 +28,23 @@ const [location, setLocation] = useState('');
 const [ value, setValue ] = useState(0);
 
 
+
+const [title, setTitle] = useState('');
+const [listingAddress, setListingAddress] = useState('');
+
+const listing = (
+       <div>
+           <h1 className='listingTitle'>{title}</h1>
+       </div>
+   )
+
+const message = (
+       <div>
+              <h1 className='message'>Sorry, we couldn't find any listings that matched that search term.</h1>
+       </div>
+)
+
+
 const handleSubmitClick = (e) => {
 
        e.preventDefault();
@@ -35,13 +53,34 @@ const handleSubmitClick = (e) => {
               credentials: 'include',
               method: 'POST',
               headers: {'Content-Type' : 'application/json'},
-              body : JSON.stringify({keyword : e.target.keyword.value, subject : e.target.subject.value, price : e.target.price.value, author : e.target.author.value,
-                city : e.target.city.value})
+              body : JSON.stringify({keyword : e.target.keyword.value, 
+                     subject : e.target.subject.value, 
+                     value : e.target.value.value, 
+                     author : e.target.author.value,
+                location : e.target.location.value})
        };
 
        fetch('http://localhost:8000/advancedSearch', requestOptions)
        .then((response) => {
-              console.log(response);
+              
+              if(response.ok){
+                     return response.json();
+              }
+              else{
+
+              }
+       })
+       .then((data) => {
+              //console.log(data);
+              if(data.length == 0){
+                     ReactDOM.render(message, document.getElementById('listings'));
+              }
+              else{
+                     for(const result of data){
+                            setTitle(result._id);
+                            ReactDOM.render(listing, document.getElementById('listings'));
+                     }
+              }
        })
        .catch((error) => {
               console.log(error);
@@ -83,7 +122,7 @@ return (
               max={500}
               tooltipLabel={currentValue => `${currentValue}$`}
               tooltip='on'
-              onChange={e => setValue(e.target.value)}
+              onChange={(e) => setValue(e.target.value)}
               
               /><br></br>
               
@@ -92,7 +131,11 @@ return (
               
               <Button variant="success" size="sm" type="submit">Advanced Search</Button>
 
-       </form>       
+       </form>     
+
+       <div className='listings' id="listings">
+           
+           </div>  
        
 </div>
       

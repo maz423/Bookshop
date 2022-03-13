@@ -9,6 +9,7 @@ import { Nav } from 'react-bootstrap';
 import { Navbar } from 'react-bootstrap';
 import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
+import ReactDOM from 'react-dom';
 
 
 
@@ -17,6 +18,30 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 export const Search = (props) => {
 
 const [keyword, setKeyword] = useState('');
+
+const [title, setTitle] = useState('');
+const [listingAddress, setListingAddress] = useState('');
+const [listingID, setListingID] = useState('');
+
+const listing = (
+       <div>
+       
+
+           <a href={listingAddress}>{title}</a>
+
+       {/* I think the below is the right way to link to the listing view, but when I use it I get an error saying 
+              "usehref() may be used only in the context of a router component"*/}
+              
+          {/* <Link to={`/listing/${listingID}`}>{title}</Link> */}
+
+       </div>
+   )
+
+const message = (
+       <div>
+              <h1 className='message'>Sorry, we couldn't find any listings that matched that search term.</h1>
+       </div>
+)
 
 
 const handleSubmitClick = (e) => {
@@ -32,8 +57,26 @@ const handleSubmitClick = (e) => {
 
        fetch('http://localhost:8000/regularSearch', requestOptions)
        .then((response) => {
-              // console.log(response);
-              console.log(JSON.stringify(response));
+              
+              if(response.ok){
+                     return response.json();
+              }
+              else{
+
+              }
+       })
+       .then((data) => {
+              if(data.length == 0){
+                     ReactDOM.render(message, document.getElementById('listings'));
+              }
+              else{
+                     for(const result of data){
+                            setTitle(result.title[0]);
+                            setListingID(result._id);
+                            setListingAddress('http://localhost:8000/listing/' + result._id);
+                            ReactDOM.render(listing, document.getElementById('listings'));
+                     }
+              }
        })
        .catch((error) => {
               console.log(error);
@@ -60,9 +103,13 @@ return (
 
        </form>       
        
-       
+       <div className='listings' id="listings">
+           
+           </div>
        
 </div>
+
+
       
 
 );

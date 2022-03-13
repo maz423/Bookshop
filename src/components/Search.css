@@ -15,6 +15,22 @@
     padding-bottom: 5%;
 }
 
+.listings{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.message{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.listingTitle{
+    font-size: small;
+    font-style: normal;
+    color: white;
+}
+
 .advancedSearch{
     color: white;
 }

@@ -289,148 +289,66 @@ app.post('/regularSearch', (req, res) =>{
     let keyword = req.body.keyword;
 
 
-        console.log('hello');
-
         // query the database for all the listings that match just the keyword
-       
-        con.listings.aggregate([
 
-            {
-                $match: { title: { $regex: keyword, $options: "i" } }
-            },
 
-            {
-                $group: { _id: "$title"}
+        const pipeline = [
+            { $match: { title: { $regex: keyword, $options: "i" } } },
+            { $group: { _id: "$_id", title: { $push: "$title" } } }
+        ];
+
+
+        async function performSearch(){
+            try{
+                const listings = await con.collection("listings");
+                const aggCursor = await listings.aggregate(pipeline);
+                return aggCursor.toArray();
             }
-
-        ], (err, result) =>{
-
-            console.log("helloooooo");
-
-
-            if(err){
-                throw err;
+            catch(error){
+                console.error(error);
             }
-            
-            if(result.length == 0){
-                res.send("Sorry, we couldn't find anything that matches those search criteria.");
-            }
-            else{
-                res.send(result);
-            }
-            
-        })
+        };
 
-        // the aggregate pipeline should output an array of listings that match the criteria of the search
+        (async function() {
+            let searchResults = await performSearch();
+            console.log(searchResults[0]);
+            res.send(searchResults);
+        })();
 
-
-
-    // new Promise((resolve, reject) =>{
-
-    //     console.log('hello');
-
-    //     // query the database for all the listings that match just the keyword
-       
-    //     con.listings.aggregate([
-
-    //         {
-    //             $match: { title: { $regex: keyword, $options: "i" } }
-    //         },
-
-    //         {
-    //             $group: { _id: "$title"}
-    //         }
-
-    //     ], (err, result) =>{
-
-    //         console.log("helloooooo");
-
-
-    //         if(err){
-    //             reject(err);
-    //         }
-    //         else{
-    //             resolve(result);
-    //         }
-    //     })
-
-    //     // the aggregate pipeline should output an array of listings that match the criteria of the search
-
-    // })
-    // .then((result) =>{
-
-    //     console.log('hello again');
-    //     console.log(JSON.stringify(result));
-    //     //return the results of the search
-
-    //     if(result.length == 0){
-    //         res.send("Sorry, we couldn't find anything that matches those search criteria.");
-    //     }
-    //     else{
-    //         res.send(result);
-    //     }
-        
-    // })
-    // .catch((error) =>{
-    //     res.send(error);
-    // });
 });
 
 
 app.post('/advancedSearch', (req, res) =>{
 
     let keyword = req.body.keyword;
-    let subject = req.body.subject;
-    let price = req.body.price;
+    //let subject = req.body.subject;
+    let value = req.body.value;
     let author = req.body.author;
-    let city = req.body.city;
+    let city = req.body.location;
 
-    new Promise((resolve, reject) =>{
+    const pipeline = [
+        { $match: { title: { $regex: keyword, $options: "i" }, price: { $lte: value }, 
+        authorName: { $regex: author, $options: "i" }, city: { $regex: city, $options: "i" } } },
+        { $group: { _id: "$_id", title: { $push: "$title" } }  }
+    ];
 
-        console.log('hello');
 
-        // query the database for all the listings that match the keyword and the filters
-       
-        con.listings.aggregate([
-
-            {
-                $match: { title: { $regex: keyword, $options: "i" }, price: { $regex: price, $options: "i" }, 
-                authorName: { $regex: author, $options: "i" }, city: { $regex: city, $options: "i" } }
-            },
-
-            {
-                $group: { _id: "$title"}
-            }
-
-        ], (err, result) =>{
-            if(err){
-                reject(err);
-            }
-            else{
-                resolve(result);
-            }
-        })
-
-        // the aggregate pipeline should output an array of listings that match the criteria of the search
-
-    })
-    .then((result) =>{
-
-        console.log("hello again");
-        console.log(JSON.stringify(result));
-        //return the results of the search
-
-        if(result.length == 0){
-            res.send("Sorry, we couldn't find anything that matches those search criteria.");
+    async function performSearch(){
+        try{
+            const listings = await con.collection("listings");
+            const aggCursor = await listings.aggregate(pipeline);
+            return aggCursor.toArray();
         }
-        else{
-            res.send(result);
+        catch(error){
+            console.error(error);
         }
-        
-    })
-    .catch((error) =>{
-        res.send(error);
-    });
+    };
+
+    (async function() {
+        let searchResults = await performSearch();
+        console.log(searchResults[0]);
+        res.send(searchResults);
+    })();
 });
 
 //All the implementation are from typing TODO change to button
