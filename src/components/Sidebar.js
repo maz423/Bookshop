@@ -118,8 +118,8 @@ export const Sidebar = (props) => {
                 <Nav.Link as={Link} to={link9}>Lisitng9</Nav.Link>
                 <Nav.Link as={Link} to={link10}>Lisitng10</Nav.Link>
               </Nav>
-              <Button id="nextPageButton" onClick={handleNextPage}>Next Page</Button>
-              <Button id="previousPageButton" onclick={handlePreviousPage}>Previous Page</Button>
+              <Button id="nextPageButton">Next Page</Button>
+              <Button id="previousPageButton">Previous Page</Button>
            </Offcanvas.Body>
           </Offcanvas>
         </div>
