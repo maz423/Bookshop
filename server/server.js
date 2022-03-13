@@ -54,7 +54,38 @@ MongoClient.connect(DB_Url, (err, db) =>{
     //We can change the name later
     con = db.db("ecomDB");
 
-    console.log("MongoDB Connected");
+    const adminQuery = {
+        username : "admin"
+    }
+    //Add an admin account
+    new Promise((resolve, reject) => {
+        con.collection(adminCollection).countDocuments(adminQuery, (err, result)=> {
+            if (err) {reject(err)} else {resolve(result)}
+        })
+    })
+    .then((result) => {
+        if (result > 0) {
+            console.log("MongoDB Connected");
+            return
+        }
+        else {
+            const password = "admin"
+            bcrypt.hash(password, 12)
+            .then((hashedPass) => {
+                const newAdmin = {
+                    username : "admin",
+                    password : hashedPass
+                }
+                con.collection(adminCollection).insertOne(newAdmin, (err, result) => {
+                    if (err) {throw err} else {console.log("MongoDB Connected");}
+                })
+            })
+        }
+    })
+    .catch((error) => {
+        console.log("error initializing DB");
+        return;
+    })
 });
 const store = new MongoDBSession({
     uri : DB_Url,
