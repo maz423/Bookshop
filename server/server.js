@@ -72,22 +72,6 @@ app.use(session({
     }
 }));
 
-//This can be used to redirect users from pages the cannot access without be logged in
-//E.G. app.get('/', isAuth, (req, res) =>
-const isAuth = (req, res, next) => {
-    if (req.session.isAuth) {
-        next();
-    } else {
-        //We can change this later
-        res.send("not logged in");
-    }
-}
-
-const sessionTest = (req, res, next) => {
-    //console.log(req.session.user);
-    next();
-}
-
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
@@ -240,8 +224,9 @@ app.post("/registerBookstore", (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    res.session.destroy((err) => {
+    req.session.destroy((err) => {
         if (err) throw err;
+        console.log("logged out");
         //We can use this to redirect to landing page later
         res.send("logged out")
     });
