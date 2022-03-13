@@ -30,7 +30,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+const userCollection = 'users';
+const bookstoreCollection = 'bookstoreUsers';
+const listingsCollection = 'listings';
+const adminCollection = 'admins';
 
 const PORT = 8000;
 const HOST = '0.0.0.0';
@@ -80,20 +83,6 @@ const isAuth = (req, res, next) => {
     }
 }
 
-app.get('/bookStoreUsers', (_, res) => {
-    new Promise((resolve, reject) => {
-        con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
-            if (err) {reject(err)} else {resolve(result)}
-        }
-    )})
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((error) => {
-        res.send(error);
-    })
-});
-
 const sessionTest = (req, res, next) => {
     //console.log(req.session.user);
     next();
@@ -105,13 +94,13 @@ app.post('/login', (req, res)=>{
     const {username, password, accountType} = req.body;
     //Set a default value of users for collection
     //Then Switch it if accountType is not user
-    let collection = "users";
+    let collection = userCollection;
     let query = {username : username};
     if (accountType == "Bookstore"){
-        collection = "buisnessUsers";
+        collection = bookstoreCollection;
         query = {companyName : username};
     } else if (accountType == "Admin"){
-        collection = "admins";
+        collection = adminCollection;
     }
     //Now check if we were not given basic send an error 
     else if (accountType != "User"){
@@ -140,11 +129,11 @@ app.post('/login', (req, res)=>{
                     _id : user._id
                 }
                 
-                if (accountType == "user") {
+                if (accountType == "User") {
                     userInfo.isBasic = true;
-                } else if (accountType == "bookStore"){
+                } else if (accountType == "Bookstore"){
                     userInfo.isBookstore = true;
-                } else if (accountType == "admin"){
+                } else if (accountType == "Admin"){
                     userInfo.isAdmin = true;
                 }
                 
@@ -208,17 +197,20 @@ app.post("/register", (req, res)=> {
     });
 });
 
-app.post("/registerBuisness", (req, res) => {
+app.post("/registerBookstore", (req, res) => {
     //Get the information
     const {companyName, password, email, address1, address2} = req.body;
 
     new Promise((resolve, reject) => {
-        con.collection("buisnessUsers").countDocuments(
-            {$or : [{username : username}, {email : email}]}, (err, result => {
+        con.collection(bookstoreCollection).countDocuments(
+            {$or : [{companyName : companyName}, {email : email}]}, (err, result) => {
                 if (err) {reject(err)} else {resolve(result)}
-        }));
+        });
     })
     .then((result) => {
+        if (result > 0) {
+            throw "Company name or email is already in use";
+        }
         bcrypt.hash(password, 12)
         .then((hashedPass) => {
             const newUser = {
@@ -229,8 +221,11 @@ app.post("/registerBuisness", (req, res) => {
                 address2 : address2,
                 listings : [],
                 };
-            con.collection("buisnessUsers").insertOne(newUser, (err, result) => {
-                if (err) { throw err } else {res.send("Success")}
+            con.collection(bookstoreCollection).insertOne(newUser, (err, result) => {
+                if (err) { throw err } else {
+                    console.log("success");
+                    res.send("Success")
+                }
             });
         })
         .catch((error) => {
@@ -254,7 +249,7 @@ app.post('/logout', (req, res) => {
 
 app.get('/users', (req, res) => {
     new Promise((resolve, reject) => {
-        con.collection("users").find({}).toArray((err, result) =>{
+        con.collection(userCollection).find({}).toArray((err, result) =>{
             if (err) {reject(err)} else {resolve(result)}
         }
     )})
@@ -273,7 +268,7 @@ app.get('/user', (req, res) => {
     } else {
         new Promise((resolve, reject) => {
             const query = {_id : req.session.user._id};
-            con.collection("users").findOne(query, (err, result) => {
+            con.collection(userCollection).findOne(query, (err, result) => {
                 if (err) {reject(err)} else {resolve(result)}
             });
         })
@@ -286,9 +281,10 @@ app.get('/user', (req, res) => {
         })
     }
 });
-app.get('/bookStoreUsers', (_, res) => {
+
+app.get('/bookstoreUsers', (_, res) => {
     new Promise((resolve, reject) => {
-        con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
+        con.collection(bookstoreCollection).find({}).toArray((err, result) =>{
             if (err) {reject(err)} else {resolve(result)}
         }
     )})
@@ -434,13 +430,14 @@ app.post('/make-lis' ,(req,res)=>{
     }
     new Promise((resolve, reject) => {
         //Add new listing to the database
-        con.collection("listings").insertOne(newListing, (err, result) => {
+        con.collection(listingsCollection).insertOne(newListing, (err, result) => {
             if(err) {reject(err)}  else { resolve(result)}
         });
     })
     .then((result) => {
+        //TODO add account type detection
         const addListing = {$push: {listings : result.insertedId}};
-        con.collection("users").updateOne({username : req.session.user.username}, addListing);
+        con.collection(userCollection).updateOne({username : req.session.user.username}, addListing);
     })
     .then((_) => {
         res.send("Success");
@@ -484,7 +481,7 @@ app.get('/user/listings', (req, res) => {
         });
         const listingQuery = {_id : {$in : listingIDs.ids}};
         console.log(listingQuery);
-        con.collection("listings").find(listingQuery).toArray((err, result2) => {
+        con.collection(listingsCollection).find(listingQuery).toArray((err, result2) => {
             if (err) {
                 res.status(400).send(err);
             } else {
@@ -503,7 +500,7 @@ app.get('/listing/:listingID', (req, res) => {
      const listingOID = new ObjectId(req.params.listingID);
 
      new Promise((resolve, reject) => {
-         con.collection("listings").findOne({_id : listingOID}, (err, result) => {
+         con.collection(listingsCollection).findOne({_id : listingOID}, (err, result) => {
              if (err) {reject(err)} else {resolve(result)}
          });
      })
