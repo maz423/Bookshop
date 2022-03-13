@@ -76,7 +76,7 @@ return (
           aria-label="Search"
           size='sm'
         />
-        <Button variant="outline-success" onClick={handleSubmitClick} href="/search">Search</Button>
+        <Button as={Link} to='/search'variant="outline-success">Search</Button>
       </Form>
         <Nav.Link as={Link} to="/advancedsearch">Advanced Search</Nav.Link>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
