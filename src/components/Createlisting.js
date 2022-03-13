@@ -51,7 +51,7 @@ function Createlisting(){
         navigate("/Login");
       });
         
-    })
+    }, []);
 
     const handleSubmitClick = (e) => { 
       e.preventDefault();
