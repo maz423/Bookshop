@@ -528,6 +528,31 @@ app.get('/listing/:listingID', (req, res) => {
     })
 });
 
+//Used to get a number of listings from a given "page" based on the number per page
+app.get('/listings/:numberOfListings/:pageNumber', (req, res) => {
+    const numberOfListings = parseInt(req.params.numberOfListings);
+    const pageNumber = parseInt(req.params.pageNumber);
+
+    let skip = (pageNumber - 1) * numberOfListings;
+
+    if (numberOfListings == NaN || pageNumber == NaN || pageNumber < 1){
+        res.status(400).send("error with parameters");
+        return;
+    }
+
+    new Promise((resolve, reject) => {
+        con.collection(listingsCollection).find({}).limit(numberOfListings).skip(skip).toArray((err, result) => {
+            if (err) { reject(err) } else {resolve(result)}
+        });
+    })
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.status(400).send(error);
+    });
+});
+
 
 
 //John change this to button delete instead of deleting by name

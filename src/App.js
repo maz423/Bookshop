@@ -74,6 +74,7 @@ function App() {
         <Route exact path='/signup' element={<Register/>} />
         <Route exact path='/search' element={<Search/>} />
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
+        <Route exact path='/listing/:listingID' element={<ListingView/>}/>
         </Routes>)
          : (<Routes>
 

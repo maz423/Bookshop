@@ -46,7 +46,7 @@ export const ListingView = (props) => {
         .catch((error) =>{
             console.log(error);
         });
-    });
+    }, []);
 
     //This function will open the popup page to make an offer
     const togglePopup = () => {
