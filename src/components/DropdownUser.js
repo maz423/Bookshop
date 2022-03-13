@@ -57,7 +57,7 @@ import { LinkContainer } from 'react-router-bootstrap'
         <Dropdown.Item as={Link} to='/createlisting'> Create new Listing</Dropdown.Item>
         
         <Dropdown.Item as={Link} to="#/action-4">Manage Listings</Dropdown.Item>
-        <Dropdown.Item as={Link} to="#/action-5">Log out</Dropdown.Item>
+        <Dropdown.Item as={Link} to='/logout'>Log out</Dropdown.Item>
         
         </Dropdown.Menu>
         </Dropdown>

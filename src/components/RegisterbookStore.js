@@ -24,17 +24,22 @@ const handleSubmitClick = (e) => { //handle submit event.
   }
 
   const requestOptions = {
+    credentials: 'include',
     method: 'POST',
     headers: {'Content-Type' : 'application/json'},
     body : JSON.stringify(body)
   };
 
-  fetch('http://localhost:8000/registerBookStore', requestOptions)
+  fetch('http://localhost:8000/registerBookstore', requestOptions)
   .then((result) => {
-    console.log(result);
-    alert('Bookstore successfully Registered');
-    navigate("/");
-   
+    if (!result.ok){
+      alert("Error registering");  
+    }
+    else {
+      console.log(result);
+      alert('Bookstore successfully Registered');
+      navigate("/");
+    }
    
   })
   .catch((error) => {

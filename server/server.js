@@ -30,7 +30,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+const userCollection = 'users';
+const bookstoreCollection = 'bookstoreUsers';
+const listingsCollection = 'listings';
+const adminCollection = 'admins';
 
 const PORT = 8000;
 const HOST = '0.0.0.0';
@@ -51,7 +54,38 @@ MongoClient.connect(DB_Url, (err, db) =>{
     //We can change the name later
     con = db.db("ecomDB");
 
-    console.log("MongoDB Connected");
+    const adminQuery = {
+        username : "admin"
+    }
+    //Add an admin account
+    new Promise((resolve, reject) => {
+        con.collection(adminCollection).countDocuments(adminQuery, (err, result)=> {
+            if (err) {reject(err)} else {resolve(result)}
+        })
+    })
+    .then((result) => {
+        if (result > 0) {
+            console.log("MongoDB Connected");
+            return
+        }
+        else {
+            const password = "admin"
+            bcrypt.hash(password, 12)
+            .then((hashedPass) => {
+                const newAdmin = {
+                    username : "admin",
+                    password : hashedPass
+                }
+                con.collection(adminCollection).insertOne(newAdmin, (err, result) => {
+                    if (err) {throw err} else {console.log("MongoDB Connected");}
+                })
+            })
+        }
+    })
+    .catch((error) => {
+        console.log("error initializing DB");
+        return;
+    })
 });
 const store = new MongoDBSession({
     uri : DB_Url,
@@ -69,44 +103,29 @@ app.use(session({
     }
 }));
 
-//This can be used to redirect users from pages the cannot access without be logged in
-//E.G. app.get('/', isAuth, (req, res) =>
-const isAuth = (req, res, next) => {
-    if (req.session.isAuth) {
-        next();
-    } else {
-        //We can change this later
-        res.send("not logged in");
-    }
-}
-
-app.get('/bookStoreUsers', (_, res) => {
-    new Promise((resolve, reject) => {
-        con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
-            if (err) {reject(err)} else {resolve(result)}
-        }
-    )})
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((error) => {
-        res.send(error);
-    })
-});
-
-const sessionTest = (req, res, next) => {
-    //console.log(req.session.user);
-    next();
-}
-
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username
-    const {username, password} = req.body;
-    
+    const {username, password, accountType} = req.body;
+    //Set a default value of users for collection
+    //Then Switch it if accountType is not user
+    let collection = userCollection;
+    let query = {username : username};
+    if (accountType == "Bookstore"){
+        collection = bookstoreCollection;
+        query = {companyName : username};
+    } else if (accountType == "Admin"){
+        collection = adminCollection;
+    }
+    //Now check if we were not given basic send an error 
+    else if (accountType != "User"){
+        res.status(400).send(accountType + " is not a valid account type");
+        return;
+    }
+
     new Promise((resolve, reject) => {
         //Query the database with the provided values
-        con.collection("users").find({username : username}).toArray((err, result) => {
+        con.collection(collection).find(query).toArray((err, result) => {
             if (err) { reject(err) } else {resolve(result)}
         });
     })
@@ -118,12 +137,21 @@ app.post('/login', (req, res)=>{
             if (result) {
                 //Add some user info to the cookie to make stuff easy in future
                 const userInfo = {
-                    isBasic : true,
-                    isBookstore : true,
-                    isAdmin : true,
+                    isBasic : false,
+                    isBookstore : false,
+                    isAdmin : false,
                     username : user.username,
                     _id : user._id
                 }
+                
+                if (accountType == "User") {
+                    userInfo.isBasic = true;
+                } else if (accountType == "Bookstore"){
+                    userInfo.isBookstore = true;
+                } else if (accountType == "Admin"){
+                    userInfo.isAdmin = true;
+                }
+                
                 req.session.user = userInfo;
                 res.send("Success");
             } else {
@@ -135,14 +163,15 @@ app.post('/login', (req, res)=>{
         });
     })
     .catch((error) => {
+        console.log(error);
         res.status(400).send(error);
     });
 });
 
 
 app.post("/register", (req, res)=> {
-    //TODO make a proper implemetation 
-    const {username, password, email, address1, address2, fName, lName} = req.body;
+    //TODO make register handle both basic and bookstore accounts
+    const {username, password, email, address1, address2, fName, lName, city, province, zipcode} = req.body;
 
     new Promise((resolve, reject) => {
         con.collection("users").countDocuments(
@@ -164,6 +193,9 @@ app.post("/register", (req, res)=> {
                 address2 : address2,
                 fName : fName,
                 lName : lName,
+                city : city,
+                province : province,
+                zipcode: zipcode,
                 listings : []
                 };
             con.collection("users").insertOne(newUser, (err, result) =>{
@@ -180,17 +212,20 @@ app.post("/register", (req, res)=> {
     });
 });
 
-app.post("/registerBuisness", (req, res) => {
+app.post("/registerBookstore", (req, res) => {
     //Get the information
     const {companyName, password, email, address1, address2} = req.body;
 
     new Promise((resolve, reject) => {
-        con.collection("buisnessUsers").countDocuments(
-            {$or : [{username : username}, {email : email}]}, (err, result => {
+        con.collection(bookstoreCollection).countDocuments(
+            {$or : [{companyName : companyName}, {email : email}]}, (err, result) => {
                 if (err) {reject(err)} else {resolve(result)}
-        }));
+        });
     })
     .then((result) => {
+        if (result > 0) {
+            throw "Company name or email is already in use";
+        }
         bcrypt.hash(password, 12)
         .then((hashedPass) => {
             const newUser = {
@@ -201,8 +236,11 @@ app.post("/registerBuisness", (req, res) => {
                 address2 : address2,
                 listings : [],
                 };
-            con.collection("buisnessUsers").insertOne(newUser, (err, result) => {
-                if (err) { throw err } else {res.send("Success")}
+            con.collection(bookstoreCollection).insertOne(newUser, (err, result) => {
+                if (err) { throw err } else {
+                    console.log("success");
+                    res.send("Success")
+                }
             });
         })
         .catch((error) => {
@@ -217,8 +255,9 @@ app.post("/registerBuisness", (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    res.session.destroy((err) => {
+    req.session.destroy((err) => {
         if (err) throw err;
+        console.log("logged out");
         //We can use this to redirect to landing page later
         res.send("logged out")
     });
@@ -226,7 +265,7 @@ app.post('/logout', (req, res) => {
 
 app.get('/users', (req, res) => {
     new Promise((resolve, reject) => {
-        con.collection("users").find({}).toArray((err, result) =>{
+        con.collection(userCollection).find({}).toArray((err, result) =>{
             if (err) {reject(err)} else {resolve(result)}
         }
     )})
@@ -239,12 +278,13 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/user', (req, res) => {
+    //TODO make handle different account types
     if (req.session.user == undefined) {
         res.status(400).send("Not logged in");
     } else {
         new Promise((resolve, reject) => {
             const query = {_id : req.session.user._id};
-            con.collection("users").findOne(query, (err, result) => {
+            con.collection(userCollection).findOne(query, (err, result) => {
                 if (err) {reject(err)} else {resolve(result)}
             });
         })
@@ -257,9 +297,10 @@ app.get('/user', (req, res) => {
         })
     }
 });
-app.get('/bookStoreUsers', (_, res) => {
+
+app.get('/bookstoreUsers', (_, res) => {
     new Promise((resolve, reject) => {
-        con.collection("bookStoreUsers").find({}).toArray((err, result) =>{
+        con.collection(bookstoreCollection).find({}).toArray((err, result) =>{
             if (err) {reject(err)} else {resolve(result)}
         }
     )})
@@ -372,13 +413,14 @@ app.post('/make-lis' ,(req,res)=>{
     }
     new Promise((resolve, reject) => {
         //Add new listing to the database
-        con.collection("listings").insertOne(newListing, (err, result) => {
+        con.collection(listingsCollection).insertOne(newListing, (err, result) => {
             if(err) {reject(err)}  else { resolve(result)}
         });
     })
     .then((result) => {
+        //TODO add account type detection
         const addListing = {$push: {listings : result.insertedId}};
-        con.collection("users").updateOne({username : req.session.user.username}, addListing);
+        con.collection(userCollection).updateOne({username : req.session.user.username}, addListing);
     })
     .then((_) => {
         res.send("Success");
@@ -422,7 +464,7 @@ app.get('/user/listings', (req, res) => {
         });
         const listingQuery = {_id : {$in : listingIDs.ids}};
         console.log(listingQuery);
-        con.collection("listings").find(listingQuery).toArray((err, result2) => {
+        con.collection(listingsCollection).find(listingQuery).toArray((err, result2) => {
             if (err) {
                 res.status(400).send(err);
             } else {
@@ -441,7 +483,7 @@ app.get('/listing/:listingID', (req, res) => {
      const listingOID = new ObjectId(req.params.listingID);
 
      new Promise((resolve, reject) => {
-         con.collection("listings").findOne({_id : listingOID}, (err, result) => {
+         con.collection(listingsCollection).findOne({_id : listingOID}, (err, result) => {
              if (err) {reject(err)} else {resolve(result)}
          });
      })
@@ -451,6 +493,31 @@ app.get('/listing/:listingID', (req, res) => {
      .catch((error) =>{
         res.status(400).send(error);
     })
+});
+
+//Used to get a number of listings from a given "page" based on the number per page
+app.get('/listings/:numberOfListings/:pageNumber', (req, res) => {
+    const numberOfListings = parseInt(req.params.numberOfListings);
+    const pageNumber = parseInt(req.params.pageNumber);
+
+    let skip = (pageNumber - 1) * numberOfListings;
+
+    if (numberOfListings == NaN || pageNumber == NaN || pageNumber < 1){
+        res.status(400).send("error with parameters");
+        return;
+    }
+
+    new Promise((resolve, reject) => {
+        con.collection(listingsCollection).find({}).limit(numberOfListings).skip(skip).toArray((err, result) => {
+            if (err) { reject(err) } else {resolve(result)}
+        });
+    })
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.status(400).send(error);
+    });
 });
 
 

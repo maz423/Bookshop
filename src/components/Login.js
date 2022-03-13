@@ -16,18 +16,23 @@ export const Login = (props) => {
 
 const [ID,setID] = useState('');
 const [password,setPassword] = useState('');
-const [role,setRole] = useState('user'); 
+const [role,setRole] = useState('User'); 
 
 
 const navigate = useNavigate();
 
 const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
+  const body = { 
+    username : e.target.ID.value,
+    password : e.target.password.value,
+    accountType : role,
+  }
   const requestOptions = {
     credentials: 'include',
     method: 'POST',
     headers: {'Content-Type' : 'application/json'},
-    body : JSON.stringify({username : e.target.ID.value, password : e.target.password.value})
+    body : JSON.stringify(body)
   };
 
   fetch('http://localhost:8000/login', requestOptions)
@@ -68,8 +73,8 @@ return (
       <input type="password" id="password" value={password} onChange={(e)=>setPassword(e.target.value)} name="password"></input><br></br><br></br>
       <label for="role">Role:</label>&nbsp;
       <select value={role} onChange={(e)=>setRole(e.target.value)}>
+          <option value= 'User'>  User </option>
            <option value= 'Admin'>  Admin  </option>  
-           <option value= 'User'>  User </option>
            <option value= 'Bookstore'>  Bookstore </option> 
 
            

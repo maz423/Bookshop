@@ -22,7 +22,10 @@ const handleSubmitClick = (e) => { //handle submit event.
     lName : formItems.formLastName.value,
     email : formItems.formGridEmail.value,
     address1 : formItems.formGridAddress1.value,
-    address2 : formItems.formGridAddress2.value 
+    address2 : formItems.formGridAddress2.value ,
+    city : formItems.formGridCity.value,
+    province : formItems.formGridState.value,
+    zipcode : formItems.formGridZip.value,
   }
 
   const requestOptions = {

@@ -16,6 +16,7 @@ import {Login_Nav} from './components/Login_Nav'
 import Createlisting from './components/Createlisting';
 import {ListingView} from './components/ListingView';
 import AccountView from './components/AccountView';
+import Logout from './components/Logout';
 import { LinkContainer } from 'react-router-bootstrap'
 
 
@@ -73,14 +74,16 @@ function App() {
         <Route exact path='/signup' element={<Register/>} />
         <Route exact path='/search' element={<Search/>} />
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
+        <Route exact path='/listing/:listingID' element={<ListingView/>}/>
         </Routes>)
          : (<Routes>
 
         
         <Route exact path='/' element={<Homepage/>} />
-        
+        <Route exact path='/logout' element={<Logout/>}/>
        
         <Route exact path='/search' element={<Search/>} />
+
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting/>}/>
           
