@@ -11,14 +11,17 @@ import InputGroup from 'react-bootstrap/InputGroup'
 
 function Createlisting(){
     
+   const [ form, setForm ] = useState({})
+   const [ errors, setErrors ] = useState({})
     const navigate = useNavigate();
+   
 
      //The info that will be auto populated when login in
-     const [address1, setAddress1] = useState('');
+     const [formGridAddress1, setformGridAddress1] = useState('');
      const [address2, setAddress2] = useState('');
-     const [city, setCity] = useState('');
-     const [province, setProvince] = useState('');
-     const [zipcode, setZipcode] = useState('');
+     const [formGridCity, setformGridCity] = useState('');
+     const [formGridState, setformGridState] = useState('');
+     const [formGridZip, setformGridZip] = useState('');
 
     //After the button is clicked the the information stored in textname and description will be sent to the database.
     //NOT TESTING CONDITION YET.  
@@ -40,11 +43,11 @@ function Createlisting(){
       }})
       .then((data) => {
         console.log(data);
-        setAddress1(data.address1);
+        setformGridAddress1(data.address1);
         setAddress2(data.address2);
-        setCity(data.city);
-        setProvince(data.province);
-        setZipcode(data.zipcode);
+        setformGridCity(data.city);
+        setformGridState(data.province);
+        setformGridZip(data.zipcode);
       })
       .catch((error) => {
         console.log(error);
@@ -53,8 +56,54 @@ function Createlisting(){
         
     }, []);
 
+
+    const setField = (field, value) => {
+      setForm({
+        ...form,
+        [field]: value
+      })
+      if ( !!errors[field] ) setErrors({
+        ...errors,
+        [field]: null
+      })
+    }
+
+    const findFormErrors = () => {
+      const {formBookTitle, authorName ,formPrice } = form
+      const newErrors = {}
+      // name errors
+      if ( !formBookTitle || formBookTitle === '' ) newErrors.formBookTitle = ' Bookname cannot be blank!'
+
+      if ( !formPrice || formPrice === '' ) newErrors.formPrice = ' Price cannot be blank!'
+      else if ( isNaN(formPrice) ) newErrors.formPrice = ' Price must be a numeric value!'
+      
+      
+      if ( !authorName || authorName === '' ) newErrors.authorName = 'Author  cannot be blank!'
+    
+      if ( !formGridAddress1 || formGridAddress1 === '' ) newErrors.formGridAddress1 = 'Address feild cannot be blank!'
+    
+      if ( !formGridCity || formGridCity === '' ) newErrors.formGridCity = 'City cannot be blank!'
+    
+      if ( !formGridState || formGridState === '' ) newErrors.formGridState = 'Provience feild cannot be blank!'
+    
+      if ( !formGridZip || formGridZip === '' ) newErrors.formGridZip = 'Zip code cannot be blank!'
+      
+    
+      return newErrors
+    }
+
+
     const handleSubmitClick = (e) => { 
       e.preventDefault();
+
+      const newErrors = findFormErrors()
+
+      // Conditional logic:
+    if ( Object.keys(newErrors).length > 0 ) {
+      //errors!
+      setErrors(newErrors)
+    } else {
+
         const formItems = e.target.elements;
         //TODO check to ensure price is int
         //TODO File input
@@ -63,11 +112,11 @@ function Createlisting(){
           authorName : formItems.authorName.value,
           description : formItems.formDescription.value,
           price : formItems.formPrice.value,
-          address1 : address1,
+          address1 : formItems.formGridAddress1.value,
           address2 : address2,
-          city : city,
-          province : province,
-          zipcode : zipcode,
+          city : formItems.formGridCity.value,
+          province : formItems.formGridState.value,
+          zipCode : formItems.formGridZip.value,
         };
         console.log(formItems);
         console.log(body);
@@ -89,6 +138,7 @@ function Createlisting(){
             console.log(error);
         });
     };
+  }
 
     return (  
         
@@ -98,13 +148,21 @@ function Createlisting(){
   <Row >
     <Form.Group as={Col} controlId="formBookTitle">
       <Form.Label>Book Title</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Eg. Intro to AI" />
+      <Form.Control size='sm' type="text" placeholder="Eg. Intro to AI" onChange={ e => setField('formBookTitle', e.target.value) } isInvalid={ !!errors.formBookTitle } />
+      <Form.Control.Feedback type='invalid'>
+        { errors.formBookTitle }
+    </Form.Control.Feedback> 
     </Form.Group>
 
    <Form.Group as={Col} controlId="authorName">
       <Form.Label>Author</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Name" />
+      <Form.Control size='sm' type="text" placeholder="Name" onChange={ e => setField('authorName', e.target.value) } isInvalid={ !!errors.authorName }/>
+      <Form.Control.Feedback type='invalid'>
+        { errors.authorName }
+    </Form.Control.Feedback> 
     </Form.Group>
+
+
 
     
 
@@ -119,6 +177,7 @@ function Createlisting(){
         name="group1"
         type='radio'
         id= "new"
+        
       />
       <Form.Check 
         inline
@@ -127,6 +186,7 @@ function Createlisting(){
         type='radio'
         
         id="used"
+        defaultChecked
       />
       
       
@@ -154,11 +214,14 @@ function Createlisting(){
     </Form.Group>
 
 
-    <InputGroup as={Col} >
+    <InputGroup as={Col}  >
     
-    <InputGroup.Text>$</InputGroup.Text>
-    <Form.Control id="formPrice" aria-label="Amount (to the nearest dollar)"  />
-    <InputGroup.Text>.00</InputGroup.Text>
+    <InputGroup.Text >$</InputGroup.Text>
+    <Form.Control id="formPrice" aria-label="Amount (to the nearest dollar)" onChange={ e => setField('formPrice', e.target.value) } isInvalid={ !!errors.formPrice } />
+    <Form.Control.Feedback type='invalid'>
+        { errors.formPrice }
+    </Form.Control.Feedback> 
+    <InputGroup.Text >.00</InputGroup.Text>
     </InputGroup>
 
     
@@ -168,7 +231,7 @@ function Createlisting(){
 
     <InputGroup>
     <InputGroup.Text>Description:</InputGroup.Text>
-    <Form.Control id="formDescription" as="textarea" aria-label="With textarea" />
+    <Form.Control id="formDescription" as="textarea" aria-label="With textarea"  />
   </InputGroup>
 
   
@@ -184,7 +247,10 @@ function Createlisting(){
 
     <Form.Group as={Col}  controlId="formGridAddress1">
     <Form.Label>Pick up Address</Form.Label>
-    <Form.Control size='sm' placeholder="1234 Main St" value={address1} onChange={(e)=>setAddress1(e.target.value)}/>
+    <Form.Control size='sm' placeholder="1234 Main St" value = {formGridAddress1} onChange={ e => setformGridAddress1(e.target.value) } isInvalid={ !!errors.formGridAddress1 }/>
+    <Form.Control.Feedback type='invalid'>
+        { errors.formGridAddress1 }
+    </Form.Control.Feedback> 
     </Form.Group>
 
     <Form.Group as={Col}  controlId="formGridAddress2">
@@ -201,17 +267,26 @@ function Createlisting(){
       
    <Form.Group as={Col} controlId="formGridCity">
       <Form.Label>City</Form.Label>
-      <Form.Control size='sm' placeholder='eg. Saskatoon' value={city} onChange={(e)=>setCity(e.target.value)}/>
+      <Form.Control size='sm' placeholder='eg. Saskatoon' value={formGridCity} onChange={ e => setformGridCity(e.target.value) } isInvalid={ !!errors.formGridCity }/>
+      <Form.Control.Feedback type='invalid'>
+        { errors.formGridCity }
+    </Form.Control.Feedback> 
     </Form.Group>
 
     <Form.Group as={Col} controlId="formGridState">
       <Form.Label>Provience</Form.Label>
-      <Form.Control size='sm' placeholder='eg. Saskatchewan' value={province} onChange={(e)=>setProvince(e.target.value)}/>
+      <Form.Control size='sm' placeholder='eg. Saskatchewan' value={formGridState} onChange={ e => setformGridState(e.target.value) } isInvalid={ !!errors.formGridState }/>
+      <Form.Control.Feedback type='invalid'>
+        { errors.formGridState }
+    </Form.Control.Feedback> 
     </Form.Group>
 
     <Form.Group as={Col} controlId="formGridZip">
       <Form.Label>Zip</Form.Label>
-      <Form.Control size='sm' placeholder='eg. S7N 3CZ' value={zipcode} onChange={(e)=>setZipcode(e.target.value)}/>
+      <Form.Control size='sm' placeholder='eg. S7N 3CZ' value = {formGridZip} onChange={ e => setformGridZip(e.target.value) } isInvalid={ !!errors.formGridZip }/>
+      <Form.Control.Feedback type='invalid'>
+        { errors.formGridZip }
+    </Form.Control.Feedback> 
     </Form.Group>
 
    </Row>

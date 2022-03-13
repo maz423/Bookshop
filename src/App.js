@@ -28,7 +28,10 @@ function App() {
   const [IsAdmin, setIsAdmin] = useState(0); //if User is Admin Set to 1.
  
 
-  
+  let props = {
+    login : setLoggedIn,
+    Admin : setIsAdmin,
+    }
 
   
   
@@ -70,7 +73,7 @@ function App() {
         <Routes>
         <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
         <Route exact path='/' element={<Homepage/>} />
-        <Route exact path='/Login' element={<Login set = {setLoggedIn}/>} />
+        <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} />} />
         <Route exact path='/signup' element={<Register/>} />
         <Route exact path='/search' element={<Search/>} />
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
@@ -80,7 +83,7 @@ function App() {
 
         
         <Route exact path='/' element={<Homepage/>} />
-        <Route exact path='/logout' element={<Logout/>}/>
+        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} />}/>
        
         <Route exact path='/search' element={<Search/>} />
 

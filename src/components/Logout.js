@@ -1,12 +1,14 @@
 import "./Logout.css"
 import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button'
+import React,{useEffect, useState} from 'react';
 
-function Logout(){
+function Logout(props){
 
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    useEffect(() => {
+    
         const requestOptions = {
             credentials: 'include',
             method: 'POST',
@@ -20,18 +22,25 @@ function Logout(){
                   alert("Error logging out")
               } else {
                   //TODO Clear logged in property here
-                  navigate('/');
+                  navigate('/')
+                  alert("Logged out")
+                  props.set(0);
+                  props.admin(0);
               }
           })
           .catch((error) => {
               alert(error);
           })
-    }
+
+        }, []);   
+    
 
     return (
-        <div>
-            <Button onClick={handleLogout}>Logout</Button>
-        </div>
+
+        <h1></h1>
+        // <div>
+        //     <Button onClick={handleLogout}>Logout</Button>
+        // </div>
     )
 }
 

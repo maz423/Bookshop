@@ -42,7 +42,21 @@ const handleSubmitClick = (e) => { //handle submit event.
       alert("Invalid id or password");
     } else{
       console.log(response);
-      props.set(1);
+      if(role == 'Admin'){
+        console.log(props);
+        
+        
+        props.set(1);
+        props.admin(1);
+        
+       
+        
+      }
+      else{
+        
+        props.set(1);
+      }
+      
       navigate("/");
     }
   })
