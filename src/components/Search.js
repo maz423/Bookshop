@@ -1,8 +1,8 @@
 
 import './Search.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 import { Nav } from 'react-bootstrap';
@@ -17,6 +17,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 export const Search = (props) => {
 
+const {keywordFromHomepage} = useParams();
+
 const [keyword, setKeyword] = useState('');
 
 const [title, setTitle] = useState('');
@@ -25,14 +27,8 @@ const [listingID, setListingID] = useState('');
 
 const listing = (
        <div>
-       
 
-           <a href={listingAddress}>{title}</a>
-
-       {/* I think the below is the right way to link to the listing view, but when I use it I get an error saying 
-              "usehref() may be used only in the context of a router component"*/}
-              
-          {/* <Link to={`/listing/${listingID}`}>{title}</Link> */}
+          <Button className='searchResult' variant="success" href={`/listing/${listingID}`}>{title}</Button>
 
        </div>
    )
@@ -66,14 +62,17 @@ const handleSubmitClick = (e) => {
               }
        })
        .then((data) => {
+
               if(data.length == 0){
                      ReactDOM.render(message, document.getElementById('listings'));
               }
               else{
                      for(const result of data){
+                            console.log(result);
                             setTitle(result.title[0]);
+                            // setListingID(JSON.stringify(result._id));
                             setListingID(result._id);
-                            setListingAddress('http://localhost:8000/listing/' + result._id);
+                            //setListingAddress('http://localhost:8000/listing/' + result._id);
                             ReactDOM.render(listing, document.getElementById('listings'));
                      }
               }

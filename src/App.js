@@ -26,6 +26,10 @@ function App() {
   
   const [LoggedIn, setLoggedIn] = useState(0);  //logged in will be set to 1 when the user Logs in.
   const [IsAdmin, setIsAdmin] = useState(0); //if User is Admin Set to 1.
+
+  const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
+  const [listingID, setListingID] = useState('');
+
  
 
   let props = {
@@ -75,9 +79,10 @@ function App() {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} />} />
         <Route exact path='/signup' element={<Register/>} />
-        <Route exact path='/search' element={<Search/>} />
+        <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+        {/* <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/> */}
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
-        <Route exact path='/listing/:listingID' element={<ListingView/>}/>
+        <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
         </Routes>)
          : (<Routes>
 
@@ -85,7 +90,7 @@ function App() {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} />}/>
        
-        <Route exact path='/search' element={<Search/>} />
+        <Route exact path='/search' element={<Search/>} component={keywordFromHomepage}/>
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting/>}/>
@@ -93,7 +98,7 @@ function App() {
           <Route exact path='/' element={<Homepage/>} />
          
          
-          <Route exact path='/listing/:listingID' element={<ListingView/>}/>
+          <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
          
           
