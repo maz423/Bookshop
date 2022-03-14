@@ -24,16 +24,7 @@ export const Sidebar = (props) => {
 
   //This is a rough implementation
   //TODO Make resizable solution that you can chose how many links appear
-  const [link1, setLink1] = useState('');
-  const [link2, setLink2] = useState('');
-  const [link3, setLink3] = useState('');
-  const [link4, setLink4] = useState('');
-  const [link5, setLink5] = useState('');
-  const [link6, setLink6] = useState('');
-  const [link7, setLink7] = useState('');
-  const [link8, setLink8] = useState('');
-  const [link9, setLink9] = useState('');
-  const [link10, setLink10] = useState('');
+  const [listingsList, setListingsList] = useState([]);
 
   const listingsPerPage = 10;
   var page = 1;
@@ -57,17 +48,7 @@ export const Sidebar = (props) => {
       }
     })
     .then((data) => {
-      const link = '/listing/'
-      setLink1(link + data[0]._id);
-      setLink2(link + data[1]._id);
-      setLink3(link + data[2]._id);
-      setLink4(link + data[3]._id);
-      setLink5(link + data[4]._id);
-      setLink6(link + data[5]._id);
-      setLink7(link + data[6]._id);
-      setLink8(link + data[7]._id);
-      setLink9(link + data[8]._id);
-      setLink10(link + data[9]._id);
+      setListingsList(data);
 
       console.log(data);
     })
@@ -106,18 +87,9 @@ export const Sidebar = (props) => {
               <Offcanvas.Title>Active Listings:</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-              <Nav className="Listings nav">
-                <Nav.Link as={Link} to={link1}>Lisitng1</Nav.Link>
-                <Nav.Link as={Link} to={link2}>Lisitng2</Nav.Link>
-                <Nav.Link as={Link} to={link3}>Lisitng3</Nav.Link>
-                <Nav.Link as={Link} to={link4}>Lisitng4</Nav.Link>
-                <Nav.Link as={Link} to={link5}>Lisitng5</Nav.Link>
-                <Nav.Link as={Link} to={link6}>Lisitng6</Nav.Link>
-                <Nav.Link as={Link} to={link7}>Lisitng7</Nav.Link>
-                <Nav.Link as={Link} to={link8}>Lisitng8</Nav.Link>
-                <Nav.Link as={Link} to={link9}>Lisitng9</Nav.Link>
-                <Nav.Link as={Link} to={link10}>Lisitng10</Nav.Link>
-              </Nav>
+              {
+                listingsList.map(element => <div className="text-center"><Link to={'/listing/' + element._id}><h3>{element.title}</h3></Link></div>)
+              }
               <Button id="nextPageButton" onClick={handleNextPage}>Next Page</Button>
               <Button id="previousPageButton" onclick={handlePreviousPage}>Previous Page</Button>
            </Offcanvas.Body>
