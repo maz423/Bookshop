@@ -174,7 +174,7 @@ app.post("/register", (req, res)=> {
     const {username, password, email, address1, address2, fName, lName, city, province, zipcode} = req.body;
 
     new Promise((resolve, reject) => {
-        con.collection("users").countDocuments(
+        con.collection(userCollection).countDocuments(
             {$or : [{username : username}, {email : email}]}, (err, result) => {
             if (err) {reject(err)} else {resolve(result)}
         });
@@ -198,7 +198,7 @@ app.post("/register", (req, res)=> {
                 zipcode: zipcode,
                 listings : []
                 };
-            con.collection("users").insertOne(newUser, (err, result) =>{
+            con.collection(userCollection).insertOne(newUser, (err, result) =>{
                 if (err) { throw err } else {res.send("Success")}
             });
         })
@@ -208,13 +208,14 @@ app.post("/register", (req, res)=> {
         });
     })
     .catch((error) => {
+        console.log(error);
         res.status(400).send(error);
     });
 });
 
 app.post("/registerBookstore", (req, res) => {
     //Get the information
-    const {companyName, password, email, address1, address2} = req.body;
+    const {companyName, password, email, address1, address2, city, province, zipcode} = req.body;
 
     new Promise((resolve, reject) => {
         con.collection(bookstoreCollection).countDocuments(
@@ -234,6 +235,9 @@ app.post("/registerBookstore", (req, res) => {
                 password : hashedPass,
                 address1 : address1,
                 address2 : address2,
+                city : city,
+                province : province,
+                zipcode : zipcode,
                 listings : [],
                 };
             con.collection(bookstoreCollection).insertOne(newUser, (err, result) => {

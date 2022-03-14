@@ -93,9 +93,13 @@ const handleSubmitClick = (e) => { //handle submit event.
 
   fetch('http://localhost:8000/register', requestOptions)
   .then((result) => {
-    console.log(result);
-    alert("Registration succesfull please Log in");
-    navigate("/Login");
+    if (!result.ok){
+      alert("Password or email already in use")
+    } else {
+      console.log(result);
+      alert("Registration succesfull please Log in");
+      navigate("/Login");
+    }
     
   })
   .catch((error) => {

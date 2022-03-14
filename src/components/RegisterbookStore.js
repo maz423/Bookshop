@@ -72,7 +72,10 @@ const handleSubmitClick = (e) => { //handle submit event.
     password : formItems.formGridPassword.value,
     email : formItems.formGridEmail.value,
     address1 : formItems.formGridAddress1.value,
-    address2 : formItems.formGridAddress2.value 
+    address2 : formItems.formGridAddress2.value,
+    city : formItems.formGridCity.value,
+    province : formItems.formGridState.value,
+    zipcode : formItems.formGridZip.value, 
   }
 
   const requestOptions = {
@@ -85,12 +88,12 @@ const handleSubmitClick = (e) => { //handle submit event.
   fetch('http://localhost:8000/registerBookstore', requestOptions)
   .then((result) => {
     if (!result.ok){
-      alert("Error registering");  
+      alert("Username or password is already in use");  
     }
     else {
       console.log(result);
       alert('Bookstore successfully Registered');
-      navigate("/");
+      navigate("/Login");
     }
    
   })
