@@ -39,6 +39,48 @@ const message = (
 )
 
 
+
+useEffect(() => {
+       const requestOptions = {
+              credentials: 'include',
+              method: 'POST',
+              headers: {'Content-Type' : 'application/json'},
+              body : JSON.stringify({keyword : keywordFromHomepage})
+       };
+
+       fetch('http://localhost:8000/regularSearch', requestOptions)
+       .then((response) => {
+              
+              if(response.ok){
+                     return response.json();
+              }
+              else{
+
+              }
+       })
+       .then((data) => {
+
+              if(data.length == 0){
+                     ReactDOM.render(message, document.getElementById('listings'));
+              }
+              else{
+                     for(const result of data){
+                            console.log(result);
+                            setTitle(result.title[0]);
+                            setListingID(result._id);
+                            ReactDOM.render(listing, document.getElementById('listings'));
+                     }
+              }
+       })
+       .catch((error) => {
+              console.log(error);
+       });
+
+})
+
+
+
+
 const handleSubmitClick = (e) => {
 
        e.preventDefault();
