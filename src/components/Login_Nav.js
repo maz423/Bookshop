@@ -90,7 +90,7 @@ return (
           value={keywordFromHomepage}
           onChange={(e)=>setKeywordFromHomepage(e.target.value)}
         />
-        <Button variant="outline-success" onClick={handleSubmitClick} href={`/search/:${keywordFromHomepage}`}>Search</Button>
+       <Button as={Link} to='/search'variant="outline-success">Search</Button>
       </Form>
         <Nav.Link as={Link} to="/advancedsearch">Advanced Search</Nav.Link>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
