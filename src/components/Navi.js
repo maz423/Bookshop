@@ -44,6 +44,8 @@ const handleSubmitClick = (e) => { //handle submit event.
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const [keywordFromHomepage, setKeywordFromHomepage] = useState("");
         
 
 return (
@@ -75,8 +77,10 @@ return (
           className="me-2"
           aria-label="Search"
           size='sm'
+          value={keywordFromHomepage}
+          onChange={(e)=>setKeywordFromHomepage(e.target.value)}
         />
-        <Button variant="outline-success" onClick={handleSubmitClick} href="/search">Search</Button>
+        <Button variant="outline-success" onClick={handleSubmitClick} href={`/search/:${keywordFromHomepage}`}>Search</Button>
       </Form>
         <Nav.Link as={Link} to="/advancedsearch">Advanced Search</Nav.Link>
         <Nav.Link eventKey={2} href="#memes" onClick={handleShow}>
