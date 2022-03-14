@@ -13,7 +13,7 @@ import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { Offcanvas } from 'react-bootstrap';
 import { render } from '@testing-library/react';
-
+import { ListOfListings } from './ListOfListings';
 
 
 
@@ -87,9 +87,10 @@ export const Sidebar = (props) => {
               <Offcanvas.Title>Active Listings:</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-              {
+              {/* {
                 listingsList.map(element => <div className="text-center"><Link to={'/listing/' + element._id}><h3>{element.title}</h3></Link></div>)
-              }
+              } */}
+              <ListOfListings listings={listingsList}></ListOfListings>
               <Button id="nextPageButton" onClick={handleNextPage}>Next Page</Button>
               <Button id="previousPageButton" onclick={handlePreviousPage}>Previous Page</Button>
            </Offcanvas.Body>

@@ -12,6 +12,7 @@ import Col from 'react-bootstrap/Col'
 import InputGroup from 'react-bootstrap/InputGroup'
 import RangeSlider from 'react-bootstrap-range-slider';
 import ReactDOM from 'react-dom';
+import { ListOfListings } from './ListOfListings';
 
 
 
@@ -31,6 +32,7 @@ const [ value, setValue ] = useState(0);
 
 const [title, setTitle] = useState('');
 const [listingID, setListingID] = useState('');
+const [listingsList, setListingsList] = useState([]);
 
 const listing = (
        <div>
@@ -79,12 +81,13 @@ const handleSubmitClick = (e) => {
                      ReactDOM.render(message, document.getElementById('listings'));
               }
               else{
-                     for(const result of data){
-                            console.log(result);
-                            setTitle(result.title[0]);
-                            setListingID(result._id);
-                            ReactDOM.render(listing, document.getElementById('listings'));
-                     }
+                     // for(const result of data){
+                     //        console.log(result);
+                     //        setTitle(result.title[0]);
+                     //        setListingID(result._id);
+                     //        ReactDOM.render(listing, document.getElementById('listings'));
+                     // }
+                     setListingsList(data);
               }
        })
        .catch((error) => {
@@ -141,7 +144,7 @@ return (
        </form>     
 
        <div className='listings' id="listings">
-           
+           <ListOfListings listings={listingsList}></ListOfListings>
            </div>  
        
 </div>

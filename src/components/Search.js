@@ -10,6 +10,7 @@ import { Navbar } from 'react-bootstrap';
 import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
+import { ListOfListings } from './ListOfListings';
 
 
 
@@ -23,6 +24,7 @@ const [keyword, setKeyword] = useState('');
 
 const [title, setTitle] = useState('');
 const [listingID, setListingID] = useState('');
+const [listingsList, setListingsList] = useState([]);
 
 const listing = (
        <div>
@@ -59,24 +61,13 @@ useEffect(() => {
               }
        })
        .then((data) => {
-
-              if(data.length == 0){
-                     ReactDOM.render(message, document.getElementById('listings'));
-              }
-              else{
-                     for(const result of data){
-                            console.log(result);
-                            setTitle(result.title[0]);
-                            setListingID(result._id);
-                            ReactDOM.render(listing, document.getElementById('listings'));
-                     }
-              }
+              setListingsList(data);
        })
        .catch((error) => {
               console.log(error);
        });
 
-})
+}, [])
 
 
 
@@ -103,18 +94,7 @@ const handleSubmitClick = (e) => {
               }
        })
        .then((data) => {
-
-              if(data.length == 0){
-                     ReactDOM.render(message, document.getElementById('listings'));
-              }
-              else{
-                     for(const result of data){
-                            console.log(result);
-                            setTitle(result.title[0]);
-                            setListingID(result._id);
-                            ReactDOM.render(listing, document.getElementById('listings'));
-                     }
-              }
+              setListingsList(data);
        })
        .catch((error) => {
               console.log(error);
@@ -142,8 +122,8 @@ return (
        </form>       
        
        <div className='listings' id="listings">
-           
-           </div>
+              <ListOfListings listings={listingsList}></ListOfListings>
+       </div>
        
 </div>
 
