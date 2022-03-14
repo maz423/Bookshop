@@ -99,7 +99,7 @@ return (
        
        {/* <Link to="/search"> <Button variant="link" size="sm" className="regularSearch"> Regular Search </Button></Link> */}
       
-       <h1 className='Adv-search'> Use the following filters for Advanced Search:</h1>
+       <h1 className='Adv-search'> __________________________Use the following filters for Advanced Search:_________________________</h1>
        <form className='form' onSubmit={handleSubmitClick}>
 
           &nbsp;&nbsp;
@@ -107,7 +107,7 @@ return (
              <label for="keyword">Title:</label>&nbsp;&nbsp;
               <input type="text" id="keyword" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="keyword"></input>&nbsp;&nbsp;&nbsp;&nbsp;
               <label for="subject">Subject:</label>&nbsp;&nbsp;
-              <input type="text" id="subject" value={subject} onChange={(e)=>setSubject(e.target.value)} name="subject"></input>&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="text" id="subject" value={subject} onChange={(e)=>setSubject(e.target.value)} name="subject"></input>&nbsp;&nbsp;&nbsp;&nbsp;<br></br><br></br>
               <label for="author">Author:</label>&nbsp;&nbsp;
               <input type="text" id="author" value={author} onChange={(e)=>setAuthor(e.target.value)} name="author"></input>&nbsp;&nbsp;&nbsp;&nbsp;
 
