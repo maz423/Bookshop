@@ -22,7 +22,6 @@ const {keywordFromHomepage} = useParams();
 const [keyword, setKeyword] = useState('');
 
 const [title, setTitle] = useState('');
-const [listingAddress, setListingAddress] = useState('');
 const [listingID, setListingID] = useState('');
 
 const listing = (
@@ -70,9 +69,7 @@ const handleSubmitClick = (e) => {
                      for(const result of data){
                             console.log(result);
                             setTitle(result.title[0]);
-                            // setListingID(JSON.stringify(result._id));
                             setListingID(result._id);
-                            //setListingAddress('http://localhost:8000/listing/' + result._id);
                             ReactDOM.render(listing, document.getElementById('listings'));
                      }
               }

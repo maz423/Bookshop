@@ -30,13 +30,15 @@ const [ value, setValue ] = useState(0);
 
 
 const [title, setTitle] = useState('');
-const [listingAddress, setListingAddress] = useState('');
+const [listingID, setListingID] = useState('');
 
 const listing = (
        <div>
-           <h1 className='listingTitle'>{title}</h1>
+
+          <Button className='searchResult' variant="success" href={`/listing/${listingID}`}>{title}</Button>
+
        </div>
-   )
+)
 
 const message = (
        <div>
@@ -55,8 +57,9 @@ const handleSubmitClick = (e) => {
               headers: {'Content-Type' : 'application/json'},
               body : JSON.stringify({keyword : e.target.keyword.value, 
                      subject : e.target.subject.value, 
-                     value : e.target.value.value, 
+                     // value : e.target.value.value, 
                      author : e.target.author.value,
+                     price : e.target.price.value,
                 location : e.target.location.value})
        };
 
@@ -71,13 +74,15 @@ const handleSubmitClick = (e) => {
               }
        })
        .then((data) => {
-              //console.log(data);
+
               if(data.length == 0){
                      ReactDOM.render(message, document.getElementById('listings'));
               }
               else{
                      for(const result of data){
-                            setTitle(result._id);
+                            console.log(result);
+                            setTitle(result.title[0]);
+                            setListingID(result._id);
                             ReactDOM.render(listing, document.getElementById('listings'));
                      }
               }
@@ -110,11 +115,13 @@ return (
               <input type="text" id="subject" value={subject} onChange={(e)=>setSubject(e.target.value)} name="subject"></input>&nbsp;&nbsp;&nbsp;&nbsp;<br></br><br></br>
               <label for="author">Author:</label>&nbsp;&nbsp;
               <input type="text" id="author" value={author} onChange={(e)=>setAuthor(e.target.value)} name="author"></input>&nbsp;&nbsp;&nbsp;&nbsp;
+              <label for="price">Maximum Price:</label>&nbsp;&nbsp;
+              <input type="text" id="price" value={price} onChange={(e)=>setPrice(e.target.value)} name="price"></input>&nbsp;&nbsp;&nbsp;&nbsp;
 
 
               <label for="location">Location:</label>&nbsp;&nbsp;
               <input type="text" id="location" value={location} onChange={(e)=>setLocation(e.target.value)} name="location"></input> &nbsp;&nbsp;&nbsp;&nbsp;
-             <br></br><br></br>
+             {/* <br></br><br></br>
               <p>Price range:</p>
               <RangeSlider
               value={value}
@@ -124,7 +131,7 @@ return (
               tooltip='on'
               onChange={(e) => setValue(e.target.value)}
               
-              /><br></br>
+              /><br></br> */}
               
               
     

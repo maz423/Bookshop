@@ -363,12 +363,13 @@ app.post('/advancedSearch', (req, res) =>{
 
     let keyword = req.body.keyword;
     //let subject = req.body.subject;
-    let value = req.body.value;
+    // let value = req.body.value;
     let author = req.body.author;
+    let price = req.body.price;
     let city = req.body.location;
 
     const pipeline = [
-        { $match: { title: { $regex: keyword, $options: "i" }, price: { $lte: value }, 
+        { $match: { title: { $regex: keyword, $options: "i" }, price: { $lte: price }, 
         authorName: { $regex: author, $options: "i" }, city: { $regex: city, $options: "i" } } },
         { $group: { _id: "$_id", title: { $push: "$title" } }  }
     ];
