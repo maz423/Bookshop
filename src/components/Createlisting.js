@@ -1,4 +1,5 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useState,Component} from 'react';
+import Popup from "./Imagepopup.js"; 
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from "react-router-dom";
 import { isAccordionItemSelected } from 'react-bootstrap/esm/AccordionContext';
@@ -37,7 +38,7 @@ function Createlisting(){
       fetch(URL, requestOptions)
       .then((response) => {
         if (!response.ok){
-          navigate("/Login");
+          //navigate("/Login");
         } else{
           return response.json();
       }})
@@ -51,7 +52,7 @@ function Createlisting(){
       })
       .catch((error) => {
         console.log(error);
-        navigate("/Login");
+        //navigate("/Login");
       });
         
     }, []);
@@ -92,10 +93,28 @@ function Createlisting(){
       return newErrors
     }
 
-
-    const handleSubmitClick = (e) => { 
-      e.preventDefault();
-
+  //Constant that will check if the popup page is open 
+  const [isOpen, setIsOpen] = useState(false);
+     
+  //This function will open the popup page to make an offer
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  }
+  
+  //State for the images no file initially selected 
+  const [image, setImage]=useState('');
+  
+  // On file select (from the pop up)
+  const onFileChange = (event) => {
+    
+    // Update the state
+    setImage({ image: event.target.files[0] });
+  
+  };
+  
+  const handleSubmitClick = (e) => { 
+    e.preventDefault();
+    togglePopup();
       const newErrors = findFormErrors()
 
       // Conditional logic:
@@ -117,7 +136,10 @@ function Createlisting(){
           city : formItems.formGridCity.value,
           province : formItems.formGridState.value,
           zipCode : formItems.formGridZip.value,
+          image: formItems.formFileMultiple.value,
         };
+        //Testing for images 
+        console.log(body.formFileMultiple);
         console.log(formItems);
         console.log(body);
         const requestOptions = {
@@ -132,7 +154,7 @@ function Createlisting(){
           if (!response.ok){
             console.log("error sending info");
           } else {
-            navigate('/')
+            //navigate('/')
           }
         }).catch( (error)=>{
             console.log(error);
@@ -140,10 +162,13 @@ function Createlisting(){
     };
   }
 
+    
+
     return (  
         
         
   <div className="mb-3">
+    
   <Form onSubmit={handleSubmitClick}>
   <Row >
     <Form.Group as={Col} controlId="formBookTitle">
@@ -208,7 +233,7 @@ function Createlisting(){
   <Row>
 
     
-    <Form.Group as={Col} controlId="formFileMultiple" >
+    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => setImage(e.target.files[0])}>
     <Form.Label>Upload images of the Book</Form.Label>
     <Form.Control type="file" multiple size='sm' />
     </Form.Group>
@@ -290,14 +315,20 @@ function Createlisting(){
     </Form.Group>
 
    </Row>
-
-  
-
-  
-
-  
-
+   {isOpen && <Popup
+                content={<>
+                  <div>
+                  <h2>Details </h2> 
+                    <p>File Name: {image.name}</p>
  
+             
+                    <p>File Type: {image.type}</p>
+
+                  </div>                
+
+            </>}
+      handleClose={togglePopup}
+    />}
 
   
 

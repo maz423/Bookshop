@@ -11,6 +11,9 @@ const http = require('http');
 const https = require('https');
 const bodyParser = require("body-parser");
 const MongoDBSession = require('connect-mongodb-session')(session);
+const mongoose = require('mongoose');
+
+require('dotenv/config');
 
 
 var options = {
@@ -102,6 +105,30 @@ app.use(session({
         maxage : 360000
     }
 }));
+
+//this is to connect mongoose to our database
+mongoose.connect(DB_Url,
+	{ useNewUrlParser: true, useUnifiedTopology: true}, err => {
+		console.log('mongoose connected')
+	});
+
+//multer for storing files
+var multer = require('multer');
+var storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+        	cb(null, path.join(__dirname, '/uploads/'));
+	},
+	filename: (req, file, cb) => {
+        //image.jpg -> jpg
+       // var ext = file.originalname.substr(file.originalname.lastIndexOf('.'));
+		cb(null, file.fieldname + '-' + Date.now())//+ext)
+	}
+});
+
+var upload = multer({ storage: storage });
+
+//loading the mongoose model for the imageSchema
+var imgModel = require('./model')
 
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
@@ -400,9 +427,10 @@ app.post('/advancedSearch', (req, res) =>{
 //All the implementation are from typing TODO change to button
 
 //no picture implementation yet.TODO add a way to add pictures to the mongodb db
-app.post('/make-lis' ,(req,res)=>{
+app.post('/make-lis', upload.single('image'), (req,res)=>{
     const {title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
 	const datetime = new Date();
+    console.log(req.body);
     //TODO check if location information is given, if not user session info
     const newListing = {
         title: title,
@@ -415,12 +443,27 @@ app.post('/make-lis' ,(req,res)=>{
         province : province,
         zipCode : zipCode,
         timestamp: datetime,
+        image: {
+            data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.body.image)),
+            contentType: 'image/jpg'
+        }
+
     }
+
     new Promise((resolve, reject) => {
+        console.log(image);
         //Add new listing to the database
         con.collection(listingsCollection).insertOne(newListing, (err, result) => {
             if(err) {reject(err)}  else { resolve(result)}
         });
+        //this is for displaying the image using the imageSchema, will probably have to move this around in the promise
+    	imgModel.create(newListing, (err, item) => {
+    		if (err) {
+            	console.log(err);
+        	}else{
+                console.log('iModel connected and picture sent')
+            }
+    	});
     })
     .then((result) => {
         //TODO add account type detection
@@ -434,6 +477,19 @@ app.post('/make-lis' ,(req,res)=>{
         console.log(error);
         res.status(400).send(error);
     });
+});
+
+//GET request handler for displaying the images in the profile page, I used an ejs file to test this, would have to change to the react page for the profile
+app.get('/profile', (req,res) => {
+	imgModel.find({}, (err, items) => {
+		if (err) {
+			console.log(err);
+			res.status(500).send('An error occured',err);
+		}
+		else {
+			//res.render('imagesPage', {items: items}); //TODO change this to the react page, i commented it out for now but this rendered my ejs page with the image
+		}
+	});
 });
 
 //See the listings on the browser 
