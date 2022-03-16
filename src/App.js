@@ -83,6 +83,7 @@ function App() {
         {/* <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/> */}
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
+        <Route path='/user/wishlist' element={<Wishlist/>}/>
         </Routes>)
          : (<Routes>
 
@@ -100,6 +101,7 @@ function App() {
          
           <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
+          <Route path='/user/wishlist' element={<Wishlist/>}/>
          
           
             

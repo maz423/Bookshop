@@ -196,7 +196,8 @@ app.post("/register", (req, res)=> {
                 city : city,
                 province : province,
                 zipcode: zipcode,
-                listings : []
+                listings : [],
+                wishlist : []
                 };
             con.collection(userCollection).insertOne(newUser, (err, result) =>{
                 if (err) { throw err } else {res.send("Success")}
@@ -638,6 +639,125 @@ app.get('/get-offers',function(req,res){
 			res.send(resultArray);
 		});
 	});
+});
+
+
+app.post('add-to-wishlist', (req, res) => {
+
+    var listingID = req.body.listingID;       // this is the id of the listing to be added to the wishlist
+    var user = req.session.user.username;
+    //var userID = req.body.userID;
+
+    async function addToWishlist(){
+
+        try{
+            const users = await con.collection(userCollection);
+
+            await users.updateOne({username : user}, {$push : {wishlist : listingID}});
+
+        }
+        catch{
+            console.log(error);
+            res.status(400).send(error);
+        }
+    };
+
+    (async function() {
+        await addToWishlist();
+
+        res.send("ok");
+    })();
+
+
+})
+
+
+app.post('/user/wishlist', (req, res) => {
+
+    //var id = req.body.id;
+    var username = req.session.user.username;
+
+
+    async function getUser(){
+
+        try{
+            const users = await con.collection(userCollection);
+
+            let user = await users.findOne({username : username});
+
+            return user;
+        }
+        catch{
+            console.log(error);
+            res.status(400).send(error);
+        }
+
+    };
+
+    async function getWishlist(user){
+
+        try{
+
+            const listingIDs = [];
+
+            const userWishlist = await user.wishlist;
+
+            for await (const listingID of userWishlist){
+                listingIDs.push(listingID);
+            }
+
+            return listingIDs;
+
+        }
+        catch{
+            console.log(error);
+            res.status(400).send(error);
+        }
+
+
+    };
+
+    async function getListings(listingIDs){
+
+        try{
+
+            const listings = await con.collection(listingsCollection);
+
+            const books = [];
+
+            for await (const listingID of listingIDs){
+                let listing = await listings.findOne({_id : listingID});
+
+                books.push(listing.title);
+
+            }
+
+
+        }
+        catch{
+            console.log(error);
+            res.status(400).send(error);
+        }
+
+
+    };
+
+    (async function() {
+
+        var user = await getUser();
+
+        var wishlist = await getWishlist(user);
+
+        var listings = await getListings(wishlist);
+
+        res.send(listings);
+
+    })();
+
+
+
+
+
 });
 
 
