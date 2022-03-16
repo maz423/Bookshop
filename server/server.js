@@ -415,6 +415,8 @@ app.post('/make-lis' ,(req,res)=>{
         province : province,
         zipCode : zipCode,
         timestamp: datetime,
+        posterID : req.session.user._id,
+        posterUsername : req.session.user.username,
     }
     new Promise((resolve, reject) => {
         //Add new listing to the database
