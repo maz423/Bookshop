@@ -1,0 +1,35 @@
+.Login{
+    background-color: #232325;
+     box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+     border-radius: 25px;
+}
+
+.form{
+    font-size: small;
+    background-color: #232325;
+    padding-bottom: 5%;
+    border-radius: 25px;
+}
+
+.para{
+    font-size: small;
+    font-style: normal;
+    color: rgb(250, 249, 246);
+    padding-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 2%;
+}
+
+.register-btn:hover{
+    color: rgb(246, 250, 247);
+}
+.register-btn{
+    color: rgb(190, 187, 187);
+}
+
+.prompt{
+
+    color: rgb(243, 250, 243);
+    font-size: large;
+}

@@ -1,0 +1,58 @@
+.Search{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.form{
+   
+    padding-top: 2%;
+    
+    background-color: #232325;
+    font-size: small;
+    border-radius: 25px;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 5%;
+}
+
+.listings{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.message{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.listingTitle{
+    font-size: small;
+    font-style: normal;
+    color: white;
+}
+
+.searchResult{
+    color: white;
+}
+
+
+.advancedSearch{
+    color: white;
+}
+
+.regularSearch{
+    color: white;
+}
+
+.Adv-search{
+    padding-top: 2% ;
+    
+    font-size: medium;
+    color: rgb(29, 124, 29);
+    font-weight: bolder;
+    
+    
+
+
+}
+

@@ -1,0 +1,85 @@
+.body{
+    margin:0;
+}
+.Container{
+    font-family:'Quicksand',sans-serif;
+    vertical-align: middle;
+    background-color: rgb(7, 12, 24);
+    border-radius: 10px;
+    size: 45px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 0%;
+    padding-right:0%;
+   
+}
+.listing-form{
+    font-size:40px;
+    vertical-align:middle;
+
+}
+.condition-form{
+    font-size: 20px;
+} 
+input[type="radio"]{
+    
+    margin:15px;
+    border-radius:15px;
+    top: -2px;
+    left: 1px;
+    position: relative;
+    
+    
+    content:'';
+    display: inline-block; 
+   
+
+}
+.condition-form .custom-radio-button .checkmark{
+    color:green;
+}
+.custom-radio-button input:checked {
+    display:inline-block;
+
+}
+.form-description{
+    vertical-align: middle;
+}
+
+.form-description label{
+    position:relative;
+}
+.form-description textarea{
+    height: 425px;
+    width:650px;
+    right:70px;
+}
+
+.listing-form input{
+    height: 75px;
+    width: 750px;
+}
+
+.form-post{
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+}
+
+.form-post button{
+    height:100px;
+    width: 200px;
+    background-color: green;
+    color:white;
+    border-color: green;
+}
+
+.input-group {
+    
+    height: 100% !important;
+    padding-top: 4%;
+  }
+
+
+
