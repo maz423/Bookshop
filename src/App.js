@@ -18,6 +18,7 @@ import {ListingView} from './components/ListingView';
 import AccountView from './components/AccountView';
 import Logout from './components/Logout';
 import { LinkContainer } from 'react-router-bootstrap'
+import {Wishlist} from './components/Wishlist'
 
 
 

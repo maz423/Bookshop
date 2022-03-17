@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { ListOfListings } from './ListOfListings';
 
 
-export const Wislist = (props) => {
+export const Wishlist = (props) => {
 
     const {userID} = useParams();
 

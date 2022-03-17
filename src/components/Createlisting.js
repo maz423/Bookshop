@@ -1,4 +1,5 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useState,Component} from 'react';
+import Popup from './Offerpopup.js';
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from "react-router-dom";
 import { isAccordionItemSelected } from 'react-bootstrap/esm/AccordionContext';
@@ -7,6 +8,7 @@ import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import InputGroup from 'react-bootstrap/InputGroup'
+
 
 
 function Createlisting(){
@@ -37,7 +39,7 @@ function Createlisting(){
       fetch(URL, requestOptions)
       .then((response) => {
         if (!response.ok){
-          navigate("/Login");
+          //navigate("/Login");
         } else{
           return response.json();
       }})
@@ -51,7 +53,7 @@ function Createlisting(){
       })
       .catch((error) => {
         console.log(error);
-        navigate("/Login");
+        //navigate("/Login");
       });
         
     }, []);
@@ -92,10 +94,45 @@ function Createlisting(){
       return newErrors
     }
 
+  //Constant that will check if the popup page is open 
+  const [isOpen, setIsOpen] = useState(false);
+     
+  //This function will open the popup page to make an offer
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  }
+  
+  //State for the images no file initially selected 
+  const [image, setImage]=useState('');
+  
+  // On file select (from the pop up)
+  const convertBase64=(file)=>{
+    return new Promise((resolve,reject)=>{
+      const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
 
-    const handleSubmitClick = (e) => { 
-      e.preventDefault();
+        fileReader.onload(()=>{
+          resolve(fileReader.result);
+        });
 
+        fileReader.oneerror((error) => {
+          reject(error);
+        })
+    });
+  };
+  const onFileChange = async (event) => {
+    
+    // Update the state
+    setImage(event.target.files[0]);
+    const base64 = await convertBase64(image);
+
+    console.log(base64);
+  
+  };
+  
+  const handleSubmitClick = (e) => { 
+    e.preventDefault();
+    togglePopup();
       const newErrors = findFormErrors()
 
       // Conditional logic:
@@ -117,33 +154,50 @@ function Createlisting(){
           city : formItems.formGridCity.value,
           province : formItems.formGridState.value,
           zipCode : formItems.formGridZip.value,
+          image: formItems.formFileMultiple.value,
         };
-        console.log(formItems);
+        const f = {
+          image: formItems.formFileMultiple.value,
+        }
+
+        console.log(formItems.formFileMultiple)
+        //Testing for images 
         console.log(body);
+        console.log(body,formItems.formFileMultiple.name);
         const requestOptions = {
             credentials: 'include',
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
-            body : JSON.stringify(body)
+            body : JSON.stringify(body),
         };
+        const requestImages = {
+          credentials: 'include',
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(f),
+        }
         
         fetch('http://localhost:8000/make-lis', requestOptions)
         .then((response) => {
           if (!response.ok){
             console.log("error sending info");
           } else {
-            navigate('/')
+            //navigate('/')
           }
         }).catch( (error)=>{
             console.log(error);
         });
+        
     };
   }
+
+    
 
     return (  
         
         
   <div className="mb-3">
+    
   <Form onSubmit={handleSubmitClick}>
   <Row >
     <Form.Group as={Col} controlId="formBookTitle">
@@ -208,7 +262,7 @@ function Createlisting(){
   <Row>
 
     
-    <Form.Group as={Col} controlId="formFileMultiple" >
+    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => onFileChange(e)}>
     <Form.Label>Upload images of the Book</Form.Label>
     <Form.Control type="file" multiple size='sm' />
     </Form.Group>
@@ -290,14 +344,20 @@ function Createlisting(){
     </Form.Group>
 
    </Row>
-
-  
-
-  
-
-  
-
+   {isOpen && <Popup
+                content={<>
+                  <div>
+                  <h2>Details </h2> 
+                    <p>File Name: {image.name}</p>
  
+             
+                    <p>File Type: {image.type}</p>
+
+                  </div>                
+
+            </>}
+      handleClose={togglePopup}
+    />}
 
   
 

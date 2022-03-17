@@ -51,7 +51,7 @@ import { LinkContainer } from 'react-router-bootstrap'
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-        <Dropdown.Item as={Link} to="#/action-1">Update Profile</Dropdown.Item>
+        <Dropdown.Item as={Link} to="/user">Account View</Dropdown.Item>
         <Dropdown.Item as={Link} to="#/action-2">Favourites</Dropdown.Item>
         <Dropdown.Item as={Link} to='/user/wishlist'>Wishlist</Dropdown.Item>
         

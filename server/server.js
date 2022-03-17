@@ -290,6 +290,7 @@ app.get('/user', (req, res) => {
         new Promise((resolve, reject) => {
             const query = {_id : req.session.user._id};
             con.collection(userCollection).findOne(query, (err, result) => {
+                console.log("Inside query");    
                 if (err) {reject(err)} else {resolve(result)}
             });
         })
@@ -590,6 +591,26 @@ app.post('/update_lis',(req,res)=>{
 	}
 	addchild(name,condition,description);
 	res.redirect("/postingpage");
+});
+
+app.put('/update_user',(req,res)=>{
+    const oldUser=req.body.oldUserName;
+    const { username, email, address1, address2, fName, lName, city, province, zipcode} = req.body;
+;   let params = {username, email, address1, address2,fName, lName, city, province, zipcode};
+    for(let prop in params) if(!params[prop]) delete params[prop];
+
+    if (req.session.user == undefined) {
+        console.log("Got here");
+        res.status(400).send("Not logged in");
+    } 
+    else {
+        new Promise((resolve, reject) => {
+            const query = {_id : req.session.user._id};
+            con.collection(userCollection).updateOne(query,{$set: params},(err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })
+    }
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

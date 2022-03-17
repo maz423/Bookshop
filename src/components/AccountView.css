@@ -1,0 +1,26 @@
+.First-column{
+    background-color: #232325;
+    border-radius: 5px;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+.Second-column{
+    background-color: #232325;
+    border-radius: 5px;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.First-column{
+    vertical-align: center;
+}
+
+.AccountView {
+    align-items: flex-start !important;
+    color: green;
+
+}
