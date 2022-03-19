@@ -92,7 +92,7 @@ function App() {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} />}/>
        
-        <Route exact path='/search' element={<Search/>} component={keywordFromHomepage}/>
+        <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting/>}/>

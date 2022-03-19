@@ -286,16 +286,23 @@ app.get('/user', (req, res) => {
     //TODO make handle different account types
     if (req.session.user == undefined) {
         res.status(400).send("Not logged in");
-    } else {
+    }
+    else if (!req.session.user.isBasic){
+        res.status(400).send("Not a basic user")
+    } 
+    else {
         new Promise((resolve, reject) => {
             const query = {_id : req.session.user._id};
-            con.collection(userCollection).findOne(query, (err, result) => {
-                console.log("Inside query");    
+            const projection ={
+                projection:{
+                    password : 0
+                }
+            }
+            con.collection(userCollection).findOne(query, projection, (err, result) => {  
                 if (err) {reject(err)} else {resolve(result)}
             });
         })
         .then((result) => {
-            delete result.password;
             res.send(result);
         })
         .catch((error) => {
@@ -303,6 +310,86 @@ app.get('/user', (req, res) => {
         })
     }
 });
+
+app.get('/user/:userID', (req, res) => {
+    //This will return some baisc information about the user being requested
+    const ObjectId = require('mongodb').ObjectId;
+    const userID = new ObjectId(req.params.userID);
+
+    new Promise((resolve, reject) => {
+        const query = {_id : userID}
+        //Use field : 1 inside of projection to include in return
+        //Use field : 0 inside of projection to exclude in return 
+        const projection = {
+            projection: {
+                password : 0
+            }
+        }
+        con.collection(userCollection).findOne(query, projection, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        });
+    })
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.status(400).send(error);
+    })
+});
+
+app.get('/bookstore', (req, res) => {
+    //Returns the currently loggeed in bookstore's information
+    if (req.session.user == undefined) {
+        res.status(400).send("Not logged in");
+    }
+    else if (!req.session.user.isBookstore){
+        res.status(400).send("Not a basic user")
+    }
+    else {
+        new Promise((resolve, reject) => {
+            const query = {_id : req.session.user._id}
+            const projection = {
+                projection : {
+                    password : 0
+                }
+            }
+            con.collection(bookstoreCollection).findOne(query, projection, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((error) => {
+            res.status(400).send(error);
+        });
+    }
+});
+
+app .get('/bookstore/:bookstoreID', (res, req) => {
+    //This will return some baisc information about the user being requested
+    const ObjectId = require('mongodb').ObjectId;
+    const bookstoreID = new ObjectId(req.params.bookstoreID);
+
+    new Promise((resolve, reject) => {
+        const query = {_id : bookstoreID}
+        const projection = {
+            projection: {
+                password : 0
+            }
+        }
+        con.collection.findOne(query, projection, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        })
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((error) => {
+            res.status(400).send(error);
+        })
+    })
+});
+
 
 app.get('/bookstoreUsers', (_, res) => {
     new Promise((resolve, reject) => {
@@ -321,12 +408,12 @@ app.get('/bookstoreUsers', (_, res) => {
 //Will return nothing if there is no cookie with user info
 app.get('/isUser', (req, res) => {
     if(req.session.user == undefined){
-        res.status(400).send("Not logged in")
+        res.status(400).send("Not logged in");
     }
     else if(req.session.user.isBasic) {
         res.send("Success");
     } else {
-        res.status(400).send("Not logged in")
+        res.status(400).send("Not logged in");
     }
 });
 
@@ -783,7 +870,26 @@ app.post('/user/wishlist', (req, res) => {
 
 });
 
+app.get('/test', (_,res)=> {
+    const query ={}
+    const returnStuff = {
+        projection : {
+            username : 1
+        }
+    }
 
+    new Promise((resolve, reject)=> {
+        con.collection(userCollection).find(query, returnStuff).toArray( (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        })
+    })
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.send(error);
+    });
+});
 
  
 //This is just to testing stuff
