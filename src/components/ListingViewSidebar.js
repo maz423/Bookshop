@@ -1,4 +1,4 @@
-import './ListingView.css'
+import './ListingsViewSidebar.css'
 import React,{useEffect, useState} from 'react';
 import Popup from "./Offerpopup.js"; 
 import {useNavigate, useParams} from 'react-router-dom';
@@ -14,7 +14,7 @@ import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 
 
-export const ListingView = (props) => {
+export const ListingViewSidebar = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -103,14 +103,14 @@ export const ListingView = (props) => {
   
     return (
         
-        <div className="Listingpage-form">
+        <div className="Listingpagebox">
              
              <div className='thumbnail'>
              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQicIRGNXnDUnz_FTP9aJ0m2fB05MH-8YL0Y9h154mwQjWUs72k9-MefI8KwWa6JzchDF0&usqp=CAU" alt="..." width="120" height="100" class="img-thumbnail"  /> 
              </div>
              
-             <div className='image-info'>
-             <Container  fluid='lg'>
+             <div className='image-info-sidebar'>
+             <Container fluid>
              <Row>
             
              <p> Title : {props.title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {'5'}$  </p> 
@@ -118,11 +118,11 @@ export const ListingView = (props) => {
              
 
              
-             
+
             
              <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Discription</Button>
-             </OverlayTrigger> <br></br>
+             </OverlayTrigger> <br></br><br></br><br></br><br></br>
              <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
             
              

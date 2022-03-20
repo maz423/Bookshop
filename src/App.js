@@ -58,7 +58,14 @@ function App() {
       
    
     
+    <div className='test'>
 
+      <Routes>
+      <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+      
+      </Routes>
+      
+    </div>
       
 
     
@@ -80,7 +87,9 @@ function App() {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} />} />
         <Route exact path='/signup' element={<Register/>} />
-        <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+        <Route exact path='/search' element={<h1>Hello</h1>} />
+       
+       
         {/* <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/> */}
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>

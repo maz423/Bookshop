@@ -14,6 +14,7 @@ import { useState, useEffect } from 'react';
 import { Offcanvas } from 'react-bootstrap';
 import { render } from '@testing-library/react';
 import { ListOfListings } from './ListOfListings';
+import { ListingViewSidebar } from './ListingViewSidebar';
 
 
 
@@ -82,17 +83,25 @@ export const Sidebar = (props) => {
             Active listings
           </Button>
           
-          <Offcanvas show={show} onHide={handleClose}>
+          <Offcanvas ClassName='sidebar-listings' show={show} onHide={handleClose}>
             <Offcanvas.Header closeButton>
-              <Offcanvas.Title>Active Listings:</Offcanvas.Title>
+              <Offcanvas.Title className='top'>Active Listings:</Offcanvas.Title>
             </Offcanvas.Header>
-            <Offcanvas.Body>
+            <Offcanvas.Body className='body-sidebar'>
               {/* {
                 listingsList.map(element => <div className="text-center"><Link to={'/listing/' + element._id}><h3>{element.title}</h3></Link></div>)
               } */}
-              <ListOfListings listings={listingsList}></ListOfListings>
-              <Button id="nextPageButton" onClick={handleNextPage}>Next Page</Button>
-              <Button id="previousPageButton" onclick={handlePreviousPage}>Previous Page</Button>
+
+         <section>
+
+         {listingsList.map(element => (
+         <ListingViewSidebar id= {element._id} title ={element.title} />
+          ))}
+       
+         </section> 
+              {/* <ListOfListings listings={listingsList}></ListOfListings> */}
+              {/* <Button id="nextPageButton" onClick={handleNextPage}>Next Page</Button>
+              <Button id="previousPageButton" onclick={handlePreviousPage}>Previous Page</Button> */}
            </Offcanvas.Body>
           </Offcanvas>
         </div>

@@ -11,10 +11,19 @@ import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import { ListOfListings } from './ListOfListings';
+import {  Link ,animateScroll as scroll } from "react-scroll";
+import { UseEffectScroll } from 'react-use-smooth-scroll'
 
 
 
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+
+
+
+
+
+import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
+import { ListingView } from './ListingView';
 
 export const Search = (props) => {
 
@@ -95,6 +104,7 @@ const handleSubmitClick = (e) => {
        })
        .then((data) => {
               setListingsList(data);
+              console.log(data)
        })
        .catch((error) => {
               console.log(error);
@@ -107,25 +117,37 @@ const handleSubmitClick = (e) => {
 
 
 return (
-<div className='Search'>
+
+<section className='search-section'>
+
+{listingsList.map(element => (
+
+  <ListingView id= {element._id} title ={element.title} />
+
+))}
+{/* <ListingView  title ={'book1'} />
+<ListingView  title ={'book2'} />
+<ListingView  title ={'book3'} />
+<ListingView  title ={'book4'} />
+<ListingView  title ={'book5'} />
+<ListingView  title ={'book6'} />
+<ListingView  title ={'book7'} /> */}
+
+<h1 className='end-search'> End of results</h1>
+     
+</section>  
+
+
+
+ 
        
-       <Link to="/advancedSearch"> <Button variant="link" size="sm" className="advancedSearch"> Advanced Search </Button></Link>
+        
+       
+       
+        
+       
       
-      
-       <form className='form' onSubmit={handleSubmitClick}>
 
-              <label for="keyword">Search for a book by title:</label>
-              <input type="text" id="keyword" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="keyword"></input>
-
-              <Button variant="success" size="sm" type="submit">Search</Button>
-
-       </form>       
-       
-       <div className='listings' id="listings">
-              <ListOfListings listings={listingsList}></ListOfListings>
-       </div>
-       
-</div>
 
 
       
