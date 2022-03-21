@@ -6,11 +6,16 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require("bcryptjs");
 const path = require('path');
-const fs = require('fs');
+//const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const bodyParser = require("body-parser");
 const MongoDBSession = require('connect-mongodb-session')(session);
+const mongoose = require('mongoose');
+const fs = require('fs-extra');
+const multerHelper = require(path.join(__dirname, "multerHelper"));
+
+require('dotenv/config');
 
 
 var options = {
@@ -102,6 +107,16 @@ app.use(session({
         maxage : 360000
     }
 }));
+
+//this is to connect mongoose to our database
+mongoose.connect(DB_Url,
+	{ useNewUrlParser: true, useUnifiedTopology: true}, err => {
+		console.log('mongoose connected')
+	});
+
+
+//loading the mongoose model for the imageSchema
+var imgModel = require('./model')
 
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
@@ -509,8 +524,10 @@ app.post('/make-lis' ,(req,res)=>{
         zipCode : zipCode,
         timestamp: datetime,
         posterID : req.session.user._id,
-        posterUsername : req.session.user.username,
+        posterName : req.session.user.username,
+        imageNames : [],
     }
+
     new Promise((resolve, reject) => {
         //Add new listing to the database
         con.collection(listingsCollection).insertOne(newListing, (err, result) => {
@@ -525,16 +542,57 @@ app.post('/make-lis' ,(req,res)=>{
         }
 
         const addListing = {$push: {listings : result.insertedId}};
-        con.collection(collection).updateOne({_id : req.session.user._id}, addListing);
-    })
-    .then((_) => {
-        res.send("Success");
+        con.collection(collection).updateOne({_id : req.session.user._id}, addListing, (err, result2) => {
+            if (err) {throw err} else {res.send(result.insertedId)}
+        });
     })
     .catch((error) => {
         console.log(error);
         res.status(400).send(error);
     });
 });
+
+//John change this to button delete instead of deleting by name
+//TODO figure out a delete by button once we actually implement it
+app.post('/remove-lis',(req,res)=>{
+	const {title} = req.body; //for now have it as the title TODO change to id from button press
+	const myquery = { title: title};
+	new Promise((resolve, reject) => {
+		con.collection(listingsCollection).deleteOne(myquery, function(err,response){
+			if (err) {
+			console.log(err);
+			} else{
+			console.log('listing deleted')	
+			}
+		});
+	})
+	.then((result) => {
+        res.send(result);
+    	})
+    	.catch((error) => {
+        res.status(400).send(error);
+    	});
+});
+
+//This is for updating listing, you can update by button press (needs to be implemented by john), TODO make the old data autofill also put errors for when there isn't any items in the form
+app.post('/update_lis',(req,res)=>{
+	const {title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
+	var myquery = { title: title}; //will probably have to change this to id
+	new Promise((resolve, reject) => {
+		var newvalues = { $set: {title, authorName, description, price, address1, address2, city, province, zipCode}};
+		con.collection(listingsCollection).updateOne(myquery, newvalues, function(err,response){
+			if (err) throw err;
+			});
+		})
+		.then((result) => {
+        	res.send(result);
+    		})
+    		.catch((error) => {
+        	res.status(400).send(error);
+    		});
+});
+
+
 
 //See the listings on the browser 
 app.get('/listings', (req,res) => {
@@ -900,12 +958,35 @@ app.get('/test', (_,res)=> {
     });
 });
 
+app.post('/uploadImage', multerHelper.uploadImage, (req, res, next) => {
+    const addImage = {$push : {imageNames : req.file.filename}}
+    const ObjectId = require('mongodb').ObjectId;
+    const listingQuery = {_id : new ObjectId(req.body.id)}
+    new Promise((resolve, reject) => {
+        con.collection(listingsCollection).updateOne(listingQuery, addImage, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        });
+    })
+    .then((_) => {
+        res.send("success");
+    })
+    .catch((error) => {
+        res.status(400).send("error uploading image");
+    })
+});
  
 //This is just to testing stuff
 app.get('/', (req, res) => {
     //res.redirect("http://localhost:3000/");
     //res.send("Hey");
     res.redirect("http://localhost:3000/register");
+});
+
+app.get('/image/:listingID/:filename', (req, res) => {
+    const { listingID, filename } = req.params;
+    const dirname = path.resolve();
+    const fullfilepath = path.join(dirname, 'uploads/' + listingID + '/'+ filename);
+    return res.sendFile(fullfilepath);
 });
 
 app.use('/', express.static('pages'));

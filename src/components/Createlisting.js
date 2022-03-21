@@ -10,7 +10,6 @@ import Col from 'react-bootstrap/Col'
 import InputGroup from 'react-bootstrap/InputGroup'
 
 
-
 function Createlisting(){
     
    const [ form, setForm ] = useState({})
@@ -106,27 +105,10 @@ function Createlisting(){
   const [image, setImage]=useState('');
   
   // On file select (from the pop up)
-  const convertBase64=(file)=>{
-    return new Promise((resolve,reject)=>{
-      const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-
-        fileReader.onload(()=>{
-          resolve(fileReader.result);
-        });
-
-        fileReader.oneerror((error) => {
-          reject(error);
-        })
-    });
-  };
-  const onFileChange = async (event) => {
+  const onFileChange = (event) => {
     
     // Update the state
-    setImage(event.target.files[0]);
-    const base64 = await convertBase64(image);
-
-    console.log(base64);
+    setImage({ image: event.target.files[0] });
   
   };
   
@@ -154,40 +136,44 @@ function Createlisting(){
           city : formItems.formGridCity.value,
           province : formItems.formGridState.value,
           zipCode : formItems.formGridZip.value,
-          image: formItems.formFileMultiple.value,
         };
-        const f = {
-          image: formItems.formFileMultiple.value,
-        }
-
-        console.log(formItems.formFileMultiple)
         //Testing for images 
-        console.log(body);
-        console.log(body,formItems.formFileMultiple.name);
         const requestOptions = {
             credentials: 'include',
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
-            body : JSON.stringify(body),
+            body : JSON.stringify(body)
         };
-        const requestImages = {
-          credentials: 'include',
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(f),
-        }
         
         fetch('http://localhost:8000/make-lis', requestOptions)
         .then((response) => {
           if (!response.ok){
             console.log("error sending info");
           } else {
+            return response.json();
             //navigate('/')
           }
-        }).catch( (error)=>{
+        })
+        .then((data) => {
+          //You will have user id here
+          console.log(data);
+          
+          const formData = new FormData();
+          formData.append('id', data);
+          formData.append('file',image);
+          const request2Options = {
+            credentials: 'include',
+            method: 'POST',
+            body : formData,
+          }
+
+          fetch("http://localhost:8000/uploadImage", request2Options)
+          .then((result) => console.log(result))
+          .catch((error) => console.log(error));
+        })
+        .catch( (error)=>{
             console.log(error);
         });
-        
     };
   }
 
@@ -262,7 +248,7 @@ function Createlisting(){
   <Row>
 
     
-    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => onFileChange(e)}>
+    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => setImage(e.target.files[0])}>
     <Form.Label>Upload images of the Book</Form.Label>
     <Form.Control type="file" multiple size='sm' />
     </Form.Group>
@@ -281,12 +267,13 @@ function Createlisting(){
     
 
 
-    </Row>
+    
 
     <InputGroup>
     <InputGroup.Text>Description:</InputGroup.Text>
     <Form.Control id="formDescription" as="textarea" aria-label="With textarea"  />
   </InputGroup>
+  </Row>
 
   
  
@@ -344,7 +331,7 @@ function Createlisting(){
     </Form.Group>
 
    </Row>
-   {isOpen && <Popup
+   {/* {isOpen && <Popup
                 content={<>
                   <div>
                   <h2>Details </h2> 
@@ -357,7 +344,7 @@ function Createlisting(){
 
             </>}
       handleClose={togglePopup}
-    />}
+    />} */}
 
   
 
