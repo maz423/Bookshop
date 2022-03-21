@@ -140,7 +140,7 @@ app.post('/login', (req, res)=>{
                     isBasic : false,
                     isBookstore : false,
                     isAdmin : false,
-                    username : user.username,
+                    username : username,
                     _id : user._id
                 }
                 
@@ -287,18 +287,22 @@ app.get('/user', (req, res) => {
     if (req.session.user == undefined) {
         res.status(400).send("Not logged in");
     }
-    else if (!req.session.user.isBasic){
-        res.status(400).send("Not a basic user")
-    } 
     else {
         new Promise((resolve, reject) => {
+            //TODO Maybe refactor so that we have a function that returns location information
+            //Then have user and bookstore to get all the information
+            let collection = userCollection;
+            if (req.session.user.isBookstore){
+                collection = bookstoreCollection;
+            }
+
             const query = {_id : req.session.user._id};
             const projection ={
                 projection:{
                     password : 0
                 }
             }
-            con.collection(userCollection).findOne(query, projection, (err, result) => {  
+            con.collection(collection).findOne(query, projection, (err, result) => {  
                 if (err) {reject(err)} else {resolve(result)}
             });
         })
@@ -515,8 +519,13 @@ app.post('/make-lis' ,(req,res)=>{
     })
     .then((result) => {
         //TODO add account type detection
+        let collection = userCollection;
+        if (req.session.user.isBookstore){
+            collection = bookstoreCollection
+        }
+
         const addListing = {$push: {listings : result.insertedId}};
-        con.collection(userCollection).updateOne({username : req.session.user.username}, addListing);
+        con.collection(collection).updateOne({_id : req.session.user._id}, addListing);
     })
     .then((_) => {
         res.send("Success");
