@@ -11,8 +11,7 @@ import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import { ListOfListings } from './ListOfListings';
-import {  Link ,animateScroll as scroll } from "react-scroll";
-import { UseEffectScroll } from 'react-use-smooth-scroll'
+
 
 
 
