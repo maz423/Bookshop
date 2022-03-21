@@ -19,6 +19,10 @@ import AccountView from './components/AccountView';
 import Logout from './components/Logout';
 import { LinkContainer } from 'react-router-bootstrap'
 import {Wishlist} from './components/Wishlist'
+import React, { useEffect } from 'react';
+
+
+
 
 
 
@@ -30,6 +34,52 @@ function App() {
 
   const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
   const [listingID, setListingID] = useState('');
+
+
+
+  
+  
+
+//for loading state once when app restarts.
+ useEffect(() => {
+  try {
+    const serializedState = localStorage.getItem('Login');
+    const serializedState2 = localStorage.getItem('Admin');
+    if(serializedState === null){
+        return undefined;
+    }
+    if(serializedState2 === null){
+      return undefined;
+  }
+    setLoggedIn(serializedState)
+    setIsAdmin(serializedState2)
+    
+} catch (err) {
+    return undefined;
+}
+  
+
+}, [])
+
+
+//saving state whenever change is detected.
+useEffect(() => {
+  
+  try{
+    // const serializedState = LoggedIn.toString();
+    
+    localStorage.setItem('Login', LoggedIn );
+    localStorage.setItem('Admin', IsAdmin );
+    
+} catch (err){
+    return undefined;
+}
+
+}, [LoggedIn,IsAdmin])
+
+
+
+
 
  
 
@@ -50,7 +100,7 @@ function App() {
     <div className="App">
 
     <Router>
-     {!LoggedIn
+     {LoggedIn == 0
     ? <Navi set = {setLoggedIn}/>
     : <Login_Nav admin = {IsAdmin}/>
     
@@ -80,7 +130,7 @@ function App() {
        
         <p>
         
-        {!LoggedIn
+        {LoggedIn == 0
         ? ( 
         <Routes>
         <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
@@ -101,7 +151,7 @@ function App() {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} />}/>
        
-        <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+        {/* <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/> */}
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting/>}/>
