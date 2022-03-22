@@ -46,21 +46,41 @@ function App() {
 
 //for loading state once when app restarts.
  useEffect(() => {
-  try {
-    const serializedState = sessionStorage.getItem('Login');
-    const serializedState2 = sessionStorage.getItem('Admin');
-    if(serializedState === null){
-        return undefined;
-    }
-    if(serializedState2 === null){
-      return undefined;
-  }
-    setLoggedIn(serializedState)
-    setIsAdmin(serializedState2)
+   const loginURL = 'http://localhost:8000/isLoggedIn';
+   const requestOptions = {
+      credentials: 'include',
+      method: 'GET',
+   }
+   fetch(loginURL, requestOptions)
+   .then((response) => {
+     if (!response.ok){
+       setLoggedIn(false);
+       setIsAdmin(false);
+     }
+     else {
+       //Todo check for admin
+       setLoggedIn(true);
+     }
+   })
+   .catch((err) => {
+    setLoggedIn(false);
+    setIsAdmin(false);
+   });
+//   try {
+//     const serializedState = sessionStorage.getItem('Login');
+//     const serializedState2 = sessionStorage.getItem('Admin');
+//     if(serializedState === null){
+//         return undefined;
+//     }
+//     if(serializedState2 === null){
+//       return undefined;
+//   }
+//     setLoggedIn(serializedState)
+//     setIsAdmin(serializedState2)
     
-} catch (err) {
-    return undefined;
-}
+// } catch (err) {
+//     return undefined;
+// }
   
 
 }, [])
