@@ -56,9 +56,10 @@ return (
 
 <section className='wishlist-display'>
 
-{wishlist.map(element => (
+{/* {wishlist.map(element => (
     <ListingView id={element._id} title={element.title}/>
-))}
+))} */}
+<ListOfListings listings={wishlist}/>
 
 </section>
 
