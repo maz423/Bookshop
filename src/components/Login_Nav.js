@@ -49,7 +49,7 @@ return (
         
       </Nav>
       
-    {!Admin
+    {Admin == 0
     ?   <DropdownUser/>
     :  <DropdownAdmin/>
     

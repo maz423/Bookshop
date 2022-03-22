@@ -109,21 +109,25 @@ export const ListingView = (props) => {
              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQicIRGNXnDUnz_FTP9aJ0m2fB05MH-8YL0Y9h154mwQjWUs72k9-MefI8KwWa6JzchDF0&usqp=CAU" alt="..." width="120" height="100" class="img-thumbnail"  /> 
              </div>
              
+
+             
+             
              <div className='image-info'>
              <Container  fluid='lg'>
              <Row>
             
-             <p> Title : {props.title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {'5'}$  </p> 
+             <p> Title : {props.title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {'5'}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :</p> 
+             <p> Discription: </p>
              
              
 
              
              
             
-             <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+             {/* <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Discription</Button>
-             </OverlayTrigger> <br></br>
-             <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+             </OverlayTrigger> <br></br> */}
+             <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
             
              
              

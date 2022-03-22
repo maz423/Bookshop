@@ -9,10 +9,10 @@
     width:100% !important;
     height: 100% !important;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     
     
-    background-color: black;
+    
     padding-right: 2%;
 
     
