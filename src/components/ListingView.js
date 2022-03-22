@@ -22,44 +22,58 @@ export const ListingView = (props) => {
     const {listingID} = useParams();
     
     const [user, setUser] = useState('');
+    const [image, setImage] = useState();
     const [price, setPrice] = useState('');
-    const [bookName, setBookName] = useState('');
+    const [title, setTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
+    const [imageName, setImageName] = useState('');
+    const [timestamp, setTimestamp] = useState('');
 
-    
+    const fetchIamge = async () => {
+      const imageURL = "http://localhost:8000/image/listings/" + listingID + "/" + imageName;
+      const res = await fetch(imageURL);
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setImage(imageObjectURL);
+  }
 
-    // useEffect(() => {
-    //     const listingURL = 'http://localhost:8000/listing/' + listingID;
-    //     console.log(listingURL);
-    //     const requestOptions = {
-    //         credentials: 'include',
-    //         method: 'GET',
-    //         headers: {'Content-Type' : 'application/json'},
-    //     };
+    useEffect(() => {
+        const listingURL = 'http://localhost:8000/listing/' + listingID;
+        console.log(listingURL);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'GET',
+            headers: {'Content-Type' : 'application/json'},
+        };
 
-    //     fetch(listingURL, requestOptions)
-    //     .then((response) => {
-    //         if (response.ok) {
-    //             return response.json();
-    //         } else {
-    //         }
-    //     })
-    //     .then((data) => {
-    //         console.log(data);
-    //         setUser(data.user);
-    //         setBookName(data.textname);
-    //         setPrice(data.price);
-    //         setBookDescription(data.bookDescription)
-    //     })
-    //     .catch((error) =>{
-    //         console.log(error);
-    //     });
-    // }, []);
+        fetch(listingURL, requestOptions)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+            }
+        })
+        .then((data) => {
+            console.log(data);
+            setUser(data.posterName);
+            setImageName(data.imageNames[0]);
+            setTitle(data.title);
+            setPrice(data.price);
+            setBookDescription(data.description);
+            setTimestamp(data.timestamp);
+        })
+        .catch((error) =>{
+            console.log(error);
+        });
+    }, []);
+    useEffect(() => {
+      fetchIamge();
+    }, [imageName]);
 
 
     const popover = (
         <Popover id="popover-basic">
-          <Popover.Header as="h3">Discription</Popover.Header>
+          <Popover.Header as="h3">Description</Popover.Header>
           <Popover.Body>
             Used like new, No ripped pages.
           </Popover.Body>
@@ -106,7 +120,7 @@ export const ListingView = (props) => {
         <div className="Listingpage-form">
              
              <div className='thumbnail'>
-             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQicIRGNXnDUnz_FTP9aJ0m2fB05MH-8YL0Y9h154mwQjWUs72k9-MefI8KwWa6JzchDF0&usqp=CAU" alt="..." width="120" height="100" class="img-thumbnail"  /> 
+             <img src={image} alt="..." width="120" height="100" class="img-thumbnail"  /> 
              </div>
              
 
@@ -116,8 +130,8 @@ export const ListingView = (props) => {
              <Container  fluid='lg'>
              <Row>
             
-             <p> Title : {props.title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {'5'}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :</p> 
-             <p> Discription: </p>
+             <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {user} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
+             <p> Description: {bookDescription} </p>
              
              
 
