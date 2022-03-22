@@ -47,8 +47,8 @@ function App() {
 //for loading state once when app restarts.
  useEffect(() => {
   try {
-    const serializedState = localStorage.getItem('Login');
-    const serializedState2 = localStorage.getItem('Admin');
+    const serializedState = sessionStorage.getItem('Login');
+    const serializedState2 = sessionStorage.getItem('Admin');
     if(serializedState === null){
         return undefined;
     }
@@ -72,8 +72,8 @@ useEffect(() => {
   try{
     // const serializedState = LoggedIn.toString();
     
-    localStorage.setItem('Login', LoggedIn );
-    localStorage.setItem('Admin', IsAdmin );
+    sessionStorage.setItem('Login', LoggedIn );
+    sessionStorage.setItem('Admin', IsAdmin );
     
 } catch (err){
     return undefined;
