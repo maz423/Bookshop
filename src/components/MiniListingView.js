@@ -88,7 +88,7 @@ export const MiniListingView = (props) => {
              <Container fluid>
              <Row>
               
-             <p><Link to={link}>{title}</Link> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$</p>
+             <p><Link to={link} className='link'>{title}</Link> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$</p>
              
              
 

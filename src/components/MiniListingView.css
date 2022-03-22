@@ -49,3 +49,12 @@
 
    color: black;
 }
+
+.link{
+    color: rgb(246, 250, 246);
+    font-weight: bold;
+}
+
+.link:hover{
+    color: rgb(9, 136, 248);
+}

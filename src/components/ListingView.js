@@ -145,7 +145,7 @@ export const ListingView = (props) => {
         <div className="Listingpage-form">
              
              <div className='thumbnail'>
-             <img src={image} alt="..." width="120" height="100" class="img-thumbnail"  /> 
+             <img src={image} alt="..." width="300" height="300" class="img-thumbnail"  /> 
              </div>
              
 
@@ -166,9 +166,9 @@ export const ListingView = (props) => {
              {/* <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
-             <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+             <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
 
-             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
+             <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
             
              
              
