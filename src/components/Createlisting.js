@@ -157,9 +157,11 @@ function Createlisting(){
         .then((data) => {
           //You will have user id here
           console.log(data);
+          let directory = "listings"
           
           const formData = new FormData();
           formData.append('id', data);
+          formData.append('directory', directory);
           formData.append('file',image);
           const request2Options = {
             credentials: 'include',

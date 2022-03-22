@@ -75,7 +75,7 @@ useEffect(() => {
               console.log(error);
        });
 
-}, [])
+}, [keywordFromHomepage])
 
 
 
@@ -116,14 +116,15 @@ const handleSubmitClick = (e) => {
 
 
 return (
-
 <section className='search-section'>
+<div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}}>
+<ListOfListings listings={listingsList}/>
 
-{listingsList.map(element => (
-
-  <ListingView id= {element._id} title ={element.title} />
-
-))}
+</div>
 {/* <ListingView  title ={'book1'} />
 <ListingView  title ={'book2'} />
 <ListingView  title ={'book3'} />

@@ -18,7 +18,7 @@ export const ListOfListings = (props) => {
         } else {
             setListingsList([]);
         }
-    });
+    },[props.listings]);
 
     return(
         <div>

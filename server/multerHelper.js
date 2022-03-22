@@ -4,7 +4,8 @@ let fs = require('fs-extra');
 let storage = multer.diskStorage({
 destination: function (req, file, cb) {
     let Id = req.body.id;
-    let path = `uploads/${Id}`;
+    let directory = req.body.directory;
+    let path = `uploads/${directory}/${Id}`;
     fs.mkdirsSync(path);
     cb(null, path);
 },

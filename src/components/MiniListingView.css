@@ -1,0 +1,51 @@
+.Listingpagebox{
+    
+    font-size: sm;
+    
+   background-color:white;
+    
+    
+   
+    width:100% !important;
+    height: 100% !important;
+    display: flex;
+    flex-direction: row;
+    
+    padding-right: 2%;
+    
+    
+    
+    
+}
+
+.image-info-sidebar{
+   padding-top: 2%;
+   font-size: small;
+   
+
+   color: rgb(2, 53, 23);
+
+ text-align: left;
+ 
+ 
+ 
+ 
+}
+
+.thumbnail{
+    padding-top: 2%;
+    padding-right: 1%;
+    padding-left: 3%;
+    padding-bottom: 2%;
+   
+    
+    
+  
+
+    
+}
+
+.flexer{
+
+   color: black;
+}

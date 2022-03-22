@@ -447,7 +447,6 @@ app.post('/regularSearch', (req, res) =>{
 
         const pipeline = [
             { $match: { title: { $regex: keyword, $options: "i" } } },
-            { $group: { _id: "$_id", title: { $push: "$title" } } }
         ];
 
 
@@ -464,6 +463,7 @@ app.post('/regularSearch', (req, res) =>{
 
         (async function() {
             let searchResults = await performSearch();
+            console.log(searchResults);
             console.log(searchResults[0]);
             res.send(searchResults);
         })();
@@ -982,10 +982,10 @@ app.get('/', (req, res) => {
     res.redirect("http://localhost:3000/register");
 });
 
-app.get('/image/:listingID/:filename', (req, res) => {
-    const { listingID, filename } = req.params;
+app.get('/image/:directory/:listingID/:filename', (req, res) => {
+    const { directory, listingID, filename } = req.params;
     const dirname = path.resolve();
-    const fullfilepath = path.join(dirname, 'uploads/' + listingID + '/'+ filename);
+    const fullfilepath = path.join(dirname, 'uploads/' + directory + '/' + listingID + '/'+ filename);
     return res.sendFile(fullfilepath);
 });
 

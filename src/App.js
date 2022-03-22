@@ -90,7 +90,7 @@ function App() {
         <Route exact path='/search' element={<h1>Hello</h1>} />
        
        
-        {/* <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/> */}
+        <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
         <Route path='/user/wishlist' element={<Wishlist/>}/>
