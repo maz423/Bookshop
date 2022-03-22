@@ -18,6 +18,9 @@ export const ListingView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
 
+    // constant that will check if the user is viewing their search results or their wishlist
+    const [isSearchResults, setIsSearchResults] = useState(true);
+
     //Stuff to be grabbed from the database
     const {listingID} = useParams();
     
@@ -69,6 +72,28 @@ export const ListingView = (props) => {
     //This function will open the popup page to make an offer
     const togglePopup = () => {
         setIsOpen(!isOpen);
+    }
+
+    const addToWishlist = () => {
+      const requestOptions = {
+        credentials: 'include',
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body : JSON.stringify({listingID : props.id})
+      };
+
+      fetch('http://localhost:8000/add-to-wishlist', requestOptions)
+      .then((response) => {
+        if(response.ok){
+          console.log('ok');
+        }
+        else{
+
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
 
     const handleSubmitClick = (e) => { 
@@ -128,6 +153,8 @@ export const ListingView = (props) => {
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
              <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+
+             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
             
              
              

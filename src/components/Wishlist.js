@@ -3,13 +3,14 @@ import {useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { ListOfListings } from './ListOfListings';
+import { ListingView } from './ListingView';
 
 
 export const Wishlist = (props) => {
 
     const {userID} = useParams();
 
-    const [wishlist, setWishlist] = useState('');
+    const [wishlist, setWishlist] = useState([]);
     const [listingID, setListingID] = useState('');
     const [title, setTitle] = useState('');
 
@@ -29,7 +30,7 @@ useEffect(() => {
         body : JSON.stringify({id : userID})
     };
 
-    fetch('http://localhost:8000/user/wishlist', requestOptions)
+    fetch('http://localhost:8000/wishlist', requestOptions)
     .then((response) => {
 
         if(response.ok){
@@ -53,11 +54,13 @@ useEffect(() => {
 
 return (
 
-<div className="Wishlist">
+<section className='wishlist-display'>
 
-    <ListOfListings listings={wishlist}></ListOfListings>
+{wishlist.map(element => (
+    <ListingView id={element._id} title={element.title}/>
+))}
 
-</div>
+</section>
 
 
 );
