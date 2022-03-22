@@ -15,6 +15,7 @@ export const RegisterbookStore = (props) => {
 
   const [ form, setForm ] = useState({})
   const [ errors, setErrors ] = useState({})
+  const [image, setImage]=useState('');
 
 const navigate = useNavigate();
 
@@ -134,6 +135,11 @@ return (
   </Row>
 
    <Row>
+
+   <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => setImage(e.target.files[0])}>
+    <Form.Label>Store Logo</Form.Label>
+    <Form.Control type="file" multiple size='sm' />
+    </Form.Group>
    
 
    <Form.Group as={Col} controlId="formGridPassword">

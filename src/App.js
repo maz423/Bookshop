@@ -34,10 +34,14 @@ function App() {
 
   const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
   const [listingID, setListingID] = useState('');
-
-
-
   
+
+
+
+// window.onunload = () => {
+//     // Clear the local storage
+//     window.localStorage.clear()
+//  } 
   
 
 //for loading state once when app restarts.
