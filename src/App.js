@@ -143,7 +143,7 @@ useEffect(() => {
         <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
-        <Route path='/user/wishlist' element={<Wishlist/>}/>
+        <Route exact path='/wishlist' element={<Wishlist/>}/>
         </Routes>)
          : (<Routes>
 
@@ -161,7 +161,7 @@ useEffect(() => {
          
           <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
-          <Route path='/user/wishlist' element={<Wishlist/>}/>
+          <Route exact path='/wishlist' element={<Wishlist/>}/>
          
           
             

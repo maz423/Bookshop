@@ -819,11 +819,12 @@ app.get('/get-offers',function(req,res){
 });
 
 
-app.post('add-to-wishlist', (req, res) => {
+app.post('/add-to-wishlist', (req, res) => {
 
     var listingID = req.body.listingID;       // this is the id of the listing to be added to the wishlist
     var user = req.session.user.username;
     //var userID = req.body.userID;
+    console.log(listingID);
 
     async function addToWishlist(){
 
@@ -833,7 +834,7 @@ app.post('add-to-wishlist', (req, res) => {
             await users.updateOne({username : user}, {$push : {wishlist : listingID}});
 
         }
-        catch{
+        catch(error){
             console.log(error);
             res.status(400).send(error);
         }
@@ -849,7 +850,7 @@ app.post('add-to-wishlist', (req, res) => {
 })
 
 
-app.post('/user/wishlist', (req, res) => {
+app.post('/wishlist', (req, res) => {
 
     //var id = req.body.id;
     var username = req.session.user.username;
@@ -864,7 +865,7 @@ app.post('/user/wishlist', (req, res) => {
 
             return user;
         }
-        catch{
+        catch(error){
             console.log(error);
             res.status(400).send(error);
         }
@@ -877,16 +878,19 @@ app.post('/user/wishlist', (req, res) => {
 
             const listingIDs = [];
 
+            const ObjectId = require('mongodb').ObjectId;
+
             const userWishlist = await user.wishlist;
 
             for await (const listingID of userWishlist){
-                listingIDs.push(listingID);
+                let listingOID = new ObjectId(listingID);
+                listingIDs.push(listingOID);
             }
 
             return listingIDs;
 
         }
-        catch{
+        catch(error){
             console.log(error);
             res.status(400).send(error);
         }
@@ -903,15 +907,22 @@ app.post('/user/wishlist', (req, res) => {
             const books = [];
 
             for await (const listingID of listingIDs){
+
+
+
                 let listing = await listings.findOne({_id : listingID});
 
-                books.push(listing.title);
+                console.log(listing);
+
+                await books.push(listing);
 
             }
 
+            return books;
+
 
         }
-        catch{
+        catch(error){
             console.log(error);
             res.status(400).send(error);
         }
@@ -928,6 +939,7 @@ app.post('/user/wishlist', (req, res) => {
         var listings = await getListings(wishlist);
 
         res.send(listings);
+
 
     })();
 

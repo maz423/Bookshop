@@ -1,0 +1,11 @@
+.Wishlist{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
+.wishlist-display{
+    font-size: small;
+
+    width: 100%;
+    height: 100%;
+}
