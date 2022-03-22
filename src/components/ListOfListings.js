@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { MiniListingView } from './MiniListingView';
 
 export const ListOfListings = (props) => {
     const [listingsList, setListingsList] = useState([]);
@@ -24,7 +25,7 @@ export const ListOfListings = (props) => {
             {
                 listingsList.map(element => { 
                     return <div className="text-center">
-                        <Link to={'/listing/' + element._id}>{element.title}</Link>
+                        <MiniListingView listing={element}/>
                     </div>
                 })
             }

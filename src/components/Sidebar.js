@@ -83,7 +83,7 @@ export const Sidebar = (props) => {
             Active listings
           </Button>
           
-          <Offcanvas ClassName='sidebar-listings' show={show} onHide={handleClose}>
+          <Offcanvas className='sidebar-listings' show={show} onHide={handleClose}>
             <Offcanvas.Header closeButton>
               <Offcanvas.Title className='top'>Active Listings:</Offcanvas.Title>
             </Offcanvas.Header>
@@ -94,12 +94,13 @@ export const Sidebar = (props) => {
 
          <section>
 
-         {listingsList.map(element => (
+         {/* {listingsList.map(element => (
          <ListingViewSidebar id= {element._id} title ={element.title} />
-          ))}
-       
+          ))} */}
+          
+          
          </section> 
-              {/* <ListOfListings listings={listingsList}></ListOfListings> */}
+         <ListOfListings listings={listingsList}></ListOfListings>  
               {/* <Button id="nextPageButton" onClick={handleNextPage}>Next Page</Button>
               <Button id="previousPageButton" onclick={handlePreviousPage}>Previous Page</Button> */}
            </Offcanvas.Body>
