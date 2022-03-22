@@ -13,19 +13,22 @@ import { Container } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
 import { useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap'
+import { useNavigate } from 'react-router-dom';
+
 
 
 
 
 export const Navi = (props) => {
 
-const handleSubmitClick = (e) => { //handle submit event.
-    }
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const [keywordFromHomepage, setKeywordFromHomepage] = useState("");
+
+    const navigate = useNavigate();
         
 
 return (
@@ -59,6 +62,13 @@ return (
           size='sm'
           value={keywordFromHomepage}
           onChange={(e)=>setKeywordFromHomepage(e.target.value)}
+          onKeyPress={event => {
+            if (event.key === "Enter") {
+              // <Link to={`/search/${keywordFromHomepage}`}></Link>
+              navigate(`/search/${keywordFromHomepage}`)
+            }
+          }}
+          
         />
         <Button as={Link} to={`/search/${keywordFromHomepage}`}variant="outline-success" disabled={!keywordFromHomepage}>Search</Button>
       </Form>

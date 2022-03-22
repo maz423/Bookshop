@@ -58,7 +58,7 @@
 
 .sidebar-listings{
 
-    /* background-color: black; */
+    background-color: black;
 }
 
 
@@ -67,5 +67,9 @@
     
 
     color:red;
+}
+
+.top{
+    color:green
 }
 
