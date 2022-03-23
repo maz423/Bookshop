@@ -21,6 +21,9 @@ import { LinkContainer } from 'react-router-bootstrap'
 import {Wishlist} from './components/Wishlist'
 import React, { useEffect } from 'react';
 import {Report_users} from './components/Report_users'
+import { SearchUser } from './components/SearchUser';
+import { UserView } from './components/UserView';
+import {Mini_ListofUsers} from './components/Mini_ListofUsers'
 
 
 
@@ -137,6 +140,8 @@ useEffect(() => {
 
       <Routes>
       <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+      <Route exact path='/SearchUser' element={<SearchUser/>} />
+      <Route exact path='/viewUsers' element={<Mini_ListofUsers/>} />
       
       </Routes>
       
@@ -154,14 +159,22 @@ useEffect(() => {
     
        
         <p>
+
+       
         
         {LoggedIn == 0
         ? ( 
+
+          
         <Routes>
         <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} />} />
         <Route exact path='/signup' element={<Register/>} />
+        <Route exact path='/viewUser' element={<UserView/>} />
+        
+        
+        
         
 
        
