@@ -255,11 +255,13 @@ app.post("/registerBookstore", (req, res) => {
                 province : province,
                 zipcode : zipcode,
                 listings : [],
+                profilePicture : "",
+                brandingImage : "",
                 };
             con.collection(bookstoreCollection).insertOne(newUser, (err, result) => {
                 if (err) { throw err } else {
                     console.log("success");
-                    res.send("Success")
+                    res.send("result.insertedId")
                 }
             });
         })
@@ -970,10 +972,28 @@ app.get('/test', (_,res)=> {
     });
 });
 
+//When doing form data.append do id and directory first then file
+//Form data
+//TODO work on registerbookstore.js, add two image fields, one for branding, one for profile picture
+//TODO work on registerUser.js, add one image submission field for profile picture
 app.post('/uploadImage', multerHelper.uploadImage, (req, res, next) => {
     const addImage = {$push : {imageNames : req.file.filename}}
     const ObjectId = require('mongodb').ObjectId;
     const listingQuery = {_id : new ObjectId(req.body.id)}
+    let collection = listingsCollection;
+    if(dir == "bookstores"){
+    	addImage = {$set : {profilePicture: req.filename}};
+    	collection = bookstoreCollection
+    } else if (dir == "users") {
+    	addImage = {$set : {profilePicture: req.file.filename}};
+    	collection = userCollection;
+    } else if (dir == "branding"){
+    	addImage = {$set : {brandingImage: req.file.filename}};
+    	collection = bookstoreCollection;
+    } else if (dir == "listings"){}
+    else{
+    	return res.status(400).send(dir + "Not recognized");
+    }
     new Promise((resolve, reject) => {
         con.collection(listingsCollection).updateOne(listingQuery, addImage, (err, result) => {
             if (err) {reject(err)} else {resolve(result)}

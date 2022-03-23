@@ -59,6 +59,16 @@ const findFormErrors = () => {
   return newErrors
 }
 
+  //State for the images no file initially selected 
+  const [image, setImage]=useState('');
+  
+  // On file select (from the pop up)
+  const onFileChange = (event) => {
+    
+    // Update the state
+    setImage({ image: event.target.files[0] });
+  
+  };
 
 const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
@@ -102,6 +112,25 @@ const handleSubmitClick = (e) => { //handle submit event.
     }
     
   })
+  .then((data) => {
+          //You will have user id here
+          console.log(data);
+          let directory = "listings"
+          
+          const formData = new FormData();
+          formData.append('id', data);
+          formData.append('directory', directory);
+          formData.append('file',image);
+          const request2Options = {
+            credentials: 'include',
+            method: 'POST',
+            body : formData,
+          }
+
+          fetch("http://localhost:8000/uploadImage", request2Options)
+          .then((result) => console.log(result))
+          .catch((error) => console.log(error));
+        })
   .catch((error) => {
     console.log(error);
   });
@@ -159,6 +188,10 @@ return (
   </Row>
 
    <Row>
+    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => setImage(e.target.files[0])}>
+    <Form.Label>Upload Profile pic</Form.Label>
+    <Form.Control type="file" multiple size='sm' />
+    </Form.Group>
    
 
     <Form.Group as={Col} controlId="formGridPassword">

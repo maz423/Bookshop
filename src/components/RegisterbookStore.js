@@ -55,6 +55,17 @@ const findFormErrors = () => {
   return newErrors
 }
 
+//State for the images no file initially selected 
+const [image, setImage]=useState('');
+
+// On file select (from the pop up)
+const onFileChange = (event) => {
+    
+    // Update the state
+    setImage({ image: event.target.files[0] });
+};
+  
+
 const handleSubmitClick = (e) => { //handle submit event.
   e.preventDefault();
 
@@ -93,9 +104,28 @@ const handleSubmitClick = (e) => { //handle submit event.
     else {
       console.log(result);
       alert('Bookstore successfully Registered');
-      navigate("/Login");
+      return result.json();
+      //navigate("/Login");
+      
     }
    
+  })
+  .then((data) => {
+   console.log(data);
+   let directory = "bookstores"
+   
+   const formData = new FormData();
+   formData.append('id', data);
+   formData.append('directory', directory);
+   formData.append('file', image);
+   const request2Options = {
+   	credentials : 'include',
+   	method : 'POST',
+   	body : formData,
+   }
+   fetch("http://localhost:8000/uploadImage", request2Options)
+   .then((result) => console.log(result))
+   .catch((error) => console.log(error));
   })
   .catch((error) => {
     console.log(error);
@@ -163,6 +193,15 @@ return (
    </Row>
 
    <Row>
+    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => setImage(e.target.files[0])}>
+    <Form.Label>Upload Profile Picture</Form.Label>
+    <Form.Control type="file" multiple size='sm' />
+    </Form.Group>
+    
+    <Form.Group as={Col} controlId="formFileMultiple" onChange={ e => setImage(e.target.files[0])}>
+    <Form.Label>Upload Brand</Form.Label>
+    <Form.Control type="file" multiple size='sm' />
+    </Form.Group>
       
    <Form.Group as={Col} controlId="formGridCity">
       <Form.Label>City</Form.Label>
@@ -173,7 +212,7 @@ return (
     </Form.Group>
 
     <Form.Group as={Col} controlId="formGridState">
-      <Form.Label>Provience</Form.Label>
+      <Form.Label>Provinces</Form.Label>
       <Form.Control size='sm' placeholder='eg. Saskatchewan' onChange={ e => setField('formGridState', e.target.value) } isInvalid={ !!errors.formGridState } />
       <Form.Control.Feedback type='invalid'>
         { errors.formGridState }
