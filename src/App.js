@@ -20,6 +20,7 @@ import Logout from './components/Logout';
 import { LinkContainer } from 'react-router-bootstrap'
 import {Wishlist} from './components/Wishlist'
 import React, { useEffect } from 'react';
+import {Report_users} from './components/Report_users'
 
 
 
@@ -161,7 +162,8 @@ useEffect(() => {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} />} />
         <Route exact path='/signup' element={<Register/>} />
-        <Route exact path='/search' element={<h1>Hello</h1>} />
+        
+
        
        
         <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
@@ -179,7 +181,7 @@ useEffect(() => {
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting/>}/>
-          
+          <Route exact path='/report' element={<Report_users/>} />
           <Route exact path='/' element={<Homepage/>} />
          
          
