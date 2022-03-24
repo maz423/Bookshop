@@ -35,6 +35,7 @@ function App() {
   
   const [LoggedIn, setLoggedIn] = useState(0);  //logged in will be set to 1 when the user Logs in.
   const [IsAdmin, setIsAdmin] = useState(0); //if User is Admin Set to 1.
+  const [BookStore, setbookStore] = useState(0);
 
   const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
   const [listingID, setListingID] = useState('');
@@ -50,41 +51,50 @@ function App() {
 
 //for loading state once when app restarts.
  useEffect(() => {
-   const loginURL = 'http://localhost:8000/isLoggedIn';
-   const requestOptions = {
-      credentials: 'include',
-      method: 'GET',
-   }
-   fetch(loginURL, requestOptions)
-   .then((response) => {
-     if (!response.ok){
-       setLoggedIn(false);
-       setIsAdmin(false);
-     }
-     else {
-       //Todo check for admin
-       setLoggedIn(true);
-     }
-   })
-   .catch((err) => {
-    setLoggedIn(false);
-    setIsAdmin(false);
-   });
-//   try {
-//     const serializedState = sessionStorage.getItem('Login');
-//     const serializedState2 = sessionStorage.getItem('Admin');
-//     if(serializedState === null){
-//         return undefined;
-//     }
-//     if(serializedState2 === null){
-//       return undefined;
-//   }
-//     setLoggedIn(serializedState)
-//     setIsAdmin(serializedState2)
+  //  const loginURL = 'http://localhost:8000/isLoggedIn';
+  //  const requestOptions = {
+  //     credentials: 'include',
+  //     method: 'GET',
+  //  }
+  //  fetch(loginURL, requestOptions)
+  //  .then((response) => {
+  //    if (!response.ok){
+  //      setLoggedIn(false);
+  //      setIsAdmin(false);
+  //    }
+  //    else {
+  //      //Todo check for admin
+  //      setLoggedIn(true);
+  //    }
+  //  })
+  //  .catch((err) => {
+  //   setLoggedIn(false);
+  //   setIsAdmin(false);
+  //  });
+  try {
+    const serializedState = sessionStorage.getItem('Login');
+    const serializedState2 = sessionStorage.getItem('Admin');
+    const serializedState3 = sessionStorage.getItem('Bookstore');
+    if(serializedState === null){
+        return undefined;
+    }
+    if(serializedState2 === null){
+      return undefined;
+
     
-// } catch (err) {
-//     return undefined;
-// }
+  }
+
+  if(serializedState3 === null){
+    return undefined;
+  }
+    setLoggedIn(serializedState)
+    setIsAdmin(serializedState2)
+    setbookStore(serializedState3)
+
+    
+} catch (err) {
+    return undefined;
+}
   
 
 }, [])
@@ -98,12 +108,14 @@ useEffect(() => {
     
     sessionStorage.setItem('Login', LoggedIn );
     sessionStorage.setItem('Admin', IsAdmin );
+    sessionStorage.setItem('Bookstore', BookStore );
+
     
 } catch (err){
     return undefined;
 }
 
-}, [LoggedIn,IsAdmin])
+}, [LoggedIn,IsAdmin,BookStore])
 
 
 
@@ -128,22 +140,69 @@ useEffect(() => {
     <div className="App">
 
     <Router>
-     {LoggedIn == 0
+
+    {LoggedIn == 0 && IsAdmin == 0 && BookStore == 0    //render different dropdowns based on type of user
     ? <Navi set = {setLoggedIn}/>
-    : <Login_Nav admin = {IsAdmin}/>
+    : <></>
+    
+    } 
+
+     {LoggedIn == 1 && IsAdmin == 0 && BookStore == 0
+    ? <Login_Nav admin = {IsAdmin} bookstore = {BookStore}/>
+    : <></>
+    
+    } 
+
+    {IsAdmin == 1 && LoggedIn == 1 && BookStore == 0
+    ? <Login_Nav admin = {IsAdmin} bookstore = {BookStore}/>
+    : <></>
+    
+    } 
+
+   {IsAdmin == 0 && LoggedIn == 1 && BookStore == 1
+    ? <Login_Nav admin = {IsAdmin} bookstore = {BookStore}/>
+    : <></>
     
     } 
       
    
     
     <div className='test'>
+    
+    {LoggedIn == 0 && IsAdmin == 0 && BookStore == 0 //Routes if user is not logged in.
+    ? <Routes>
+    <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+    
+    
+    </Routes>
+    : <></>
+    
+    } 
 
-      <Routes>
-      <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
-      <Route exact path='/SearchUser' element={<SearchUser/>} />
-      <Route exact path='/viewUsers' element={<Mini_ListofUsers/>} />
+   {LoggedIn == 1 && IsAdmin == 0 && BookStore == 0  //Routes for Basic User
+    ? <Routes>
+    
+    <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+    
+    </Routes>
+    : <></>
+    
+    } 
+
+   {IsAdmin == 1 && LoggedIn == 1 && BookStore == 0   //Routes for  Admin
+    ? <Routes>
+    <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
+    <Route exact path='/SearchUser' element={<SearchUser/>} />
+    <Route exact path='/viewUsers' element={<Mini_ListofUsers/>} />
+    
+    </Routes>
+    : <></>
+    
+    } 
+
+    
+
       
-      </Routes>
       
     </div>
       
@@ -159,17 +218,14 @@ useEffect(() => {
     
        
         <p>
-
-       
-        
-        {LoggedIn == 0
-        ? ( 
-
           
-        <Routes>
-        <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
+
+        
+        {LoggedIn == 0 && IsAdmin == 0 && BookStore == 0 //Routes if user is not logged in.
+        ? (<Routes>
+           <Route exact path='/registerBookStore' element={<RegisterbookStore/>} />
         <Route exact path='/' element={<Homepage/>} />
-        <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} />} />
+        <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
         <Route exact path='/viewUser' element={<UserView/>} />
         
@@ -183,12 +239,17 @@ useEffect(() => {
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
         <Route exact path='/wishlist' element={<Wishlist/>}/>
-        </Routes>)
-         : (<Routes>
+    
+    
+         </Routes>)
+        : <></>
+    
+         } 
 
-        
+       {LoggedIn == 1 && IsAdmin == 0 && BookStore == 0    //Routes for Basic User
+       ? (<Routes>
         <Route exact path='/' element={<Homepage/>} />
-        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} />}/>
+        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore} />}/>
        
         {/* <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/> */}
 
@@ -201,24 +262,34 @@ useEffect(() => {
           <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
-         
-          
-            
-            </Routes>)
+        
+    
+        </Routes>)
+        : <></>
     
     } 
-        
-        
-             
-         
-         
-         
-         
-         
-         
-         
-        
-        </p>
+
+   {IsAdmin == 1 && LoggedIn == 1 && BookStore == 0           //Routes for  Admin
+    ? (<Routes>
+       <Route exact path='/' element={<Homepage/>} />
+       <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore} />}/>
+    
+    </Routes>)
+    : <></>
+    
+    } 
+
+   {IsAdmin == 0 && LoggedIn == 1 && BookStore == 1           //Routes for Bookstore user
+    ? (<Routes>
+       <Route exact path='/' element={<Homepage/>} />
+       <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>}/>
+    
+    </Routes>)
+    : <></>
+    
+    } 
+
+    </p>
         
       </header>
       </Router>

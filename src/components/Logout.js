@@ -22,10 +22,13 @@ function Logout(props){
                   alert("Error logging out")
               } else {
                   //TODO Clear logged in property here
-                  navigate('/')
-                  alert("Logged out")
+                  navigate('/');
+                  alert("Logged out");
                   props.set(0);
                   props.admin(0);
+                  
+                  props.bookstore(0);
+                 
               }
           })
           .catch((error) => {

@@ -16,6 +16,7 @@ import { DropdownAdmin } from './DropdownAdmin';
 import { DropdownUser } from './DropdownUser';
 import { LinkContainer } from 'react-router-bootstrap'
 import { useNavigate } from 'react-router-dom';
+import { DropdownBookstore } from './DropdownBookstore';
 
 
 
@@ -28,6 +29,9 @@ const handleSubmitClick = (e) => { //handle submit event.
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const Admin = props.admin;
+    const Bookstore = props.bookstore;
+    
+
 
     const [keywordFromHomepage, setKeywordFromHomepage] = useState("");
     const navigate = useNavigate();
@@ -51,11 +55,26 @@ return (
         
       </Nav>
       
-    {Admin == 0
+    {Admin == 0 && Bookstore == 0 
     ?   <DropdownUser/>
-    :  <DropdownAdmin/>
+    :  <></>
     
     }
+
+    {Admin == 1 && Bookstore == 0 
+    ?   <DropdownAdmin/>
+    :  <></>
+    
+    }  
+
+    {Admin == 0 && Bookstore == 1 
+         
+    ?   <DropdownBookstore/>
+    :  <></>
+    
+    } 
+
+
 
 
     
