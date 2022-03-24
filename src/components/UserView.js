@@ -75,19 +75,9 @@ export const UserView = (props) => {
     }, [imageName]);
 
 
-    const popover = (
-        <Popover id="popover-basic">
-          <Popover.Header as="h3">Description</Popover.Header>
-          <Popover.Body>
-            Used like new, No ripped pages.
-          </Popover.Body>
-        </Popover>
-      );
+    
 
-    //This function will open the popup page to make an offer
-    const togglePopup = () => {
-        setIsOpen(!isOpen);
-    }
+
 
     const handleclick = () => {
       setIsbanned(1);
@@ -97,57 +87,9 @@ export const UserView = (props) => {
     setIsbanned(0);
 }
 
-    const addToWishlist = () => {
-      const requestOptions = {
-        credentials: 'include',
-        method: 'POST',
-        headers: {'Content-Type' : 'application/json'},
-        body : JSON.stringify({listingID : listingID})
-      };
+    
 
-      fetch('http://localhost:8000/add-to-wishlist', requestOptions)
-      .then((response) => {
-        if(response.ok){
-          console.log('ok');
-        }
-        else{
-
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
-
-    const handleSubmitClick = (e) => { 
-        e.preventDefault();
-          const formItems = e.target.elements;
-          //TODO check to ensure price is int
-          //TODO File input
-          const body = {
-            offer : formItems.formOffer.value,
-          };
-          console.log(formItems);
-          console.log(body);
-          const requestOptions = {
-              credentials: 'include',
-              method: 'POST',
-              headers: {'Content-Type' : 'application/json'},
-              body : JSON.stringify(body)
-          };
-          
-          fetch('http://localhost:8000/make-offer', requestOptions)
-          .then((response) => {
-            if (!response.ok){
-              console.log("error sending offer");
-            } else {
-            }
-          }).catch( (error)=>{
-              console.log(error);
-          });
-          setIsOpen(false)
-      };
-  
+    
   
     return (
         

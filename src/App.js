@@ -195,6 +195,7 @@ useEffect(() => {
     <Route exact path='/SearchUser' element={<SearchUser/>} />
     <Route exact path='/viewUsers' element={<Mini_ListofUsers/>} />
     
+    
     </Routes>
     : <></>
     
@@ -227,7 +228,7 @@ useEffect(() => {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
-        <Route exact path='/viewUser' element={<UserView/>} />
+        
         
         
         
@@ -273,6 +274,7 @@ useEffect(() => {
     ? (<Routes>
        <Route exact path='/' element={<Homepage/>} />
        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore} />}/>
+       <Route exact path='/viewUser' element={<UserView/>} />
     
     </Routes>)
     : <></>
