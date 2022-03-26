@@ -4,10 +4,18 @@ import { ListOfListings } from './ListOfListings';
 import { useState } from 'react';
 
 
-//grab listings of user.
 
-function MyListings (){
+
+function MyListings (props){
     const [Listings,setListings] = useState('')
+
+    //grab listings of user.
+    if (props.bookstore == 1 && props.user == 0){ //grab Listings posted by Bookstore 
+
+    }
+    else{ //grab listings from user
+
+    }
 
     return (
         <div><h1> Users/Bookstores Listings will be shown here</h1>
