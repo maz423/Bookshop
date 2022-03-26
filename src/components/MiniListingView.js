@@ -13,10 +13,12 @@ import { Container } from 'react-bootstrap';
 export const MiniListingView = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [image, setImage] = useState();
+    const [storeBranding, setStoreBranding] = useState();
     const [link, setLink] = useState('');
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('');
+    const [isBookstoreBook, setIsBookstoreBook] = useState(false);
 
 
     const fetchIamge = async () => {
@@ -25,6 +27,13 @@ export const MiniListingView = (props) => {
         const imageBlob = await res.blob();
         const imageObjectURL = URL.createObjectURL(imageBlob);
         setImage(imageObjectURL);
+    }
+    const fetchBranding = async () => {
+      const imageURL = "http://localhost:8000/bookstore/branding/" + props.listing.posterID ;
+      const res = await fetch(imageURL);
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setStoreBranding(imageObjectURL);
     }
 
     useEffect(() => {
@@ -38,8 +47,17 @@ export const MiniListingView = (props) => {
         setTitle(props.listing.title);
         setPrice(props.listing.price);
         setDescription(props.listing.description);
+        setIsBookstoreBook(props.listing.postedByStore);
         fetchIamge();
     }, []);
+
+    useEffect(() => {
+      if (isBookstoreBook){
+        fetchBranding();
+      } else {
+        setStoreBranding();
+      }
+    }, [isBookstoreBook])
 
     const popover = (
         <Popover id="popover-basic">
@@ -88,7 +106,13 @@ export const MiniListingView = (props) => {
             <div className='thumbnail'>
                 <img src = {image} alt="icons" width="120" height="100" class="img-thumbnail"/>
             </div>
-
+            \
+            {isBookstoreBook
+              ? <div className="brandingImage">
+                  <img src ={storeBranding} alt="icons" width="120" height="100" class="img-branding"/>
+                </div>
+              : <></>
+            }
             
             <div className='image-info-sidebar'>
              <Container fluid>

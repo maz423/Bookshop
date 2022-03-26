@@ -15,7 +15,7 @@ export const RegisterbookStore = (props) => {
 
   const [ form, setForm ] = useState({})
   const [ errors, setErrors ] = useState({})
-  const [image, setImage]=useState('');
+  const [image, setImage] = useState();
 
 const navigate = useNavigate();
 
@@ -92,11 +92,29 @@ const handleSubmitClick = (e) => { //handle submit event.
       alert("Username or password is already in use");  
     }
     else {
-      console.log(result);
+      return result.json();
+    }
+  })
+  .then((data) => {
+    console.log(data);
+    //Now we send the image
+    let directory = "branding"
+        
+    const formData = new FormData();
+    formData.append('id', data);
+    formData.append('directory', directory);
+    formData.append('file', image);
+    const request2Options = {
+      credentials: 'include',
+       method: 'POST',
+      body : formData,
+    }
+    fetch("http://localhost:8000/uploadImage", request2Options)
+    .then((result) => {
       alert('Bookstore successfully Registered');
       navigate("/Login");
-    }
-   
+    })
+    .catch((error) => console.log(error));
   })
   .catch((error) => {
     console.log(error);

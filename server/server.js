@@ -1034,6 +1034,26 @@ app.get('/image/:directory/:listingID/:filename', (req, res) => {
     return res.sendFile(fullfilepath);
 });
 
+app.get('/bookstore/branding/:bookstoreID', (req,res) => {
+    const bookstoreID = req.params.bookstoreID;
+    const ObjectId = require('mongodb').ObjectId;
+    const query = {_id : new ObjectId(bookstoreID)}
+
+    new Promise((resolve, reject) => {
+        con.collection(bookstoreCollection).findOne(query, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        });
+    })
+    .then((bookstore) => {
+        const dirname = path.resolve();
+        const fullfilepath = path.join(dirname, 'uploads/branding/' + bookstoreID + '/'+ bookstore.brandingImage);
+        return res.sendFile(fullfilepath);
+    })
+    .catch((error) => {
+        res.status(400).send(error);
+    })
+})
+
 app.use('/', express.static('pages'));
 
 
