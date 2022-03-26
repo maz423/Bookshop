@@ -1,4 +1,3 @@
-
 import './Navi.css'
 import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form'
@@ -26,7 +25,7 @@ import { LinkContainer } from 'react-router-bootstrap'
  
  
  
- export const DropdownUser = (props) => {
+ export const DropdownBookstore = (props) => {
  
  const handleSubmitClick = (e) => { //handle submit event.
  
@@ -41,24 +40,28 @@ import { LinkContainer } from 'react-router-bootstrap'
         <Dropdown.Toggle  variant="success" id="dropdown-basic">
 
         <img
-        src="https://cdn-icons-png.flaticon.com/512/61/61135.png"
-        width="20"
-        height="20"
+        src="https://thumbs.dreamstime.com/b/store-icon-vector-isolated-white-background-logo-concept-store-sign-transparent-background-filled-black-symbol-store-icon-125790318.jpg"
+        width="30"
+        height="25"
         className="d-inline-block align-top"
         alt="React Bootstrap logo"
+        
         
       />
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-        <Dropdown.Item as={Link} to="/user">Account View</Dropdown.Item>
+        <Dropdown.Item as={Link} to="#/action-4">Manage Listings</Dropdown.Item>
         
-        <Dropdown.Item as={Link} to='/wishlist'>Wishlist</Dropdown.Item>
-        <Dropdown.Item as={Link} to="/report">Report User</Dropdown.Item>
+        <Dropdown.Item as={Link} to='/wishlist'>Books sold</Dropdown.Item>
+
+        <Dropdown.Item as={Link} to='/wishlist'> Availible Books </Dropdown.Item>
         
         <Dropdown.Item as={Link} to='/createlisting'> Create new Listing</Dropdown.Item>
+
+        <Dropdown.Item as={Link} to="/report">Report User</Dropdown.Item>
         
-        <Dropdown.Item as={Link} to="/Mylistings">Manage Listings</Dropdown.Item>
+        
         <Dropdown.Item as={Link} to='/logout'>Log out</Dropdown.Item>
         
         </Dropdown.Menu>

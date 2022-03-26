@@ -119,6 +119,16 @@ mongoose.connect(DB_Url,
 //loading the mongoose model for the imageSchema
 var imgModel = require('./model')
 
+app.get('/isLoggedIn', (req, res) => {
+    if (!req.session.user){
+        res.status(400).send("Not logged in")
+    } else if (req.session.user.isBasic || req.session.user.isBookstore || req.session.user.isAdmin){
+        res.send("Logged in");
+    } else {
+        res.status(400).send("Not logged in");
+    }
+});
+
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
     //Get the password and username

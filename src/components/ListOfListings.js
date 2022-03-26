@@ -4,7 +4,10 @@ import { MiniListingView } from './MiniListingView';
 export const ListOfListings = (props) => {
     const [listingsList, setListingsList] = useState([]);
 
+    const MyListings = props.MyListings
 
+    
+    
 
     //Component mount and unmount
     useEffect(() => {
@@ -19,12 +22,14 @@ export const ListOfListings = (props) => {
         }
     },[props.listings]);
 
+    
+
     return(
         <div>
             {
                 listingsList.map(element => { 
                     return <div className="text-center">
-                        <MiniListingView listing={element}/>
+                        <MiniListingView listing={element} MyListings = {MyListings} />
                     </div>
                 })
             }

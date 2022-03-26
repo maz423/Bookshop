@@ -8,9 +8,10 @@ import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import InputGroup from 'react-bootstrap/InputGroup'
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 
-function Createlisting(){
+function Createlisting(props){
     
    const [ form, setForm ] = useState({})
    const [ errors, setErrors ] = useState({})
@@ -23,6 +24,12 @@ function Createlisting(){
      const [formGridCity, setformGridCity] = useState('');
      const [formGridState, setformGridState] = useState('');
      const [formGridZip, setformGridZip] = useState('');
+
+     const [formBookTitle,setformBookTitle] = useState('');
+
+     const [authorName, setauthorName] = useState('');
+
+     const [formPrice,setformPrice] = useState('');
 
     //After the button is clicked the the information stored in textname and description will be sent to the database.
     //NOT TESTING CONDITION YET.  
@@ -43,12 +50,19 @@ function Createlisting(){
           return response.json();
       }})
       .then((data) => {
+        
         console.log(data);
         setformGridAddress1(data.address1);
         setAddress2(data.address2);
         setformGridCity(data.city);
         setformGridState(data.province);
         setformGridZip(data.zipcode);
+        //if props.update == 1 Also autofill other form elements, eg.Bookname, authorname
+        if (props.update == 1){
+          setauthorName(data.authorName);
+          setformBookTitle(data.title);
+          setformPrice(data.price);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -70,7 +84,7 @@ function Createlisting(){
     }
 
     const findFormErrors = () => {
-      const {formBookTitle, authorName ,formPrice } = form
+     
       const newErrors = {}
       // name errors
       if ( !formBookTitle || formBookTitle === '' ) newErrors.formBookTitle = ' Bookname cannot be blank!'
@@ -111,6 +125,10 @@ function Createlisting(){
     setImage({ image: event.target.files[0] });
   
   };
+
+  const handleupdate = () => { //handle update of listings here.
+
+  }
   
   const handleSubmitClick = (e) => { 
     e.preventDefault();
@@ -190,7 +208,7 @@ function Createlisting(){
   <Row >
     <Form.Group as={Col} controlId="formBookTitle">
       <Form.Label>Book Title</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Eg. Intro to AI" onChange={ e => setField('formBookTitle', e.target.value) } isInvalid={ !!errors.formBookTitle } />
+      <Form.Control size='sm' type="text" placeholder="Eg. Intro to AI" value = {formBookTitle} onChange={ e => setformBookTitle(e.target.value) } isInvalid={ !!errors.formBookTitle } />
       <Form.Control.Feedback type='invalid'>
         { errors.formBookTitle }
     </Form.Control.Feedback> 
@@ -198,7 +216,7 @@ function Createlisting(){
 
    <Form.Group as={Col} controlId="authorName">
       <Form.Label>Author</Form.Label>
-      <Form.Control size='sm' type="text" placeholder="Name" onChange={ e => setField('authorName', e.target.value) } isInvalid={ !!errors.authorName }/>
+      <Form.Control size='sm' type="text" placeholder="Name" value = {authorName}  onChange={ e => setauthorName(e.target.value) } isInvalid={ !!errors.authorName }/>
       <Form.Control.Feedback type='invalid'>
         { errors.authorName }
     </Form.Control.Feedback> 
@@ -259,7 +277,7 @@ function Createlisting(){
     <InputGroup as={Col}  >
     
     <InputGroup.Text >$</InputGroup.Text>
-    <Form.Control id="formPrice" aria-label="Amount (to the nearest dollar)" onChange={ e => setField('formPrice', e.target.value) } isInvalid={ !!errors.formPrice } />
+    <Form.Control id="formPrice" aria-label="Amount (to the nearest dollar)" value = {formPrice} onChange={ e => setformPrice(e.target.value) } isInvalid={ !!errors.formPrice } />
     <Form.Control.Feedback type='invalid'>
         { errors.formPrice }
     </Form.Control.Feedback> 
@@ -348,11 +366,17 @@ function Createlisting(){
       handleClose={togglePopup}
     />} */}
 
-  
+  {props.update == 0
+  ? <Button variant="success" type="submit">
+  Post
+</Button>
+: <Button variant="success"  onClick={handleupdate}>
+  update
+</Button>
 
-  <Button variant="success" type="submit">
-    Post
-  </Button> 
+  }
+
+   
 </Form>
 
 </div>

@@ -1,11 +1,17 @@
 import React from 'react';
 import {faCode} from "react-icons/fa";
+import { ListOfListings } from './ListOfListings';
+import { useState } from 'react';
 
 
+//grab listings of user.
 
 function MyListings (){
+    const [Listings,setListings] = useState('')
+
     return (
-        <></>
+        <div><h1> Users Listings will be printed here</h1>
+        <ListOfListings listings = {Listings} MyListings = {1}/></div>
     )
 }
 

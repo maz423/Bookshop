@@ -28,7 +28,13 @@ export const MiniListingView = (props) => {
     }
 
     useEffect(() => {
-        setLink('/listing/' + props.listing._id);
+        if(props.MyListings == 1){
+          setLink('/update/' + props.listing._id);
+        }
+        else{
+          setLink('/listing/' + props.listing._id);
+        }
+        
         setTitle(props.listing.title);
         setPrice(props.listing.price);
         setDescription(props.listing.description);
@@ -88,7 +94,7 @@ export const MiniListingView = (props) => {
              <Container fluid>
              <Row>
               
-             <p><Link to={link}>{title}</Link> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$</p>
+             <p><Link to={link} className='link'>{title}</Link> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$</p>
              
              
 
