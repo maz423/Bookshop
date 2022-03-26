@@ -41,7 +41,10 @@
     padding-right: 1%;
     padding-left: 3%;
     padding-bottom: 2%;
-   
+    
+    
+    
+
     
     
    
@@ -57,4 +60,17 @@
 
 .wishlist-add-btn{
     
+}
+
+.bttns{
+    display:flex;
+    flex-direction: column;
+    
+}
+
+.bttnss{
+    display:flex;
+    flex-direction: column;
+    
+
 }

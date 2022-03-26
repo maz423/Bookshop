@@ -12,6 +12,7 @@ import Figure from 'react-bootstrap/Figure'
 import { ButtonGroup, Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
+import { UpdateDeleteListings } from './UpdateDeleteListings';
 
 
 export const UserView = (props) => {
@@ -105,7 +106,9 @@ export const UserView = (props) => {
              <div className='image-info'>
              <Container  fluid='lg'>
              <Row>
-            
+
+             
+             
              <p> First Name :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Last Name :    &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; UserID :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Date joined :{timestamp}</p> 
              {/* <p> Description: {bookDescription} </p> */}
              

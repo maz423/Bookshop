@@ -24,6 +24,8 @@ import {Report_users} from './components/Report_users'
 import { SearchUser } from './components/SearchUser';
 import { UserView } from './components/UserView';
 import {Mini_ListofUsers} from './components/Mini_ListofUsers'
+import { UpdateDeleteListings } from './components/UpdateDeleteListings';
+import MyListings from './components/MyListings';
 
 
 
@@ -173,7 +175,6 @@ useEffect(() => {
     ? <Routes>
     <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
     
-    
     </Routes>
     : <></>
     
@@ -228,6 +229,7 @@ useEffect(() => {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
+        <Route exact path='Update' element={<ListingView update = {1}/>} component={listingID}  />
         
         
         
@@ -238,7 +240,7 @@ useEffect(() => {
        
         <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
-        <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
+        <Route exact path='/listing/:listingID' element={<ListingView update = {0}/>} component={listingID} update = {0}/>
         <Route exact path='/wishlist' element={<Wishlist/>}/>
     
     
@@ -255,7 +257,7 @@ useEffect(() => {
         {/* <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/> */}
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
-          <Route exact path='/createlisting' element={<Createlisting/>}/>
+          <Route exact path='/createlisting' element={<Createlisting update = {0}/>}/>
           <Route exact path='/report' element={<Report_users/>} />
           <Route exact path='/' element={<Homepage/>} />
          
@@ -263,6 +265,8 @@ useEffect(() => {
           <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
+          <Route exact path='Mylistings' element={<MyListings />}/>
+          <Route exact path='updatelisting' element={<Createlisting update = {1} />}/>
         
     
         </Routes>)

@@ -122,16 +122,10 @@ return (
     alignItems: 'center',
     justifyContent: 'center',
 }}>
-<ListOfListings listings={listingsList}/>
+<ListOfListings listings={listingsList} MyListings = {0}/>
 
 </div>
-{/* <ListingView  title ={'book1'} />
-<ListingView  title ={'book2'} />
-<ListingView  title ={'book3'} />
-<ListingView  title ={'book4'} />
-<ListingView  title ={'book5'} />
-<ListingView  title ={'book6'} />
-<ListingView  title ={'book7'} /> */}
+
 
 <h1 className='end-search'> End of results</h1>
      

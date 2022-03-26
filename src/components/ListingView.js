@@ -12,6 +12,8 @@ import Figure from 'react-bootstrap/Figure'
 import { Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
+import { UpdateDeleteListings } from './UpdateDeleteListings';
+import { Link } from 'react-router-dom';
 
 
 export const ListingView = (props) => {
@@ -73,7 +75,7 @@ export const ListingView = (props) => {
       fetchIamge();
     }, [imageName]);
 
-
+    
     const popover = (
         <Popover id="popover-basic">
           <Popover.Header as="h3">Description</Popover.Header>
@@ -87,6 +89,12 @@ export const ListingView = (props) => {
     const togglePopup = () => {
         setIsOpen(!isOpen);
     }
+
+    const handleDelete = () => {  //TODO-----
+      // delete listing from DB. 
+    }
+
+    
 
     const addToWishlist = () => {
       const requestOptions = {
@@ -144,16 +152,19 @@ export const ListingView = (props) => {
         
         <div className="Listingpage-form">
              
+             
              <div className='thumbnail'>
-             <img src={image} alt="..." width="300" height="300" class="img-thumbnail"  /> 
+             <img src={image} alt="..." width="300" height="300" class="img-thumbnail"  />  
+             
              </div>
              
-
+             
              
              
              <div className='image-info'>
              <Container  fluid='lg'>
              <Row>
+            
             
              <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {user} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
              <p> Description: {bookDescription} </p>
@@ -166,9 +177,22 @@ export const ListingView = (props) => {
              {/* <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
-             <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
 
+             
+             {props.update == true
+             ? <div className='bttns' >
+                
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
+               <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+
+            </div>
+             : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+              
              <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
+             </div>
+
+             }
+             
             
              
              
