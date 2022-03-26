@@ -10,7 +10,7 @@ function MyListings (){
     const [Listings,setListings] = useState('')
 
     return (
-        <div><h1> Users Listings will be printed here</h1>
+        <div><h1> Users/Bookstores Listings will be shown here</h1>
         <ListOfListings listings = {Listings} MyListings = {1}/></div>
     )
 }
