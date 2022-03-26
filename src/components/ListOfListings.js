@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { MiniListingView } from './MiniListingView';
 
 export const ListOfListings = (props) => {
