@@ -24,8 +24,9 @@ import {Report_users} from './components/Report_users'
 import { SearchUser } from './components/SearchUser';
 import { UserView } from './components/UserView';
 import {Mini_ListofUsers} from './components/Mini_ListofUsers'
-import { UpdateDeleteListings } from './components/UpdateDeleteListings';
+
 import MyListings from './components/MyListings';
+import {Report} from './components/Report';
 
 
 
@@ -230,7 +231,7 @@ useEffect(() => {
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
         <Route exact path='Update' element={<ListingView update = {1}/>} component={listingID}  />
-        
+        <Route exact path='/report' element={<Report/>} />
         
         
         

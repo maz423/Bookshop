@@ -1,0 +1,18 @@
+.Report{
+    
+    background-color: black;
+    font-size: medium;
+    border-radius: 15px;
+    text-align: left;
+    
+}
+
+.btn-report{
+
+    display: flex;
+    flex-direction: column;
+    
+
+
+}
+

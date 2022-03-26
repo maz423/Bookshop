@@ -12,7 +12,7 @@ import Figure from 'react-bootstrap/Figure'
 import { Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
-import { UpdateDeleteListings } from './UpdateDeleteListings';
+
 import { Link } from 'react-router-dom';
 
 
