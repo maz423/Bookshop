@@ -166,7 +166,9 @@ app.post('/login', (req, res)=>{
     })
     .then(() => {
         //Query the database with the provided values
-        con.collection(collection).findOne(query)
+        con.collection(collection).findOne(query, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        })
         .then((user) => {
             bcrypt.compare(password, user.password)
             .then((result) => {
