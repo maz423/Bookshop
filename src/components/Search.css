@@ -3,8 +3,24 @@
     border-radius: 25px;
 }
 
+.SearchUser{
+    background-color: #232325;
+    border-radius: 25px;
+}
+
 .form{
    
+    padding-top: 2%;
+    
+    background-color: #232325;
+    font-size: small;
+    border-radius: 25px;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 5%;
+}
+
+.userSearchForm{
     padding-top: 2%;
     
     background-color: #232325;

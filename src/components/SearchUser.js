@@ -40,9 +40,13 @@ const handleSubmitClick = (e) => {
 
 
 return (
-<div className='SearchUser'>
+<div className='SearchUser' style={{
+       display: 'flex',
+       alignItems: 'center',
+       justifyContent: 'center',}
+}>
    
-<Form className="d-flex" onSubmit={handleSubmitClick}>
+{/* <Form className="d-flex" onSubmit={handleSubmitClick}>
         <Form.Control
           type="search"
           placeholder="Search User"
@@ -54,11 +58,19 @@ return (
           
         />
         <Button type="submit" variant="success" size='md' disabled={!keyword}>Search User</Button>
-      </Form>
+      </Form> */}
+
+      <form className="userSearchForm" onSubmit={handleSubmitClick}>
+             <label for="username">Search a user by username:</label><br></br>
+             <input type="text" id="username" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="username"></input>
+
+             <Button variant="success" size='sm' type="submit">Search</Button> 
+      </form>
+
 
        <Mini_ListofUsers users={usersList} />
 
-      </div>
+</div>
 );
 
 

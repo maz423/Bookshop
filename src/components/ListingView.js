@@ -119,6 +119,26 @@ export const ListingView = (props) => {
 
     const handleDelete = () => {  //TODO-----
       // delete listing from DB. 
+
+      const requestOptions = {
+        credentials: 'include',
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body : JSON.stringify({listingID : listingID})
+      };
+
+      fetch('http://localhost:8000/remove-lis', requestOptions)
+      .then((response) => {
+        if(response.ok){
+          console.log("ok");
+        }
+        else{
+
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
 
     

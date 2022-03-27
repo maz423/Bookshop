@@ -559,6 +559,7 @@ app.post('/searchUser', (req, res) => {
 
     const pipeline = [
         { $match: { username: { $regex: keyword, $options: "i"} } },
+        { $group: { _id: "$_id", username: "$username", email: "$email", accountType: "$accountType" } }
     ];
 
     async function performSearch(){
