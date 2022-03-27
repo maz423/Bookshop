@@ -151,7 +151,7 @@ export const ListingView = (props) => {
         credentials: 'include',
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
-        body : JSON.stringify({listingID : props.id})
+        body : JSON.stringify({listingID : listingID})
       };
 
       fetch('http://localhost:8000/remove-from-wishlist', requestOptions)
@@ -160,7 +160,7 @@ export const ListingView = (props) => {
           console.log('ok');
         }
         else{
-
+          console.log("error");
         }
       })
       .catch((error) => {
