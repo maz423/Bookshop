@@ -4,22 +4,22 @@ import { Link } from 'react-router-dom';
 import { MiniListingView } from './MiniListingView';
 
 export const Mini_ListofUsers = (props) => {
-    const [listingsList, setListingsList] = useState([]);
+    const [usersList, setUsersList] = useState([]);
 
 
 
     //Component mount and unmount
     useEffect(() => {
-        setListingsList([]);
+        setUsersList([]);
     }, []);
     //component Updata
     useEffect(() => {
-        if (props.listings != ""){
-            setListingsList(props.listings);
+        if (props.users != ""){
+            setUsersList(props.users);
         } else {
-            setListingsList([]);
+            setUsersList([]);
         }
-    },[props.listings]);
+    },[props.users]);
 
     return(
         <div className='Mini-user'>

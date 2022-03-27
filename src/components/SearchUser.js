@@ -24,15 +24,17 @@ import { Link } from 'react-router-dom';
 
 import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
 import { ListingView } from './ListingView';
+import { Mini_ListofUsers } from './Mini_ListofUsers';
 
 export const SearchUser = (props) => {
 
-const [keywordFromHomepage, setKeywordFromHomepage] = useState("");
+// const [keywordFromHomepage, setKeywordFromHomepage] = useState("");
 const [keyword, setKeyword] = useState('');
 
 const [title, setTitle] = useState('');
 const [listingID, setListingID] = useState('');
 const [listingsList, setListingsList] = useState([]);
+const [usersList, setUsersList] = useState([]);
 const navigate = useNavigate();
 
 
@@ -51,6 +53,62 @@ const message = (
               <h1 className='message'>Sorry, we couldn't find any listings that matched that search term.</h1>
        </div>
 )
+
+// useEffect(() => {
+//        const requestOptions = {
+//               credentials: 'include',
+//               method: 'POST',
+//               headers: {'Content-Type' : 'application/json'},
+//               body : JSON.stringify({keyword : keywordFromHomepage})
+//        }
+
+//        fetch('http://localhost:8000/searchUser', requestOptions)
+//        .then((response) => {
+//               if(response.ok){
+//                      return response.json();
+//               }
+//               else{
+
+//               }
+//        })
+//        .then((data) => {
+//               setUsersList(data);
+//        })
+//        .catch((error) => {
+//               console.log(error);
+//        })
+// })
+
+
+
+
+
+const handleSubmitClick = (e) => {
+
+       const requestOptions = {
+              credentials: 'include',
+              method: 'POST',
+              headers: {'Content-Type' : 'application/json'},
+              body : JSON.stringify({keyword : keyword})
+       }
+
+       fetch('http://localhost:8000/searchUser', requestOptions)
+       .then((response) => {
+              if(response.ok){
+                     return response.json();
+              }
+              else{
+
+              }
+       })
+       .then((data) => {
+              setUsersList(data);
+       })
+       .catch((error) => {
+              console.log(error);
+       })
+
+}
 
 
 
@@ -129,8 +187,8 @@ return (
           className="me-2"
           aria-label="Search"
           size='sm'
-          value={keywordFromHomepage}
-          onChange={(e)=>setKeywordFromHomepage(e.target.value)}
+          value={keyword}
+          onChange={(e)=>setKeyword(e.target.value)}
         //   onKeyPress={event => {
         //     if (event.key === "Enter") {
         //       // <Link to={`/search/${keywordFromHomepage}`}></Link>
@@ -139,10 +197,11 @@ return (
         //   }}
           
         />
-        <Button as={Link} to={`/search/${keywordFromHomepage}`}variant="success" size='md' disabled={!keywordFromHomepage}>Search</Button>
+        <Button as={Link} to={`/search/${keyword}`}variant="success" size='md' disabled={!keyword}>Search User</Button>
       </Form>
 
       <h1 style={{color:'red'}}>Users will be displayed here using Mini_ListofUsers component</h1>
+      <Mini_ListofUsers users={usersList} />
 
       </div>
 
