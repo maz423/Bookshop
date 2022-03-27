@@ -166,8 +166,10 @@ app.post('/login', (req, res)=>{
     })
     .then(() => {
         //Query the database with the provided values
-        con.collection(collection).findOne(query, (err, result) => {
-            if (err) {reject(err)} else {resolve(result)}
+        new Promise((resolve, reject) => {
+            con.collection(collection).findOne(query, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
         })
         .then((user) => {
             bcrypt.compare(password, user.password)
@@ -202,7 +204,7 @@ app.post('/login', (req, res)=>{
         })
         .catch((error) => {
             throw error;
-        })
+        });
     })
     .catch((error) => {
         console.log(error);
