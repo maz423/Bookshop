@@ -781,55 +781,102 @@ app.put('/update_user',(req,res)=>{
     }
 });
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// Maybe we should talk about the offers part of this project. /////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//SPAGHETTI!!!! CODE. WILL FIX IF TIME PERMITS BUT WORKS
 app.post('/make-offer',(req,res)=>{
-	var name = req.body.name;
-	var subject = req.body.sub; //this is suppopsed to be the name of the textbook you are making an offer for. TODO make sure to find out how to get the specific name
-	var reason = req.body.reason;
+
+    var guest = req.body.guest //Checks if the buyer is a logged in user or a guest buyer
+
+	var posterName = req.body.posterName; //Name of the user who listed the textbook 
+	var title = req.body.title; //Name of the textbook 
+	var offer = req.body.offer;//Contains the description of the textbook 
 	var datetime = new Date();
-	function addoffer(varname,varsubject,varreason,date){
-		MongoClient.connect(DB_Url,function(err,db){
-			var dbo = db.db("ecomDB");
-			var myobj = {name: varname, subject: "offer for: " + varsubject, reason: varreason, timestamp: datetime};
-			dbo.collection("offers").insertOne(myobj, function(err,response){
-				if (err) throw err;
-				console.log("inserted into offers succesfully");
-				db.close();
-			});
-			
-		});
-	}
-	addoffer(name,subject, reason, datetime);
+    var resultArray = [];
+    //console.log(posterName+' '+title+' '+offer+' '+datetime);
+    console.log("SEND OFFER......................");
+    if (guest==true){
+        console.log("OFFER  FROM GUEST.......................");
+        var email = req.body.email ;
+        var phone_number = req.body.phone_number;
+
+        const offersL = {
+            email: email,
+            phone_number: phone_number,
+            guest: guest,
+            title:title,
+            offer: offer
+        }
+        //console.log(email," ", phone_number," ",posterName," ",title)
+        new Promise((resolve, reject) => {
+            con.collection("offers").countDocuments(
+                {_id : posterName}, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        }).then((result) => {
+            if (result <= 0){
+                //Initialize the document and offers array
+                console.log("Insert One");
+                con.collection("offers").insertOne({_id:posterName},{$push:{offers:[]}},(err,result) =>{
+                    if (err) {console.log(err)} else {console.log(result)}
+                })
+                //Then append to the array field offer
+                con.collection("offers").update({_id:posterName},{$push: {offers:offersL}},(err,result) => {
+                    if (err) {console.log(err)} else {console.log(result)}
+                })
+            }
+            else{
+                //Updating into the document instead 
+                console.log("Updating instead");
+                con.collection("offers").update({_id:posterName},{$addToSet: {offers:offersL}},(err,result) => {
+                    if (err) {console.log(err)} else {console.log(result)}
+                })
+            //            con.collection("offers").find({_id:posterName}).forEach(function(doc,err){
+            //        if (err) throw err;
+            //        resultArray.push(doc);
+            //    }, function(){
+            //        console.log(resultArray.forEach(function(x){
+            //         console.log(resultArray);
+            //         console.log(x.offers);
+
+            //        }));});
+            }
+        })
+    }
+    //The offer is from a user. Bookstores won't have the option of creating an offer ???? 
+    else{
+        var email = req.body.email ;
+        var phone_number = req.body.phone_number;
+        new Promise((resolve, reject) => {
+            con.collection("offers").countDocuments(
+                {_id : posterName}, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })//.then((result)=> if(result <= 0 ) )  
+        
+    }
 	res.redirect("/main");
 });
-
 
 
 //This was to get the offers and to display them (might change depending on how john actually wants to implement this.)
 //maybe also use this for messages in general
 //i have it grab all from one subject maybe figure out how to automatically get it from pushing reply (maybe just have the offer button on each posting instead)
-app.get('/get-offers',function(req,res){    
-    var subject = req.body.sub;//change this
-    var options = {
-        root: path.join(__dirname)
-    };
-	var resultArray = [];
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-	  	var dbo = db.db("ecomDB");
-	  	var cursor = dbo.collection('offers').find(subject);
-		cursor.forEach(function(doc,err){
-			if (err) throw err;
-			resultArray.push(doc);
-		}, function(){
-			console.log(resultArray);
-			db.close();
-			res.send(resultArray);
-		});
-	});
+app.get('/get-offers',function(req,res){ 
+    console.log("GETTING OFFERS!!!!!!!!!!!!!!!");
+    var posterName  = req.session.user.username;
+    new Promise((resolve, reject) => {
+        
+        con.collection("offers").findOne({_id: posterName},(err,result) => {
+            if(err) {reject(err)} else{resolve(result)}
+        }
+    )}).then((result) => {
+		console.log(result);
+        console.log(result._id);
+        console.log(result.offers)
+        res.send(result.offers);
+    }).catch((error)=>{
+        console.log("error!!!!!!!!!!!!!!!!!!!")
+        res.status(400).send(error);
+    })
 });
 
 

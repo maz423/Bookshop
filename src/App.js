@@ -27,6 +27,8 @@ import {Mini_ListofUsers} from './components/Mini_ListofUsers'
 
 import MyListings from './components/MyListings';
 import {Report} from './components/Report';
+import OffersRecieved from './components/OffersRecieved.js'
+
 
 
 
@@ -242,6 +244,7 @@ useEffect(() => {
         <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView update = {0}/>} component={listingID} update = {0}/>
+        
         <Route exact path='/wishlist' element={<Wishlist/>}/>
     
     
@@ -263,12 +266,12 @@ useEffect(() => {
           <Route exact path='/' element={<Homepage/>} />
          
          
-          <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
+          <Route exact path='/listing/:listingID' element={<ListingView log={LoggedIn}/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
           <Route exact path='Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
           <Route exact path='updatelisting' element={<Createlisting update = {1} />}/>
-        
+          <Route exact path='/get-offers' element={<OffersRecieved/>} />
     
         </Routes>)
         : <></>

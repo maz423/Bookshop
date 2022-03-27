@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 
 
 export const ListingView = (props) => {
+    const [loggedIn, setLoggedIn] = useState(0)
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -28,6 +29,9 @@ export const ListingView = (props) => {
     const {listingID} = useParams();
     
     const [user, setUser] = useState('');
+
+     //Stuff to be grabbed from the database
+    const [posterName, setPosterName] = useState('');
     const [image, setImage] = useState();
     const [price, setPrice] = useState('');
     const [title, setTitle] = useState('');
@@ -60,13 +64,13 @@ export const ListingView = (props) => {
             }
         })
         .then((data) => {
-            console.log(data);
-            setUser(data.posterName);
-            setImageName(data.imageNames[0]);
-            setTitle(data.title);
-            setPrice(data.price);
-            setBookDescription(data.description);
-            setTimestamp(data.timestamp);
+          console.log(data);
+          setPosterName(data.posterName);
+          setImageName(data.imageNames[0]);
+          setTitle(data.title);
+          setPrice(data.price);
+          setBookDescription(data.description);
+          setTimestamp(data.timestamp);
         })
         .catch((error) =>{
             console.log(error);
@@ -147,35 +151,90 @@ export const ListingView = (props) => {
         console.log(error);
       });
     }
+    const [showResults, setShowResults] = useState(false);
 
-    const handleSubmitClick = (e) => { 
+   //Sending offer to the server
+   const handleSubmitClick = (e) => { 
+    if (loggedIn == 1){
+      e.preventDefault();
+      console.log("Here")
+      //alert(loggedIn)
+        const formItems = e.target.elements;
+        alert(formItems.formOffer.value)
+        const body = {
+          offer : formItems.formOffer.value,
+        };
+        console.log(formItems);
+        console.log(body);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify(body)
+        };
+        
+        fetch('http://localhost:8000/make-offer', requestOptions)
+        .then((response) => {
+          if (!response.ok){
+            console.log("error sending offer");
+          } else {
+          }
+        }).catch( (error)=>{
+            console.log(error); 
+        });
+        setIsOpen(false)
+
+    }
+    //Users not logged then its a guest write a 
+    else {      
+      e.preventDefault();
+      console.log('Went to else statement')
+      if (showResults==false){
+        setShowResults(true);
+  
+        setIsOpen(false)
+        setTimeout(function() {
+          console.log("in the setTimout")  
+          setIsOpen(true);
+        },250)
+      }
+      //Finally send a fetch call to the server to store the guest
+      else{
         e.preventDefault();
-          const formItems = e.target.elements;
-          //TODO check to ensure price is int
-          //TODO File input
-          const body = {
-            offer : formItems.formOffer.value,
-          };
-          console.log(formItems);
-          console.log(body);
-          const requestOptions = {
-              credentials: 'include',
-              method: 'POST',
-              headers: {'Content-Type' : 'application/json'},
-              body : JSON.stringify(body)
-          };
-          
-          fetch('http://localhost:8000/make-offer', requestOptions)
-          .then((response) => {
-            if (!response.ok){
-              console.log("error sending offer");
-            } else {
-            }
-          }).catch( (error)=>{
-              console.log(error);
-          });
-          setIsOpen(false)
-      };
+        const formItems = e.target.elements;
+        const body = {
+          posterName: posterName,
+          email : formItems.formEmail.value,
+          phone_number : formItems.formPhoneNumber.value,
+          guest: true,
+          offer : formItems.formOffer.value,
+          title: title,
+
+        };
+        console.log(formItems);
+        console.log(body);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify(body)
+        };
+        
+        fetch('http://localhost:8000/make-offer', requestOptions)
+        .then((response) => {
+          if (!response.ok){
+            console.log("error sending offer");
+          } else {
+          }
+        }).catch( (error)=>{
+            console.log(error); 
+        });
+        setIsOpen(false)
+        setShowResults(false);
+      }
+   }
+  }
+
   
   
     return (
@@ -246,18 +305,36 @@ export const ListingView = (props) => {
            
             {/* <input type ="button" variant= "success" value ="Make a bid!" onClick={togglePopup}/>   */}
            
-              
             {isOpen && <Popup
                 content={<>
                 
-                <p>Create an offer</p>
+                <h1>Create an offer</h1>
                 <Form onSubmit={handleSubmitClick}>
+                <Col style = {{visibility : showResults ? "visibile" : "hidden"}}>
+                  <h4>Your not logged in as a user. Please provide your email and phone number so the seller may reply to your offer.</h4>
+                    <Row>
+                      <Form.Group as={Col} controlId="formEmail">
+                        <Form.Label>Email:</Form.Label>
+                        <Form.Control size='sm' type="text" placeholder="Enter Email"/>
+                      </Form.Group>
+                      
+                      <Form.Group as={Col} controlId="formPhoneNumber">
+                        <Form.Label>Phone_Number:</Form.Label>
+                        <Form.Control size='sm' type="text" placeholder="Enter Phone Number"/>
+                      </Form.Group>
+                    </Row> 
+                </Col>
+
                 <InputGroup>
                 <InputGroup.Text>Offer:</InputGroup.Text>
                 <Form.Control id="formOffer" as="textarea" aria-label="With textarea" />
                 </InputGroup>
+            
+                
                 <Button  type="submit">Send Offer</Button>
                 </Form>
+                
+
 
             </>}
       handleClose={togglePopup}
