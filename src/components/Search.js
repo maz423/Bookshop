@@ -121,7 +121,7 @@ return (
 
 {listingsList.map(element => (
 
-  <ListingView id= {element._id} title ={element.title} />
+  <ListingView id= {element._id} title ={element.title} showWishlistButton={true} showRemoveFromWishlistButton={false}/>
 
 ))}
 {/* <ListingView  title ={'book1'} />

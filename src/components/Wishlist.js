@@ -57,7 +57,7 @@ return (
 <section className='wishlist-display'>
 
 {wishlist.map(element => (
-    <ListingView id={element._id} title={element.title}/>
+    <ListingView id={element._id} title={element.title} showWishlistButton={false} showRemoveFromWishlistButton={true}/>
 ))}
 
 </section>

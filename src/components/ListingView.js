@@ -18,8 +18,9 @@ export const ListingView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
 
-    // constant that will check if the user is viewing their search results or their wishlist
-    const [isSearchResults, setIsSearchResults] = useState(true);
+    // constant that will check if the wishlist button should be shown
+    const [showWishlistButton, setShowWishlistButton] = useState(true);
+    const [showRemoveFromWishlistButton, setShowRemoveFromWishlistButton] = useState(false);
 
     //Stuff to be grabbed from the database
     const {listingID} = useParams();
@@ -69,6 +70,12 @@ export const ListingView = (props) => {
         </Popover>
       );
 
+
+    useEffect(() => {
+      setShowWishlistButton(props.showWishlistButton);
+      setShowRemoveFromWishlistButton(props.showRemoveFromWishlistButton);
+    }, [])
+
     //This function will open the popup page to make an offer
     const togglePopup = () => {
         setIsOpen(!isOpen);
@@ -83,6 +90,28 @@ export const ListingView = (props) => {
       };
 
       fetch('http://localhost:8000/add-to-wishlist', requestOptions)
+      .then((response) => {
+        if(response.ok){
+          console.log('ok');
+        }
+        else{
+
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+    const removeFromWishlist = () => {
+      const requestOptions = {
+        credentials: 'include',
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body : JSON.stringify({listingID : props.id})
+      };
+
+      fetch('http://localhost:8000/remove-from-wishlist', requestOptions)
       .then((response) => {
         if(response.ok){
           console.log('ok');
@@ -154,11 +183,12 @@ export const ListingView = (props) => {
              </OverlayTrigger> <br></br> */}
              <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
 
-             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
+             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' disabled={!showWishlistButton} onClick={() => {addToWishlist(); setShowWishlistButton(false); setShowRemoveFromWishlistButton(true)}}>Add to wishlist</Button>
+
+             <Button variant="success" size='sm' className='wishlist-remove-btn' type='submit' disabled={!showRemoveFromWishlistButton} onClick={() => {removeFromWishlist(); setShowRemoveFromWishlistButton(false); setShowWishlistButton(true)}}>Remove from Wishlist</Button>
             
              
-             
-             
+            
             
             </Row>
             </Container>
