@@ -12,7 +12,7 @@ import Figure from 'react-bootstrap/Figure'
 import { Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
-import { UpdateDeleteListings } from './UpdateDeleteListings';
+
 import { Link } from 'react-router-dom';
 
 
@@ -20,8 +20,9 @@ export const ListingView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
 
-    // constant that will check if the user is viewing their search results or their wishlist
-    const [isSearchResults, setIsSearchResults] = useState(true);
+    // constant that will check if the wishlist button should be shown
+    const [showWishlistButton, setShowWishlistButton] = useState(true);
+    const [showRemoveFromWishlistButton, setShowRemoveFromWishlistButton] = useState(false);
 
     //Stuff to be grabbed from the database
     const {listingID} = useParams();
@@ -105,6 +106,12 @@ export const ListingView = (props) => {
         </Popover>
       );
 
+
+    useEffect(() => {
+      setShowWishlistButton(props.showWishlistButton);
+      setShowRemoveFromWishlistButton(props.showRemoveFromWishlistButton);
+    }, [])
+
     //This function will open the popup page to make an offer
     const togglePopup = () => {
         setIsOpen(!isOpen);
@@ -125,6 +132,29 @@ export const ListingView = (props) => {
       };
 
       fetch('http://localhost:8000/add-to-wishlist', requestOptions)
+      .then((response) => {
+        if(response.ok){
+          console.log('ok');
+        }
+        else{
+
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+    const removeFromWishlist = () => {
+      console.log("hello");
+      const requestOptions = {
+        credentials: 'include',
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body : JSON.stringify({listingID : props.id})
+      };
+
+      fetch('http://localhost:8000/remove-from-wishlist', requestOptions)
       .then((response) => {
         if(response.ok){
           console.log('ok');
@@ -210,20 +240,21 @@ export const ListingView = (props) => {
              ? <div className='bttns' >
                 
                 <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button>
                <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
 
             </div>
              : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
               
              <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
+             <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
              </div>
 
              }
              
             
              
-             
-             
+            
             
             </Row>
             </Container>

@@ -861,6 +861,35 @@ app.post('/add-to-wishlist', (req, res) => {
     })();
 
 
+});
+
+
+app.post('/remove-from-wishlist', (req, res) => {
+
+    var listingID = req.body.listingID;
+    var user = req.session.user.username;
+
+    async function removeFromWishlist(){
+        
+        try{
+            const users = await con.collection(userCollection);
+
+            await users.updateOne({username : user}, {$pull : {wishlist : listingID}});
+
+        }
+        catch(error){
+            console.log(error);
+            res.status(400).send(error);
+        }
+    };
+
+    (async function() {
+        await removeFromWishlist();
+
+        res.send("ok");
+    })();
+
+
 })
 
 

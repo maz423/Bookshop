@@ -1,4 +1,4 @@
-import './Search.css';
+import './Report.css';
 import React from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,9 @@ import { ListOfListings } from './ListOfListings';
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-export const UpdateDeleteListings = (props) => {
+export const Report = (props) => {
+
+const [resolve, setResolve] = useState(0);
 
 const [keyword, setKeyword] = useState('');
 const [subject, setSubject] = useState('');
@@ -30,6 +32,7 @@ const [ value, setValue ] = useState(0);
 
 
 
+
 const [title, setTitle] = useState('');
 const [listingID, setListingID] = useState('');
 const [listingsList, setListingsList] = useState([]);
@@ -37,10 +40,11 @@ const [listingsList, setListingsList] = useState([]);
 
 
 
-const handleSubmitClick = (e) => {
+const handleResolve = (e) => {
+       setResolve(1);
+       e.preventDefault();
 
        
-
 }
 
 
@@ -49,11 +53,24 @@ const handleSubmitClick = (e) => {
 
 
 return (
-<div className='update-Delete-listings'>
-<Button  variant="danger" size='sm' className='offer-btn' type="submit"  >Delete Listing</Button> 
-<Button  variant="success" size='sm' className='offer-btn' type="submit"  >Update Listing</Button>  
+
+<div className='Report'>
+       <p>&nbsp;&nbsp;</p>
+       <p className='report-para'> &nbsp;&nbsp;&nbsp;&nbsp;Username : John Doe   &nbsp;&nbsp;&nbsp;&nbsp;  Reason for Report : Spam    &nbsp;&nbsp;&nbsp;&nbsp;</p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;Report Date: </p>
+       <p> &nbsp;&nbsp;&nbsp;&nbsp;Comments : User is not responding and posting spam ads.&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
+       <div className='btn-report'>
+        {resolve == 0
+        ? <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleResolve} > Resolve</Button>
+        :
+
+           
+       <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={handleResolve} > Resolved</Button>}
+       </div>
        
 </div>
+
       
 
 );
