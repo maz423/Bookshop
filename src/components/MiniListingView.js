@@ -106,7 +106,7 @@ export const MiniListingView = (props) => {
             <div className='thumbnail'>
                 <img src = {image} alt="icons" width="120" height="100" class="img-thumbnail"/>
             </div>
-            \
+            
             {isBookstoreBook
               ? <div className="brandingImage">
                   <img src ={storeBranding} alt="icons" width="120" height="100" class="img-branding"/>

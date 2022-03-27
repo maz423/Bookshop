@@ -28,11 +28,14 @@ export const ListingView = (props) => {
     
     const [user, setUser] = useState('');
     const [image, setImage] = useState();
+    const [storeBranding, setStoreBranding] = useState();
     const [price, setPrice] = useState('');
     const [title, setTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
     const [imageName, setImageName] = useState('');
     const [timestamp, setTimestamp] = useState('');
+    const [isBookstoreBook, setIsBookstoreBook] = useState(false);
+    const [posterID, setPosterID] = useState('');
 
     const fetchIamge = async () => {
       const imageURL = "http://localhost:8000/image/listings/" + listingID + "/" + imageName;
@@ -40,7 +43,15 @@ export const ListingView = (props) => {
       const imageBlob = await res.blob();
       const imageObjectURL = URL.createObjectURL(imageBlob);
       setImage(imageObjectURL);
-  }
+    }
+    const fetchBranding = async () => {
+      const imageURL = "http://localhost:8000/bookstore/branding/" + posterID ;
+      console.log(imageURL);
+      const res = await fetch(imageURL);
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setStoreBranding(imageObjectURL);
+    }
 
     useEffect(() => {
         const listingURL = 'http://localhost:8000/listing/' + listingID;
@@ -66,6 +77,8 @@ export const ListingView = (props) => {
             setPrice(data.price);
             setBookDescription(data.description);
             setTimestamp(data.timestamp);
+            setPosterID(data.posterID);
+            setIsBookstoreBook(data.postedByStore);
         })
         .catch((error) =>{
             console.log(error);
@@ -74,6 +87,13 @@ export const ListingView = (props) => {
     useEffect(() => {
       fetchIamge();
     }, [imageName]);
+    useEffect(() => {
+      if (isBookstoreBook) {
+        fetchBranding();
+      } else {
+        setStoreBranding();
+      }
+    }, [isBookstoreBook])
 
     
     const popover = (
@@ -157,6 +177,13 @@ export const ListingView = (props) => {
              <img src={image} alt="..." width="300" height="300" class="img-thumbnail"  />  
              
              </div>
+             {/* This can be moved somewhere else to look better */}
+             {isBookstoreBook
+              ? <div className="brandingImage">
+                  <img src ={storeBranding} alt="icons" width="120" height="100" class="img-branding"/>
+                </div>
+              : <></>
+            }
              
              
              

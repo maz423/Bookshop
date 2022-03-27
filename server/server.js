@@ -399,7 +399,7 @@ app.get('/bookstore', (req, res) => {
     }
 });
 
-app .get('/bookstore/:bookstoreID', (res, req) => {
+app.get('/bookstore/:bookstoreID', (res, req) => {
     //This will return some baisc information about the user being requested
     const ObjectId = require('mongodb').ObjectId;
     const bookstoreID = new ObjectId(req.params.bookstoreID);

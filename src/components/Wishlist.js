@@ -39,7 +39,7 @@ useEffect(() => {
     })
 
 
-})
+}, []);
 
 
 return (
