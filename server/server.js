@@ -40,6 +40,7 @@ const bookstoreCollection = 'bookstoreUsers';
 const listingsCollection = 'listings';
 const adminCollection = 'admins';
 const offersCollection = 'offers';
+const bannedUsersCollection = "bannedUsers";
 
 const PORT = 8000;
 const HOST = '0.0.0.0';
@@ -144,48 +145,65 @@ app.post('/login', (req, res)=>{
         collection = adminCollection;
     }
     //Now check if we were not given basic send an error 
+    
     else if (accountType != "User"){
         res.status(400).send(accountType + " is not a valid account type");
         return;
     }
 
     new Promise((resolve, reject) => {
-        //Query the database with the provided values
-        con.collection(collection).find(query).toArray((err, result) => {
+        //First check if user is banned
+        const bannedQuery = {accountName : username}
+        con.collection(bannedUsersCollection).countDocuments(bannedQuery, (err, result) => {
             if (err) { reject(err) } else {resolve(result)}
         });
     })
-    .then((result) => {
-        //Now we check if the encrypted passwords match
-        const user = result[0];
-        bcrypt.compare(password, user.password)
-        .then((result) => {
-            if (result) {
-                //Add some user info to the cookie to make stuff easy in future
-                const userInfo = {
-                    isBasic : false,
-                    isBookstore : false,
-                    isAdmin : false,
-                    username : username,
-                    _id : user._id
+    .then((count) => {
+        //Check if username was found in banned users
+        if (count > 0){
+            throw `User: ${username} is banned`;
+        }
+    })
+    .then(() => {
+        //Query the database with the provided values
+        new Promise((resolve, reject) => {
+            con.collection(collection).findOne(query, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })
+        .then((user) => {
+            bcrypt.compare(password, user.password)
+            .then((result) => {
+                if (result) {
+                    //Add some user info to the cookie to make stuff easy in future
+                    const userInfo = {
+                        isBasic : false,
+                        isBookstore : false,
+                        isAdmin : false,
+                        username : username,
+                        _id : user._id
+                    }
+                    
+                    if (accountType == "User") {
+                        userInfo.isBasic = true;
+                    } else if (accountType == "Bookstore"){
+                        userInfo.isBookstore = true;
+                    } else if (accountType == "Admin"){
+                        userInfo.isAdmin = true;
+                    }
+                    
+                    req.session.user = userInfo;
+                    res.send("Success");
+                } else {
+                    res.status(400).send("Password does not match");
                 }
-                
-                if (accountType == "User") {
-                    userInfo.isBasic = true;
-                } else if (accountType == "Bookstore"){
-                    userInfo.isBookstore = true;
-                } else if (accountType == "Admin"){
-                    userInfo.isAdmin = true;
-                }
-                
-                req.session.user = userInfo;
-                res.send("Success");
-            } else {
-                res.status(400).send("Password does not match");
-            }
+            })
+            .catch((error) => {
+                throw error;
+            });
         })
         .catch((error) => {
-            res.status(400).send(error);
+            throw error;
         });
     })
     .catch((error) => {
@@ -399,7 +417,7 @@ app.get('/bookstore', (req, res) => {
     }
 });
 
-app .get('/bookstore/:bookstoreID', (res, req) => {
+app.get('/bookstore/:bookstoreID', (res, req) => {
     //This will return some baisc information about the user being requested
     const ObjectId = require('mongodb').ObjectId;
     const bookstoreID = new ObjectId(req.params.bookstoreID);
@@ -1112,7 +1130,33 @@ app.get('/bookstore/branding/:bookstoreID', (req,res) => {
     .catch((error) => {
         res.status(400).send(error);
     })
-})
+});
+
+app.post('/banUser', (req, res) => {
+    //First we only want admins to be able to ban other users or bookstores
+    //Also check if we have have a session
+    if (!req.session.user) {
+        res.status(400).send("Not logged in");
+    } else if (!req.session.user.isAdmin) {
+        res.status(400).send("Not an admin");
+    } else {
+        new Promise((resolve, reject) => {
+            const {accountName, accountID, accountType, accountEmail} = req.body;
+            const newBannedUser = {
+                accountName : accountName,
+                accountID : accountID,
+                accountType : accountType,
+                accountEmail : accountEmail,
+            }
+            con.collection(bannedUsersCollection).insertOne(newBannedUser, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })
+        .then((result) => {
+            res.send(`Successfull banned ${accountName}`);
+        })
+    }
+});
 
 app.use('/', express.static('pages'));
 
