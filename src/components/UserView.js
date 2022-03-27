@@ -18,75 +18,61 @@ import { Container } from 'react-bootstrap';
 export const UserView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
-
-    // constant that will check if the user is viewing their search results or their wishlist
-    const [isSearchResults, setIsSearchResults] = useState(true);
-
-    //Stuff to be grabbed from the database
-    const {listingID} = useParams();
     
-    const [user, setUser] = useState('');
-    const [image, setImage] = useState();
-    const [price, setPrice] = useState('');
-    const [title, setTitle] = useState('');
-    const [bookDescription, setBookDescription] = useState('');
-    const [imageName, setImageName] = useState('');
-    const [timestamp, setTimestamp] = useState('');
     const [Isbanned,setIsbanned] = useState(0);
 
-    const fetchIamge = async () => {
-      const imageURL = "http://localhost:8000/image/listings/" + listingID + "/" + imageName;
-      const res = await fetch(imageURL);
-      const imageBlob = await res.blob();
-      const imageObjectURL = URL.createObjectURL(imageBlob);
-      setImage(imageObjectURL);
-  }
+    const [userID, setUserID] = useState('');
+    const [accountType, setAccountType] = useState('');
+    const [email, setEmail] = useState('');
+    const [accountName, setAccountName] = useState('');
 
+    //Onload
     useEffect(() => {
-        const listingURL = 'http://localhost:8000/listing/' + listingID;
-        console.log(listingURL);
-        const requestOptions = {
-            credentials: 'include',
-            method: 'GET',
-            headers: {'Content-Type' : 'application/json'},
-        };
+        const user = props.user;
+        setUserID(user._id);
+        setAccountType(user.accountType);
+        setEmail(user.email);
 
-        fetch(listingURL, requestOptions)
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-            }
-        })
-        .then((data) => {
-            console.log(data);
-            setUser(data.posterName);
-            setImageName(data.imageNames[0]);
-            setTitle(data.title);
-            setPrice(data.price);
-            setBookDescription(data.description);
-            setTimestamp(data.timestamp);
-        })
-        .catch((error) =>{
-            console.log(error);
-        });
-    }, []);
-    useEffect(() => {
-      fetchIamge();
-    }, [imageName]);
-
-
-    
+        if (accountType == 'Bookstore'){
+            setAccountName(user.companyName);
+        } else {
+            setAccountName(user.username);
+        }
+    }, [props.user])
 
 
 
-    const handleclick = () => {
-      setIsbanned(1);
-  }
+    const handleBanClick = () => {
+      //Send the information to 
+      const body = {
+        accountName : accountName,
+        accountID : userID,
+        accountType : accountType,
+        accountEmail : email,
+      };
+      const requestOptions = {
+          credentials: 'include',
+          method: 'POST',
+          headers: {'Content-Type' : 'application/json'},
+          body : JSON.stringify(body)
+      };
+      
+      fetch('http://localhost:8000/banUser', requestOptions)
+      .then((response) => {
+        if (!response.ok){
+            console.log("error Banning User");
+        } else {
+            setIsbanned(1);
+        }
+      })
+      .catch( (error)=>{
+          console.log(error);
+      });
+    }
 
-  const handleclick2 = () => {
-    setIsbanned(0);
-}
+    const handleclick2 = () => {
+        setIsbanned(0);
+    }
 
     
 
@@ -109,7 +95,7 @@ export const UserView = (props) => {
 
              
              
-             <p> First Name :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Last Name :    &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; UserID :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Date joined :{timestamp}</p> 
+             <p> First Name :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Last Name :    &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; UserID :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Date joined :</p> 
              {/* <p> Description: {bookDescription} </p> */}
              
              
@@ -117,15 +103,12 @@ export const UserView = (props) => {
              
              <ButtonGroup >
             {Isbanned == 0
-            ? <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleclick} >Ban User</Button>
+            ? <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleBanClick} >Ban User</Button>
             
             : <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={handleclick2} >Unban User</Button>
           
           }
              
-             
-             
-             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' >Listings</Button>
             
              </ButtonGroup>
              
@@ -139,33 +122,6 @@ export const UserView = (props) => {
             
              </div>
 
-
-             
-            
-
-            
-
-           
-            {/* <input type ="button" variant= "success" value ="Make a bid!" onClick={togglePopup}/>   */}
-           
-              
-            {/* {isOpen && <Popup
-                content={<>
-                
-                <p>Create an offer</p>
-                <Form onSubmit={handleSubmitClick}>
-                <InputGroup>
-                <InputGroup.Text>Offer:</InputGroup.Text>
-                <Form.Control id="formOffer" as="textarea" aria-label="With textarea" />
-                </InputGroup>
-                <Button  type="submit">Send Offer</Button>
-                </Form>
-
-            </>}
-      handleClose={togglePopup}
-    />} */}
-            
-            
         </div>
         
     );
