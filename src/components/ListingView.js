@@ -13,6 +13,8 @@ import { Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 
+import { Link } from 'react-router-dom';
+
 
 export const ListingView = (props) => {
     //Constant that will check if the popup page is open 
@@ -26,44 +28,58 @@ export const ListingView = (props) => {
     const {listingID} = useParams();
     
     const [user, setUser] = useState('');
+    const [image, setImage] = useState();
     const [price, setPrice] = useState('');
-    const [bookName, setBookName] = useState('');
+    const [title, setTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
+    const [imageName, setImageName] = useState('');
+    const [timestamp, setTimestamp] = useState('');
+
+    const fetchIamge = async () => {
+      const imageURL = "http://localhost:8000/image/listings/" + listingID + "/" + imageName;
+      const res = await fetch(imageURL);
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setImage(imageObjectURL);
+  }
+
+    useEffect(() => {
+        const listingURL = 'http://localhost:8000/listing/' + listingID;
+        console.log(listingURL);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'GET',
+            headers: {'Content-Type' : 'application/json'},
+        };
+
+        fetch(listingURL, requestOptions)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+            }
+        })
+        .then((data) => {
+            console.log(data);
+            setUser(data.posterName);
+            setImageName(data.imageNames[0]);
+            setTitle(data.title);
+            setPrice(data.price);
+            setBookDescription(data.description);
+            setTimestamp(data.timestamp);
+        })
+        .catch((error) =>{
+            console.log(error);
+        });
+    }, []);
+    useEffect(() => {
+      fetchIamge();
+    }, [imageName]);
 
     
-
-    // useEffect(() => {
-    //     const listingURL = 'http://localhost:8000/listing/' + listingID;
-    //     console.log(listingURL);
-    //     const requestOptions = {
-    //         credentials: 'include',
-    //         method: 'GET',
-    //         headers: {'Content-Type' : 'application/json'},
-    //     };
-
-    //     fetch(listingURL, requestOptions)
-    //     .then((response) => {
-    //         if (response.ok) {
-    //             return response.json();
-    //         } else {
-    //         }
-    //     })
-    //     .then((data) => {
-    //         console.log(data);
-    //         setUser(data.user);
-    //         setBookName(data.textname);
-    //         setPrice(data.price);
-    //         setBookDescription(data.bookDescription)
-    //     })
-    //     .catch((error) =>{
-    //         console.log(error);
-    //     });
-    // }, []);
-
-
     const popover = (
         <Popover id="popover-basic">
-          <Popover.Header as="h3">Discription</Popover.Header>
+          <Popover.Header as="h3">Description</Popover.Header>
           <Popover.Body>
             Used like new, No ripped pages.
           </Popover.Body>
@@ -81,12 +97,18 @@ export const ListingView = (props) => {
         setIsOpen(!isOpen);
     }
 
+    const handleDelete = () => {  //TODO-----
+      // delete listing from DB. 
+    }
+
+    
+
     const addToWishlist = () => {
       const requestOptions = {
         credentials: 'include',
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
-        body : JSON.stringify({listingID : props.id})
+        body : JSON.stringify({listingID : listingID})
       };
 
       fetch('http://localhost:8000/add-to-wishlist', requestOptions)
@@ -104,6 +126,7 @@ export const ListingView = (props) => {
     }
 
     const removeFromWishlist = () => {
+      console.log("hello");
       const requestOptions = {
         credentials: 'include',
         method: 'POST',
@@ -159,19 +182,22 @@ export const ListingView = (props) => {
         
         <div className="Listingpage-form">
              
+             
              <div className='thumbnail'>
-             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQicIRGNXnDUnz_FTP9aJ0m2fB05MH-8YL0Y9h154mwQjWUs72k9-MefI8KwWa6JzchDF0&usqp=CAU" alt="..." width="120" height="100" class="img-thumbnail"  /> 
+             <img src={image} alt="..." width="300" height="300" class="img-thumbnail"  />  
+             
              </div>
              
-
+             
              
              
              <div className='image-info'>
              <Container  fluid='lg'>
              <Row>
             
-             <p> Title : {props.title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {'5'}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :</p> 
-             <p> Discription: </p>
+            
+             <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {user} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
+             <p> Description: {bookDescription} </p>
              
              
 
@@ -181,11 +207,24 @@ export const ListingView = (props) => {
              {/* <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
-             <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
 
-             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' disabled={!showWishlistButton} onClick={() => {addToWishlist(); setShowWishlistButton(false); setShowRemoveFromWishlistButton(true)}}>Add to wishlist</Button>
+             
+             {props.update == true
+             ? <div className='bttns' >
+                
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button>
+               <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
 
-             <Button variant="success" size='sm' className='wishlist-remove-btn' type='submit' disabled={!showRemoveFromWishlistButton} onClick={() => {removeFromWishlist(); setShowRemoveFromWishlistButton(false); setShowWishlistButton(true)}}>Remove from Wishlist</Button>
+            </div>
+             : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+              
+             <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
+             <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
+             </div>
+
+             }
+             
             
              
             

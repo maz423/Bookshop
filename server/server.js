@@ -39,6 +39,7 @@ const userCollection = 'users';
 const bookstoreCollection = 'bookstoreUsers';
 const listingsCollection = 'listings';
 const adminCollection = 'admins';
+const offersCollection = 'offers';
 
 const PORT = 8000;
 const HOST = '0.0.0.0';
@@ -117,6 +118,16 @@ mongoose.connect(DB_Url,
 
 //loading the mongoose model for the imageSchema
 var imgModel = require('./model')
+
+app.get('/isLoggedIn', (req, res) => {
+    if (!req.session.user){
+        res.status(400).send("Not logged in")
+    } else if (req.session.user.isBasic || req.session.user.isBookstore || req.session.user.isAdmin){
+        res.send("Logged in");
+    } else {
+        res.status(400).send("Not logged in");
+    }
+});
 
 //Login and Registration stuff
 app.post('/login', (req, res)=>{
@@ -211,8 +222,9 @@ app.post("/register", (req, res)=> {
                 city : city,
                 province : province,
                 zipcode: zipcode,
+                profilePicture : "",
                 listings : [],
-                wishlist : []
+                wishlist : [],
                 };
             con.collection(userCollection).insertOne(newUser, (err, result) =>{
                 if (err) { throw err } else {res.send("Success")}
@@ -255,11 +267,13 @@ app.post("/registerBookstore", (req, res) => {
                 province : province,
                 zipcode : zipcode,
                 listings : [],
+                profilePicture : "",
+                brandingImage : "",
                 };
             con.collection(bookstoreCollection).insertOne(newUser, (err, result) => {
                 if (err) { throw err } else {
                     console.log("success");
-                    res.send("Success")
+                    res.send(result.insertedId);
                 }
             });
         })
@@ -447,7 +461,6 @@ app.post('/regularSearch', (req, res) =>{
 
         const pipeline = [
             { $match: { title: { $regex: keyword, $options: "i" } } },
-            { $group: { _id: "$_id", title: { $push: "$title" } } }
         ];
 
 
@@ -464,6 +477,7 @@ app.post('/regularSearch', (req, res) =>{
 
         (async function() {
             let searchResults = await performSearch();
+            console.log(searchResults);
             console.log(searchResults[0]);
             res.send(searchResults);
         })();
@@ -483,7 +497,6 @@ app.post('/advancedSearch', (req, res) =>{
     const pipeline = [
         { $match: { title: { $regex: keyword, $options: "i" }, price: { $lte: price }, 
         authorName: { $regex: author, $options: "i" }, city: { $regex: city, $options: "i" } } },
-        { $group: { _id: "$_id", title: { $push: "$title" } }  }
     ];
 
 
@@ -523,6 +536,7 @@ app.post('/make-lis' ,(req,res)=>{
         province : province,
         zipCode : zipCode,
         timestamp: datetime,
+        postedByStore : req.session.user.isBookstore,
         posterID : req.session.user._id,
         posterName : req.session.user.username,
         imageNames : [],
@@ -538,7 +552,7 @@ app.post('/make-lis' ,(req,res)=>{
         //TODO add account type detection
         let collection = userCollection;
         if (req.session.user.isBookstore){
-            collection = bookstoreCollection
+            collection = bookstoreCollection;
         }
 
         const addListing = {$push: {listings : result.insertedId}};
@@ -999,12 +1013,31 @@ app.get('/test', (_,res)=> {
     });
 });
 
-app.post('/uploadImage', multerHelper.uploadImage, (req, res, next) => {
-    const addImage = {$push : {imageNames : req.file.filename}}
+app.post('/uploadImage', multerHelper.uploadImage, (req, res) => {
+    const dir = req.body.directory;
+    let addImage = {$push : {imageNames : req.file.filename}};
+    let collection = listingsCollection;
+
+    //Check if we are not adding an image for a listing
+    if (dir == "bookstores"){
+        addImage = {$set : {profilePicture: req.file.filename}};
+        collection = bookstoreCollection;
+    } else if (dir == "users") {
+        addImage = {$set : {profilePicture: req.file.filename}};
+        collection = userCollection;
+    } else if (dir == "branding") {
+        addImage = {$set : {brandingImage: req.file.filename}};
+        collection = bookstoreCollection;
+    } else if (dir =="listings"){
+    } else {
+        return res.status(400).send(dir + " Not recognized");
+    }
+    
     const ObjectId = require('mongodb').ObjectId;
     const listingQuery = {_id : new ObjectId(req.body.id)}
+
     new Promise((resolve, reject) => {
-        con.collection(listingsCollection).updateOne(listingQuery, addImage, (err, result) => {
+        con.collection(collection).updateOne(listingQuery, addImage, (err, result) => {
             if (err) {reject(err)} else {resolve(result)}
         });
     })
@@ -1023,12 +1056,32 @@ app.get('/', (req, res) => {
     res.redirect("http://localhost:3000/register");
 });
 
-app.get('/image/:listingID/:filename', (req, res) => {
-    const { listingID, filename } = req.params;
+app.get('/image/:directory/:listingID/:filename', (req, res) => {
+    const { directory, listingID, filename } = req.params;
     const dirname = path.resolve();
-    const fullfilepath = path.join(dirname, 'uploads/' + listingID + '/'+ filename);
+    const fullfilepath = path.join(dirname, 'uploads/' + directory + '/' + listingID + '/'+ filename);
     return res.sendFile(fullfilepath);
 });
+
+app.get('/bookstore/branding/:bookstoreID', (req,res) => {
+    const bookstoreID = req.params.bookstoreID;
+    const ObjectId = require('mongodb').ObjectId;
+    const query = {_id : new ObjectId(bookstoreID)}
+
+    new Promise((resolve, reject) => {
+        con.collection(bookstoreCollection).findOne(query, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        });
+    })
+    .then((bookstore) => {
+        const dirname = path.resolve();
+        const fullfilepath = path.join(dirname, 'uploads/branding/' + bookstoreID + '/'+ bookstore.brandingImage);
+        return res.sendFile(fullfilepath);
+    })
+    .catch((error) => {
+        res.status(400).send(error);
+    })
+})
 
 app.use('/', express.static('pages'));
 

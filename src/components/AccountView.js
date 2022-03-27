@@ -89,7 +89,7 @@ function AccountView(){
         .catch((error) => {
             console.log(error);
         });
-    });
+    }, []);
 
     const onPhotoChange = (e) => {
         //hello

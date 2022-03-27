@@ -43,21 +43,39 @@ const handleSubmitClick = (e) => { //handle submit event.
     } else{
       console.log(response);
       if(role == 'Admin'){
+        alert("Login as Admin Successfull");
         console.log(props);
         
         
         props.set(1);
         props.admin(1);
+        props.bookstore(0);
+        
         
        
         
       }
-      else{
+      else if (role == 'User'){
         
+        alert("Login as User Successfull");
         props.set(1);
+        props.admin(0);
+        props.bookstore(0);
+        
+        
+        
+      }
+      else{
+        alert("Login as Store Successfull");
+        props.set(1);
+        props.bookstore(1);
+        props.admin(0);
+        
+
       }
       
       navigate("/");
+      
     }
   })
   .catch((error) => {
