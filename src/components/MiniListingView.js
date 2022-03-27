@@ -29,11 +29,11 @@ export const MiniListingView = (props) => {
         setImage(imageObjectURL);
     }
     const fetchBranding = async () => {
-      const imageURL = "http://localhost:8000/bookstore/branding/" + props.listing.posterID ;
-      const res = await fetch(imageURL);
-      const imageBlob = await res.blob();
-      const imageObjectURL = URL.createObjectURL(imageBlob);
-      setStoreBranding(imageObjectURL);
+        const imageURL = "http://localhost:8000/bookstore/branding/" + props.listing.posterID ;
+        const res = await fetch(imageURL);
+        const imageBlob = await res.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        setStoreBranding(imageObjectURL);
     }
 
     useEffect(() => {

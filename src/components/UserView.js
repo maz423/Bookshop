@@ -1,16 +1,8 @@
 import './ListingView.css'
 import React,{useEffect, useState} from 'react';
-import Popup from "./Offerpopup.js"; 
-import {useNavigate, useParams} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import InputGroup from 'react-bootstrap/InputGroup'
-import Image from 'react-bootstrap/Image'
-import Figure from 'react-bootstrap/Figure'
 import { ButtonGroup, Popover } from 'react-bootstrap';
-import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 
 
@@ -19,7 +11,7 @@ export const UserView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
     
-    const [Isbanned,setIsbanned] = useState(0);
+    const [Isbanned,setIsbanned] = useState(false);
 
     const [userID, setUserID] = useState('');
     const [accountType, setAccountType] = useState('');
@@ -38,12 +30,13 @@ export const UserView = (props) => {
         } else {
             setAccountName(user.username);
         }
+        setIsbanned(user.isBanned);
     }, [props.user])
 
 
 
     const handleBanClick = () => {
-      //Send the information to 
+      //Send the information to the server
       const body = {
         accountName : accountName,
         accountID : userID,
@@ -62,7 +55,7 @@ export const UserView = (props) => {
         if (!response.ok){
             console.log("error Banning User");
         } else {
-            setIsbanned(1);
+            setIsbanned(true);
         }
       })
       .catch( (error)=>{
@@ -70,8 +63,31 @@ export const UserView = (props) => {
       });
     }
 
-    const handleclick2 = () => {
-        setIsbanned(0);
+    const handleUnbanClick = () => {
+        //Send the information to 
+      const body = {
+        accountName : accountName,
+        accountID : userID,
+        accountType : accountType,
+      };
+      const requestOptions = {
+          credentials: 'include',
+          method: 'POST',
+          headers: {'Content-Type' : 'application/json'},
+          body : JSON.stringify(body)
+      };
+      
+      fetch('http://localhost:8000/unbanUser', requestOptions)
+      .then((response) => {
+        if (!response.ok){
+            console.log("error unbanning User");
+        } else {
+            setIsbanned(false);
+        }
+      })
+      .catch( (error)=>{
+          console.log(error);
+      });
     }
 
     
@@ -102,10 +118,10 @@ export const UserView = (props) => {
 
              
              <ButtonGroup >
-            {Isbanned == 0
-            ? <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleBanClick} >Ban User</Button>
+            {Isbanned
+            ? <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={handleUnbanClick} >Unban User</Button> 
             
-            : <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={handleclick2} >Unban User</Button>
+            : <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleBanClick} >Ban User</Button> 
           
           }
              

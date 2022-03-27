@@ -172,6 +172,9 @@ app.post('/login', (req, res)=>{
             });
         })
         .then((user) => {
+            if (user == null) {
+                throw `User: "${username}" not found`;
+            }
             bcrypt.compare(password, user.password)
             .then((result) => {
                 if (result) {
@@ -199,11 +202,13 @@ app.post('/login', (req, res)=>{
                 }
             })
             .catch((error) => {
-                throw error;
+                console.log(error);
+                res.status(400).send(error);
             });
         })
         .catch((error) => {
-            throw error;
+            console.log(error);
+            res.status(400).send(error);
         });
     })
     .catch((error) => {
@@ -240,6 +245,8 @@ app.post("/register", (req, res)=> {
                 city : city,
                 province : province,
                 zipcode: zipcode,
+                accountType : "User",
+                isBanned : false,
                 profilePicture : "",
                 listings : [],
                 wishlist : [],
@@ -285,6 +292,8 @@ app.post("/registerBookstore", (req, res) => {
                 province : province,
                 zipcode : zipcode,
                 listings : [],
+                accountType : "Bookstore",
+                isBanned : false,
                 profilePicture : "",
                 brandingImage : "",
                 };
@@ -316,8 +325,13 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
+    const projection ={
+        projection:{
+            password : 0
+        }
+    }
     new Promise((resolve, reject) => {
-        con.collection(userCollection).find({}).toArray((err, result) =>{
+        con.collection(userCollection).find({}, projection).toArray((err, result) =>{
             if (err) {reject(err)} else {resolve(result)}
         }
     )})
@@ -1010,27 +1024,6 @@ app.post('/wishlist', (req, res) => {
 
 });
 
-app.get('/test', (_,res)=> {
-    const query ={}
-    const returnStuff = {
-        projection : {
-            username : 1
-        }
-    }
-
-    new Promise((resolve, reject)=> {
-        con.collection(userCollection).find(query, returnStuff).toArray( (err, result) => {
-            if (err) {reject(err)} else {resolve(result)}
-        })
-    })
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((error) => {
-        res.send(error);
-    });
-});
-
 app.post('/uploadImage', multerHelper.uploadImage, (req, res) => {
     const dir = req.body.directory;
     let addImage = {$push : {imageNames : req.file.filename}};
@@ -1104,13 +1097,24 @@ app.get('/bookstore/branding/:bookstoreID', (req,res) => {
 app.post('/banUser', (req, res) => {
     //First we only want admins to be able to ban other users or bookstores
     //Also check if we have have a session
+    const {accountName, accountID, accountType, accountEmail} = req.body;
+    const ObjectId = require('mongodb').ObjectId;
+
+    let collection = userCollection;
+    let query = {_id : new ObjectId(accountID)};
+    let update = {$set : {isBanned : true}}
+    if (accountType =="Bookstore"){
+        collection = bookstoreCollection;
+    } else if (accountType != "User"){
+        return res.status(400).send(`Unknown account type: "${accountType}"`);
+    }
+
     if (!req.session.user) {
         res.status(400).send("Not logged in");
     } else if (!req.session.user.isAdmin) {
         res.status(400).send("Not an admin");
     } else {
         new Promise((resolve, reject) => {
-            const {accountName, accountID, accountType, accountEmail} = req.body;
             const newBannedUser = {
                 accountName : accountName,
                 accountID : accountID,
@@ -1122,7 +1126,49 @@ app.post('/banUser', (req, res) => {
             });
         })
         .then((result) => {
-            res.send(`Successfull banned ${accountName}`);
+            //Now we update the correct collection
+            con.collection(collection).updateOne(query, update, (err, result) => {
+                if (err) {throw err} else {res.send(`Successfully banned ${accountName}`)}
+            });  
+        })
+        .catch((error) => {
+            res.status(400).send(error);
+        })
+    }
+});
+
+app.post('/unbanUser', (req, res) => {
+    const { accountName, accountID, accountType} = req.body;
+    const ObjectId = require('mongodb').ObjectId;
+
+    let collection = userCollection;
+    let query = {_id : new ObjectId(accountID)};
+    let update = {$set : {isBanned : false}}
+    if (accountType =="Bookstore"){
+        collection = bookstoreCollection;
+    } else if (accountType != "User"){
+        return res.status(400).send(`Unknown account type: "${accountType}"`);
+    }
+
+    if (!req.session.user) {
+        res.status(400).send("Not logged in");
+    } else if (!req.session.user.isAdmin) {
+        res.status(400).send("Not an admin");
+    } else {
+        //We use delete many because it is possible that the same account ID was added multiple times
+        const toDelete = {accountID : accountID, accountType: accountType}
+        new Promise((resolve, reject) => {
+            con.collection(bannedUsersCollection).deleteMany(toDelete, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        })
+        .then((result) => {
+            con.collection(collection).updateOne(query, update, (err, result) => {
+                if (err) {throw err} else {res.send(`Successfully unbanned ${accountName}`)}
+            });  
+        })
+        .catch((error) => {
+            res.status(400).send(error);
         })
     }
 });
