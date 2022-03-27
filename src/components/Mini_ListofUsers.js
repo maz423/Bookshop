@@ -7,39 +7,14 @@ export const Mini_ListofUsers = (props) => {
     const [userList, setUserList] = useState([]);
 
 
-
-    //Component mount and unmount
+    //props.users update
     useEffect(() => {
-        const requestOptions = {
-            credentials: 'include',
-            method: 'GET',
-            headers: {'Content-Type' : 'application/json'},
-        };
-        
-        fetch('http://localhost:8000/users', requestOptions)
-        .then((response) => {
-          if (!response.ok){
-            console.log("error geting users");
-          } else {
-            return response.json();
-          }
-        })
-        .then((data) => {
-            console.log(data);
-            setUserList(data);
-        })
-        .catch( (error)=>{
-            console.log(error);
-        });
-    },[]);
-    //component Updata
-    // useEffect(() => {
-    //     if (props.users != ""){
-    //         setUserList(props.users);
-    //     } else {
-    //         setUserList([]);
-    //     }
-    // },[props.users]);
+        if (props.users != ""){
+            setUserList(props.users);
+        } else {
+            setUserList([]);
+        }
+    },[props.users]);
 
     return(
         <div className='Mini-user'>
