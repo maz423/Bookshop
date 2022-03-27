@@ -503,7 +503,8 @@ app.post('/regularSearch', (req, res) =>{
                 return aggCursor.toArray();
             }
             catch(error){
-                console.error(error);
+                console.log(error);
+                res.status(400).send(error);
             }
         };
 
@@ -539,7 +540,8 @@ app.post('/advancedSearch', (req, res) =>{
             return aggCursor.toArray();
         }
         catch(error){
-            console.error(error);
+            console.log(error);
+            res.status(400).send(error);
         }
     };
 
@@ -549,6 +551,36 @@ app.post('/advancedSearch', (req, res) =>{
         res.send(searchResults);
     })();
 });
+
+
+app.post('/searchUser', (req, res) => {
+
+    let keyword = req.body.keyword;
+
+    const pipeline = [
+        { $match: { username: { $regex: keyword, $options: "i"} } },
+    ];
+
+    async function performSearch(){
+        try{
+            const users = await con.collection(userCollection);
+            const aggCursor = await users.aggregate(pipeline);
+            return aggCursor.toArray();
+
+        }
+        catch(error){
+            console.log(error);
+            res.status(400).send(error);
+        }
+    };
+
+    (async function() {
+        let searchResults = await performSearch();
+        res.send(searchResults);
+    })();
+
+
+})
 
 //All the implementation are from typing TODO change to button
 
@@ -916,7 +948,7 @@ app.post('/remove-from-wishlist', (req, res) => {
     };
 
     (async function() {
-        await removeFromWishlist();
+        await removeFromWishlist();            
 
         res.send("ok");
     })();
@@ -987,7 +1019,6 @@ app.post('/wishlist', (req, res) => {
 
                 let listing = await listings.findOne({_id : listingID});
 
-                console.log(listing);
 
                 await books.push(listing);
 
