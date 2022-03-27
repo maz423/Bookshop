@@ -697,70 +697,6 @@ app.get('/listings/:numberOfListings/:pageNumber', (req, res) => {
     });
 });
 
-
-
-//John change this to button delete instead of deleting by name
-//TODO figure out a delete by button once we actually implement it
-app.post('/remove-lis',(req,res)=>{
-	var name = req.body.name;
-	function removelis(varname){
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-		var dbo = db.db("ecomDB");
-		var myquery = { name: varname};
-		dbo.collection("listings").deleteOne(myquery, function(err,response){
-			if (err) throw err;
-			console.log("1 listing deleted");
-			db.close();
-			});
-		});
-	}
-	removelis(name);
-	res.redirect("/main");
-});
-
-//This is for updating listing, you can update by button press (needs to be implemented by john)
-app.post('/update_lis',(req,res)=>{
-	var textname = req.body.name;
-	var condition = req.body.condition;
-	var description = req.body.descript;
-	function addchild(varname,varcon,vardesc){
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-		var dbo = db.db("ecomDB");
-		var myquery = { name: varname};
-		if(varcon.length == 0 && vardesc.length == 0){
-			console.log("Nothing to update");
-		}
-		else if(varcon.length == 0){
-		var newvalues = { $set: {description: vardesc}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("only description updated");
-			db.close();
-			});
-		
-		} else if(vardesc.length == 0){
-		var newvalues = { $set: {condition: varcon}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("only condition updated");
-			db.close();
-			});
-		} else{
-		var newvalues = { $set: {condition: varcon, description: vardesc}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("1 document updated");
-			db.close();
-			});
-			}
-		});
-	}
-	addchild(name,condition,description);
-	res.redirect("/postingpage");
-});
-
 app.put('/update_user',(req,res)=>{
     const oldUser=req.body.oldUserName;
     const { username, email, address1, address2, fName, lName, city, province, zipcode} = req.body;
@@ -854,6 +790,29 @@ app.post('/make-offer',(req,res)=>{
         
     }
 	res.redirect("/main");
+});
+
+
+//TODO figure out a delete by button once we actually implement it
+app.post('/remove-offers',(req,res)=>{
+	var posterName = req.body.posterName; ; //for now have it as the title TODO change to id from button press
+	const myquery = {_id : posterName}; //query for finding the offers for the user
+	const email = req.body.email //query for the actual offer
+	new Promise((resolve, reject) => {
+		con.collection("offers").findOneAndUpdate(myquery,{$pull: {email: email}}, function(err,response){
+			if (err) {
+			console.log("error in deleting offer");
+			} else{
+			console.log('offer deleted')	
+			}
+		});
+	})
+	.then((result) => {
+        res.send(result);
+    	})
+    	.catch((error) => {
+        res.status(400).send(error);
+    	});
 });
 
 
