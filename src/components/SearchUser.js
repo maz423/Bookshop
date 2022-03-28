@@ -31,6 +31,7 @@ const handleSubmitClick = (e) => {
        })
        .then((data) => {
               setUsersList(data);
+              console.log(data);
        })
        .catch((error) => {
               console.log(error);
@@ -46,7 +47,7 @@ return (
        justifyContent: 'center',}
 }>
    
-{/* <Form className="d-flex" onSubmit={handleSubmitClick}>
+<Form className="userSearchForm" onSubmit={handleSubmitClick}>
         <Form.Control
           type="search"
           placeholder="Search User"
@@ -58,14 +59,14 @@ return (
           
         />
         <Button type="submit" variant="success" size='md' disabled={!keyword}>Search User</Button>
-      </Form> */}
+      </Form>
 
-      <form className="userSearchForm" onSubmit={handleSubmitClick}>
+      {/* <form className="userSearchForm" onSubmit={handleSubmitClick}>
              <label for="username">Search a user by username:</label><br></br>
              <input type="text" id="username" value={keyword} onChange={(e)=>setKeyword(e.target.value)} name="username"></input>
 
              <Button variant="success" size='sm' type="submit">Search</Button> 
-      </form>
+      </form> */}
 
 
        <Mini_ListofUsers users={usersList} />

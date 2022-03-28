@@ -17,6 +17,9 @@ export const UserView = (props) => {
     const [accountType, setAccountType] = useState('');
     const [email, setEmail] = useState('');
     const [accountName, setAccountName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [dateJoined, setDateJoined] = useState('');
 
     //Onload
     useEffect(() => {
@@ -24,6 +27,8 @@ export const UserView = (props) => {
         setUserID(user._id);
         setAccountType(user.accountType);
         setEmail(user.email);
+        setFirstName(user.fName);
+        setLastName(user.lName);
 
         if (accountType == 'Bookstore'){
             setAccountName(user.companyName);
@@ -111,7 +116,7 @@ export const UserView = (props) => {
 
              
              
-             <p> First Name :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Last Name :    &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; UserID :  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Date joined :</p> 
+             <p> First Name: {firstName}  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Last Name: {lastName}   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; UserID: {userID} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Date joined:</p> 
              {/* <p> Description: {bookDescription} </p> */}
              
              
