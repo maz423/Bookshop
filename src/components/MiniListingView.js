@@ -107,16 +107,27 @@ export const MiniListingView = (props) => {
 
     return (
         <div className="Listingpagebox">
+            
+            
             <div className='thumbnail'>
                 <img src = {image} alt="icons" width="120" height="100" class="img-thumbnail"/>
+                
             </div>
-            
             {isBookstoreBook
+              ? <div className="brandingImage">
+                
+                  <img src ={storeBranding} alt="icons" width="40" height="30" class="img-branding"/>
+                  
+                </div>
+              : <></>
+            }
+            
+            {/* {isBookstoreBook
               ? <div className="brandingImage">
                   <img src ={storeBranding} alt="icons" width="120" height="100" class="img-branding"/>
                 </div>
               : <></>
-            }
+            } */}
             
             <div className='image-info-sidebar'>
              <Container fluid>
@@ -133,6 +144,7 @@ export const MiniListingView = (props) => {
              <Button variant="outline-success" size='sm'>Description</Button>
              </OverlayTrigger> <br></br><br></br><br></br><br></br>
              <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+
             
              
              

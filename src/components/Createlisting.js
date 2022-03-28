@@ -236,7 +236,9 @@ function Createlisting(props){
           if (!response.ok){
             console.log("error sending info");
           } else {
+            alert("Listing Posted successfully");
             return response.json();
+            
           }
         })
         .then((data) => {

@@ -184,6 +184,7 @@ export const ListingView = (props) => {
       .then((response) => {
         if(response.ok){
           console.log("ok");
+          alert("Listing deleted")
         }
         else{
           alert(response);
