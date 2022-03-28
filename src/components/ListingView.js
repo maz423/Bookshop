@@ -17,6 +17,8 @@ import { Link } from 'react-router-dom';
 
 
 export const ListingView = (props) => {
+    const [update,setUpdate] = useState(props.update);
+    const [wish,setWish] = useState(props.wish);
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
     const [reportIsOpen, setReportIsOpen] = useState(false);
@@ -160,6 +162,9 @@ export const ListingView = (props) => {
       .then((response) => {
         if(response.ok){
           console.log('ok');
+          alert("item added to whishlist");
+          setWish(1);
+          setUpdate(0);
         }
         else{
 
@@ -183,6 +188,9 @@ export const ListingView = (props) => {
       .then((response) => {
         if(response.ok){
           console.log('ok');
+          alert("item removed from whishlist");
+          setWish(0);
+          setUpdate(0);
         }
         else{
           console.log("error");
@@ -287,22 +295,40 @@ export const ListingView = (props) => {
              </OverlayTrigger> <br></br> */}
 
              
-             {props.update == true
+             {update == 1 && wish == 0
              ? <div className='bttns' >
                 
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button>
-                {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='report-btn' type='submit' onClick={reportListing}>Update Listing</Button> */}
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
+                {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button> */}
                <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+               <>&nbsp;</>
 
             </div>
-             : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+             : <></>
 
-                {/* <Button   variant="outline-success" size='sm' className='report-btn' type="submit" onClick={toggleReportPopup}>Report</Button> */}
+             }
+
+             {wish == 1 && update == 0
+             ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>&nbsp;
               
-             <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
-             <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
+             
+             <Button variant="danger" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
+             <>&nbsp;</>
              </div>
+             :<></>
+
+
+             }
+
+             {update == 0 && wish == 0
+             ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
+              
+             <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button> 
+             <>&nbsp;</>
+             </div>
+             
+             :<></>
+
 
              }
              

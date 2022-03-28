@@ -74,7 +74,7 @@
 
 .sidebar-listings{
 
-    background-color: black;
+    background-color: #232325;
 }
 
 
@@ -89,3 +89,14 @@
     color:green
 }
 
+.end{
+    text-align: center;
+    font-weight: bold;
+    color: red;
+    font-size: larger;
+   
+}
+
+.body-sidebar{
+    background-color: #232325;
+}

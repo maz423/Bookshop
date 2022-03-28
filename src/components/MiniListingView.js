@@ -43,6 +43,10 @@ export const MiniListingView = (props) => {
         else{
           setLink('/listing/' + props.listing._id);
         }
+
+        if(props.wish == 1){
+          setLink('/wishlistItem/' + props.listing._id);
+        }
         
         setTitle(props.listing.title);
         setPrice(props.listing.price);

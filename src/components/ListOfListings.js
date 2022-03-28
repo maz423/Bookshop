@@ -29,7 +29,7 @@ export const ListOfListings = (props) => {
             {
                 listingsList.map(element => { 
                     return <div className="text-center">
-                        <MiniListingView listing={element} MyListings = {MyListings} />
+                        <MiniListingView listing={element} MyListings = {MyListings} wish = {props.wish}/>
                     </div>
                 })
             }
