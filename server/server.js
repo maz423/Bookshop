@@ -543,7 +543,7 @@ app.post('/make-lis' ,(req,res)=>{
     }
 
     new Promise((resolve, reject) => {
-        //Add new listing to the database
+        //Add new listing to the databasesession
         con.collection(listingsCollection).insertOne(newListing, (err, result) => {
             if(err) {reject(err)}  else { resolve(result)}
         });
@@ -659,7 +659,7 @@ app.get('/listing/:listingID', (req, res) => {
      const ObjectId = require('mongodb').ObjectId;
      const listingOID = new ObjectId(req.params.listingID); 
      var usera='';
-
+    console.log(req.session.user);
 
      new Promise((resolve, reject) => {
          con.collection(listingsCollection).findOne({_id : listingOID}, (err, result) => {
@@ -670,6 +670,7 @@ app.get('/listing/:listingID', (req, res) => {
         if (req.session.user != undefined){
             //console.log("here")
                usera = req.session.user.username;
+               
                result.user=usera;
             //   console.log(result.user);
            }//
@@ -749,9 +750,9 @@ app.post('/make-offer',(req,res)=>{
         }
     }
     else {
-        var nameAccount = req.body.nameAccount//if the offer is from someone who is logged in give the object the name 
+        var nameUserOffer= req.body.nameUserOffer//if the offer is from someone who is logged in give the object the name 
         offersL = {
-            name: nameAccount,
+            name: nameUserOffer,
             email: email,
             guest: guest,
             title:title,
@@ -831,15 +832,17 @@ app.post('/remove-offers',(req,res)=>{
 	var posterName = req.session.user.username; ; //for now have it as the title TODO change to id from button press
 	const myquery = {_id : posterName}; //query for finding the offers for the user
 	const email = req.body.email //query for the actual offer
+    const listingID = req.body.lid
     console.log("REMOVING OFFERS.........");
     console.log(posterName);
     console.log(email);
+    console.log(listingID)
 	new Promise((resolve, reject) => {
-		con.collection("offers").findOneAndUpdate(myquery,{$pull: { offers: {$elemMatch: {email: email,listingID:listingID}}}}, function(err,response){
+		con.collection("offers").updateOne(myquery,{$pull: { offers: {email: email,listingID:listingID}}}, function(err,response){
 			if (err) {
-			console.log("error in deleting offer");
+			reject(err)
 			} else{
-			console.log('offer deleted')	
+			resolve(response)
 			}
 		});
 	})

@@ -47,6 +47,32 @@ export const ListingView = (props) => {
       const imageObjectURL = URL.createObjectURL(imageBlob);
       setImage(imageObjectURL);
   }
+  useEffect(() => {
+    const listingURL = 'http://localhost:8000/user';
+    //console.log(listingURL);
+    
+    const requestOptions = {
+        credentials: 'include',
+        method: 'GET',
+        headers: {'Content-Type' : 'application/json'},
+    };
+    fetch(listingURL, requestOptions)
+    .then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+        }
+    })
+    .then((data) => {
+      console.log(data);
+      setEmail(data.email);
+    })
+    .catch((error) =>{
+        console.log(error);
+    });
+
+
+}, []);
 
     useEffect(() => {
         const listingURL = 'http://localhost:8000/listing/' + listingID;
@@ -73,7 +99,7 @@ export const ListingView = (props) => {
           setBookDescription(data.description);
           setTimestamp(data.timestamp);
           setUser(data.user);
-          setEmail(data.email)
+          //setEmail(data.email)
           //Constantly checking if a user is logged in  
           setLoggedIn(props.user);
 
@@ -175,7 +201,8 @@ export const ListingView = (props) => {
         const formItems = e.target.elements;
         alert(formItems.formOffer.value)
         const body = {
-          posterName: user,
+          nameUserOffer:user,
+          posterName: posterName,
           email : email,
           //phone_number : formItems.formPhoneNumber.value,
           guest: false,

@@ -22,6 +22,7 @@ function OffersRecieved (params){
     const [offers, setOffers] = useState([]);
 
     const [image, setImage] = useState();
+    
 
     useEffect(() => {
         const listingURL = 'http://localhost:8000/get-offers';
@@ -63,7 +64,7 @@ function OffersRecieved (params){
     }
 
 
-    const deleteOffer = (id) => {
+    const deleteOffer = (id,lid) => {
 
         console.log("here");
         setOffers(offers.filter(item => item.email !== id))
@@ -74,7 +75,8 @@ function OffersRecieved (params){
                headers: {'Content-Type' : 'application/json'},
                body : JSON.stringify({
                 posterName: userID,
-                   email:id
+                   email:id,
+                   lid:lid
                })
         };
         fetch('http://localhost:8000/remove-offers', requestOptions)
@@ -119,7 +121,7 @@ function OffersRecieved (params){
                 Title : {offers.title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{offers.datetime}</p>
                 </Row>
                 <Row>
-                <p> <Button onClick={() => deleteOffer(offers.email)}>Decline</Button> &nbsp;&nbsp; &nbsp; &nbsp;  
+                <p> <Button onClick={() => deleteOffer(offers.email, offers.listingID)}>Decline</Button> &nbsp;&nbsp; &nbsp; &nbsp;  
                 <Button onClick={() => seeOffer(offers.offer)}>See Offer</Button> &nbsp;&nbsp; &nbsp; &nbsp;  
                 <Button onClick={() => navigate(`/listing/${offers.listingID}`)}>Listing Page</Button>
                 </p>
