@@ -809,6 +809,7 @@ app.post('/make-offer',(req,res)=>{
                         console.log("here")
                         con.collection(offersCollection).updateOne({_id:posterName},{$push: {offers:offersL}})
                     }
+                    else{throw "You already sent an offer for this listing"}
                 })
             }
         })

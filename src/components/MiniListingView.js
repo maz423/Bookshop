@@ -128,7 +128,7 @@ export const MiniListingView = (props) => {
              <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Description</Button>
              </OverlayTrigger> <br></br><br></br><br></br><br></br>
-             <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+             {/* <Button  variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> */}
             
              
              

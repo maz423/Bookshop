@@ -33,7 +33,7 @@ export const ListingView = (props) => {
      //Stuff to be grabbed from the database
     const [posterName, setPosterName] = useState('');
     const [image, setImage] = useState();
-    const [email, setEmail] = useState();
+    const [email, setEmail] = useState();// This is for getting the users email 
     const [price, setPrice] = useState('');
     const [title, setTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
@@ -247,10 +247,17 @@ export const ListingView = (props) => {
       //Finally send a fetch call to the server to store the guest
       else{
         e.preventDefault();
+         // Conditional logic:
+         const newErrors = findFormErrors()
+        if ( Object.keys(newErrors).length > 0 ) {
+        //errors!
+        setErrors(newErrors)
+        }
+
         const formItems = e.target.elements;
         const body = {
           posterName: posterName,
-          email : formItems.formEmail.value,
+          email : formItems.formGridEmail.value,
           //phone_number : formItems.formPhoneNumber.value,
           guest: true,
           listingID: listingID,
@@ -270,7 +277,7 @@ export const ListingView = (props) => {
         fetch('http://localhost:8000/make-offer', requestOptions)
         .then((response) => {
           if (!response.ok){
-            console.log("error sending offer");
+            alert("You already sent an offer to this listing");
           } else {
           }
         }).catch( (error)=>{
@@ -281,8 +288,28 @@ export const ListingView = (props) => {
       }
    }
   }
+  const [ form, setForm ] = useState({})
+  const [ errors, setErrors ] = useState({})
 
+  const setField = (field, value) => {
+    setForm({
+      ...form,
+      [field]: value
+    })
+    if ( !!errors[field] ) setErrors({
+      ...errors,
+      [field]: null
+    })
+  }
+
+  const findFormErrors = () => {
+    const formGridEmail = form;
+    const newErrors = {}
+    if ( !formGridEmail || formGridEmail === '' ) newErrors.formGridEmail = 'Email cannot be blank!'
+    return newErrors;
+  }
   
+
   
     return (
         
@@ -359,9 +386,12 @@ export const ListingView = (props) => {
                 <Col style = {{visibility : showResults ? "visibile" : "hidden"}}>
                   <h4>Your not logged in as a user. Please provide your email so the seller may reply to your offer.</h4>
                     <Row>
-                      <Form.Group as={Col} controlId="formEmail">
+                      <Form.Group as={Col} controlId="formGridEmail">
                         <Form.Label>Email:</Form.Label>
-                        <Form.Control size='sm' type="text" placeholder="Enter Email"/>
+                         <Form.Control size='sm' type="email" placeholder="Enter email" onChange={ e => setField('formGridEmail', e.target.value) } isInvalid={ !!errors.formGridEmail }/>
+                        <Form.Control.Feedback type='invalid'>
+                        { errors.formGridEmail }
+                        </Form.Control.Feedback>
                       </Form.Group>
                       
                     </Row> 
