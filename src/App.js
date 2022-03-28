@@ -27,6 +27,7 @@ import {Mini_ListofUsers} from './components/Mini_ListofUsers'
 
 import MyListings from './components/MyListings';
 import {Report} from './components/Report';
+import {Reports} from './components/Reports';
 
 
 
@@ -42,6 +43,7 @@ function App() {
 
   const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
   const [listingID, setListingID] = useState('');
+  const [username, setUsername] = useState('');
   
 
 
@@ -280,6 +282,8 @@ useEffect(() => {
        <Route exact path='/' element={<Homepage/>} />
        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore} />}/>
        <Route exact path='/viewUser' element={<UserView/>} />
+       <Route exact path='/viewReports' element={<Reports/>} />
+       <Route exact path='/report/:username' element={<Report/>} component={username}/>
     
     </Routes>)
     : <></>

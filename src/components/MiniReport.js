@@ -1,5 +1,5 @@
 import './Report.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
@@ -13,6 +13,8 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import RangeSlider from 'react-bootstrap-range-slider';
 import ReactDOM from 'react-dom';
 import { ListOfListings } from './ListOfListings';
+import Row from 'react-bootstrap/Row'
+import { Popover } from 'react-bootstrap';
 
 
 
@@ -21,6 +23,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 export const MiniReport = (props) => {
 
+const [username, setUsername] = useState('');
+const [reason, setReason] = useState('');
 
 
 
@@ -33,6 +37,12 @@ const handleResolve = (e) => {
 }
 
 
+useEffect(() => {
+       setUsername(props.report.username);
+       setReason(props.report.reason);
+}, []);
+
+
    
 
 
@@ -40,7 +50,17 @@ const handleResolve = (e) => {
 return (
 
 <div className='Report'>
-       <p> Username :     &nbsp;&nbsp;&nbsp;   Date of Report:</p>
+       {/* <p> Username :     &nbsp;&nbsp;&nbsp;   Date of Report:</p> */}
+
+       <Container fluid>
+       <Row>
+
+       <p> Username: {username} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Reason: {reason}</p>
+
+       </Row>
+
+
+       </Container>
        
 </div>
 

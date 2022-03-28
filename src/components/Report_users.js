@@ -66,6 +66,30 @@ const handleSubmitClick = (e) => { //handle submit event.
 
       //handle submit
 
+      const {formUsername, reason} = form;
+
+
+      const requestOptions = {
+        credentials: 'include',
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body : JSON.stringify({username : formUsername, reason : reason})
+      }
+
+      fetch('http://localhost:8000/reportUser', requestOptions)
+       .then((response) => {
+              
+              if(response.ok){
+                  console.log("ok");
+              }
+              else{
+
+              }
+       })
+       .catch((error) => {
+              console.log(error);
+       });
+
 
       
     }

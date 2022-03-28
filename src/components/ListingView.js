@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 export const ListingView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
+    const [reportIsOpen, setReportIsOpen] = useState(false);
 
     // constant that will check if the wishlist button should be shown
     const [showWishlistButton, setShowWishlistButton] = useState(true);
@@ -117,6 +118,10 @@ export const ListingView = (props) => {
         setIsOpen(!isOpen);
     }
 
+    // const toggleReportPopup = () => {
+    //     setReportIsOpen(!reportIsOpen);
+    // }
+
     const handleDelete = () => {  //TODO-----
       // delete listing from DB. 
 
@@ -187,6 +192,32 @@ export const ListingView = (props) => {
         console.log(error);
       });
     }
+
+    // const reportListing = (e) => {
+    //     e.preventDefault();
+    //     const formItems = e.target.elements;
+    //     const reason = formItems.formReport.value;
+
+    //     const requestOptions = {
+    //       credentials: 'include',
+    //       method: 'POST',
+    //       headers: {'Content-Type' : 'application/json'},
+    //       body: JSON.stringify({user : user, listingID : listingID, reason : reason})
+    //     }
+
+    //     fetch('http://localhost:8000/reportPost', requestOptions)
+    //     .then((response) => {
+    //       if(response.ok){
+    //         console.log("ok");
+    //       }
+    //       else{
+    //         console.log("error");
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }
 
     const handleSubmitClick = (e) => { 
         e.preventDefault();
@@ -261,10 +292,13 @@ export const ListingView = (props) => {
                 
                 <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
                 <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button>
+                {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='report-btn' type='submit' onClick={reportListing}>Update Listing</Button> */}
                <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
 
             </div>
              : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+
+                {/* <Button   variant="outline-success" size='sm' className='report-btn' type="submit" onClick={toggleReportPopup}>Report</Button> */}
               
              <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
              <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
@@ -309,6 +343,22 @@ export const ListingView = (props) => {
             </>}
       handleClose={togglePopup}
     />}
+
+          {/* {reportIsOpen && <Popup
+                content={<>
+                
+                <p>Report a Listing</p>
+                <Form onSubmit={reportListing}>
+                <InputGroup>
+                <InputGroup.Text>Reason:</InputGroup.Text>
+                <Form.Control id="formReport" as="textarea" aria-label="With textarea" />
+                </InputGroup>
+                <Button  type="submit">Submit Report</Button>
+                </Form>
+
+            </>}
+                handleClose={toggleReportPopup}
+            />} */}
             
             
         </div>

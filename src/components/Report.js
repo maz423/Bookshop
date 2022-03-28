@@ -22,6 +22,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 export const Report = (props) => {
 
 const [resolve, setResolve] = useState(0);
+const [username, setUsername] = useState('');
+const [reason, setReason] = useState('');
+const [comments, setComments] = useState('');
 
 const [keyword, setKeyword] = useState('');
 const [subject, setSubject] = useState('');
@@ -43,6 +46,28 @@ const [listingsList, setListingsList] = useState([]);
 const handleResolve = (e) => {
        setResolve(1);
        e.preventDefault();
+
+
+       const requestOptions = {
+              credentials: 'include',
+              method: 'POST',
+              headers: {'Content-Type' : 'application/json'},
+              body : JSON.stringify({username : username})
+            }
+      
+            fetch('http://localhost:8000/resolveReport', requestOptions)
+             .then((response) => {
+                    
+                    if(response.ok){
+                        console.log("ok");
+                    }
+                    else{
+      
+                    }
+             })
+             .catch((error) => {
+                    console.log(error);
+             });
 
        
 }
