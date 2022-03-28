@@ -13,7 +13,7 @@ import StarRatingGrab from './StarRatingGrab.js';
 import StarRatingInput from './StarRatingInput.js';
 import {BsFillFileEarmarkPersonFill } from 'react-icons/bs'
 
-function AccountView(){
+function AccountView(props){
 
     //Constants that will open the pop up pages
     const [UserPU, setOpenUserPU] = useState(false);
@@ -54,6 +54,9 @@ function AccountView(){
     const [province, setProvince] = useState('');
     const [zip, setZip] = useState('');
 
+    //Bookstore
+    const [BookstoreName, setBookstoreName] = useState('')
+
     useEffect(() => {
         const userURL = 'http://localhost:8000/user';
         const requestOptions = {
@@ -85,6 +88,9 @@ function AccountView(){
             setCity(data.city);
             setProvince(data.province);
             setZip(data.zipcode);
+
+            //bookstore
+            setBookstoreName(data.companyName);
         })
         .catch((error) => {
             console.log(error);
@@ -145,8 +151,16 @@ function AccountView(){
                     </Form.Group>
 
                     <Container className="First-userInfo">
-                        <h6>Username:{username}</h6>
-                        <h6>Full Name: {firstName} {lastName}</h6>
+                        {props.bookstore == 1
+                        ? <h6>Bookstore name:{BookstoreName}</h6>
+                        : <div>
+                            <h6>Username:{oldUserName}</h6>
+                            <h6>Full Name: {firstName} {lastName}</h6>
+                        </div>
+
+                        }
+                        
+                        
                         <h6>Email: {email}</h6>
                         <Button variant="success" type="submit" onClick={toggleUserPU}>
                             Edit

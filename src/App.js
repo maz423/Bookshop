@@ -259,7 +259,7 @@ useEffect(() => {
          
          
           <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
-          <Route exact path='/user' element={<AccountView/>} />
+          <Route exact path='/user' element={<AccountView bookstore = {0}/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
           
           <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} />}/>
@@ -302,6 +302,7 @@ useEffect(() => {
        <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
        <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
        <Route exact path='/search/:keywordFromHomepage' />
+       <Route exact path='/user' element={<AccountView bookstore = {1}/>} />
        
        <Route path='/*' element={<Lost/>}/>
     </Routes>)
