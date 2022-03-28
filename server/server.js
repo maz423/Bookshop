@@ -633,26 +633,23 @@ app.post('/make-lis' ,(req,res)=>{
     });
 });
 
-//John change this to button delete instead of deleting by name
-//TODO figure out a delete by button once we actually implement it
-app.post('/remove-lis',(req,res)=>{
-	const {title} = req.body; //for now have it as the title TODO change to id from button press
-	const myquery = { title: title};
-	new Promise((resolve, reject) => {
-		con.collection(listingsCollection).deleteOne(myquery, function(err,response){
-			if (err) {
-			console.log(err);
-			} else{
-			console.log('listing deleted')	
-			}
-		});
-	})
-	.then((result) => {
-        res.send(result);
-    	})
-    	.catch((error) => {
+//Deletes a listing and its images
+app.delete('/remove-lis',(req, res)=>{
+    //Get ID from request
+	const listingID = req.body.listingID;
+    const ObjectId = require('mongodb').ObjectId;
+    const query =  {_id : new ObjectId(listingID)};
+
+    //Delete listing from database
+    con.collection(listingsCollection).deleteOne(query)
+    .then((result) => {
+        //Now that we removed it from our fatabase, remove images from server
+        const dir = `uploads/listings/${listingID}`;
+        fs.rmSync(dir, { recursive: true, force: true });
+    })
+    .catch((error) => {
         res.status(400).send(error);
-    	});
+    })
 });
 
 //This is for updating listing, you can update by button press (needs to be implemented by john), TODO make the old data autofill also put errors for when there isn't any items in the form
@@ -785,70 +782,6 @@ app.get('/listings/:numberOfListings/:pageNumber', (req, res) => {
     .catch((error) => {
         res.status(400).send(error);
     });
-});
-
-
-
-//John change this to button delete instead of deleting by name
-//TODO figure out a delete by button once we actually implement it
-app.post('/remove-lis',(req,res)=>{
-	var name = req.body.name;
-	function removelis(varname){
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-		var dbo = db.db("ecomDB");
-		var myquery = { name: varname};
-		dbo.collection("listings").deleteOne(myquery, function(err,response){
-			if (err) throw err;
-			console.log("1 listing deleted");
-			db.close();
-			});
-		});
-	}
-	removelis(name);
-	res.redirect("/main");
-});
-
-//This is for updating listing, you can update by button press (needs to be implemented by john)
-app.post('/update_lis',(req,res)=>{
-	var textname = req.body.name;
-	var condition = req.body.condition;
-	var description = req.body.descript;
-	function addchild(varname,varcon,vardesc){
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-		var dbo = db.db("ecomDB");
-		var myquery = { name: varname};
-		if(varcon.length == 0 && vardesc.length == 0){
-			console.log("Nothing to update");
-		}
-		else if(varcon.length == 0){
-		var newvalues = { $set: {description: vardesc}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("only description updated");
-			db.close();
-			});
-		
-		} else if(vardesc.length == 0){
-		var newvalues = { $set: {condition: varcon}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("only condition updated");
-			db.close();
-			});
-		} else{
-		var newvalues = { $set: {condition: varcon, description: vardesc}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("1 document updated");
-			db.close();
-			});
-			}
-		});
-	}
-	addchild(name,condition,description);
-	res.redirect("/postingpage");
 });
 
 app.put('/update_user',(req,res)=>{
