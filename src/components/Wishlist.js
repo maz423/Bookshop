@@ -45,7 +45,7 @@ useEffect(() => {
 return (
 
 <section className='wishlist-display'>
-    <ListOfListings listings={wishlist}/>
+    <ListOfListings listings={wishlist} wish = {1}/>
 </section>
 
 

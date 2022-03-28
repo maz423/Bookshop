@@ -231,7 +231,7 @@ useEffect(() => {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
-        <Route exact path='Update' element={<ListingView update = {1}/>} component={listingID}  />
+        <Route exact path='/Update' element={<ListingView update = {1}/>} component={listingID}  />
         <Route exact path='/report' element={<Report/>} />
         
         
@@ -266,11 +266,12 @@ useEffect(() => {
           <Route exact path='/' element={<Homepage/>} />
          
          
-          <Route exact path='/listing/:listingID' element={<ListingView/>} component={listingID}/>
+          <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
-          <Route exact path='Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
-          <Route exact path='updatelisting' element={<Createlisting update = {1} />}/>
+          <Route exact path='/Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
+          <Route exact path='/updatelisting' element={<Createlisting update = {1} />}/>
+          <Route exact path='/wishlistItem/:listingID' element={<ListingView update = {0} wish = {1} />} component={listingID}   />
           <Route path='/*' element={<Lost/>}/>
     
         </Routes>)
