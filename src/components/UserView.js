@@ -61,6 +61,7 @@ export const UserView = (props) => {
             console.log("error Banning User");
         } else {
             setIsbanned(true);
+            
         }
       })
       .catch( (error)=>{
@@ -88,6 +89,7 @@ export const UserView = (props) => {
             console.log("error unbanning User");
         } else {
             setIsbanned(false);
+            
         }
       })
       .catch( (error)=>{
@@ -132,6 +134,7 @@ export const UserView = (props) => {
              
             
              </ButtonGroup>
+             &nbsp;
              
              
             

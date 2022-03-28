@@ -171,7 +171,8 @@ useEffect(() => {
     ? <Routes>
     <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
     <Route exact path='/SearchUser' element={<SearchUser/>} />
-    <Route exact path='/viewUsers' element={<Mini_ListofUsers/>} />
+    
+    {/* <Route exact path='/viewUsers' element={<Mini_ListofUsers/>} /> */}
     
     
     </Routes>
@@ -206,7 +207,7 @@ useEffect(() => {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
-        <Route exact path='/Update' element={<ListingView update = {1}/>} component={listingID}  />
+        {/* <Route exact path='/Update/:listingID' element={<ListingView update = {1}/>} component={listingID}  /> */}
         <Route exact path='/report' element={<Report/>} />
         
         
@@ -237,15 +238,17 @@ useEffect(() => {
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting update = {0}/>}/>
+          <Route exact path='/updatelisting' element={<Createlisting update = {1}/>}/>
           <Route exact path='/report' element={<Report_users/>} />
           <Route exact path='/' element={<Homepage/>} />
+          <Route exact path='/Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
          
          
           <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
-          <Route exact path='/Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
-          <Route exact path='update/:listingID' element={<Createlisting update = {1} />}/>
+          
+          <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} />}/>
           <Route exact path='/wishlistItem/:listingID' element={<ListingView update = {0} wish = {1} />} component={listingID}   />
           <Route path='/*' element={<Lost/>}/>
     
@@ -257,10 +260,13 @@ useEffect(() => {
    {IsAdmin == 1 && LoggedIn == 1 && BookStore == 0           //Routes for  Admin
     ? (<Routes>
        <Route exact path='/' element={<Homepage/>} />
+       <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore} />}/>
        <Route exact path='/viewUser' element={<UserView/>} />
        <Route exact path='/viewReports' element={<Reports/>} />
        <Route exact path='/report/:username' element={<Report/>} component={username}/>
+       <Route path='/*' element={<Lost/>}/>
+       
     
     </Routes>)
     : <></>
@@ -270,6 +276,7 @@ useEffect(() => {
    {IsAdmin == 0 && LoggedIn == 1 && BookStore == 1           //Routes for Bookstore user
     ? (<Routes>
        <Route exact path='/' element={<Homepage/>} />
+       <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>}/>
        <Route exact path='/createlisting' element={<Createlisting update = {0}/>}/>
        <Route exact path='Mylistings' element={<MyListings bookstore = {1} user = {0} />}/>

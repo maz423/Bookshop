@@ -298,9 +298,9 @@ export const ListingView = (props) => {
              {update == 1 && wish == 0
              ? <div className='bttns' >
                 
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
+                <Button as={Link} to="/updatelisting" variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
                 {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button> */}
-               <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+               <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
                <>&nbsp;</>
 
             </div>

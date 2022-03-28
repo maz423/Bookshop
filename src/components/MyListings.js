@@ -43,7 +43,7 @@ function MyListings (props){
     }
 
     return (
-        <div><h1> Users/Bookstores Listings will be shown here</h1>
+        <div>
         <ListOfListings listings = {Listings} MyListings = {1}/></div>
     )
 }

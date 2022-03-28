@@ -41,11 +41,7 @@ const handleSubmitClick = (e) => {
 
 
 return (
-<div className='SearchUser' style={{
-       display: 'flex',
-       alignItems: 'center',
-       justifyContent: 'center',}
-}>
+<div >
    
 <Form className="userSearchForm" onSubmit={handleSubmitClick}>
         <Form.Control
@@ -68,7 +64,7 @@ return (
              <Button variant="success" size='sm' type="submit">Search</Button> 
       </form> */}
 
-
+        
        <Mini_ListofUsers users={usersList} />
 
 </div>
