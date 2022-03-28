@@ -379,6 +379,7 @@ app.get('/user', (req, res) => {
 app.get('/user/:userID', (req, res) => {
     //This will return some baisc information about the user being requested
     const ObjectId = require('mongodb').ObjectId;
+
     const userID = new ObjectId(req.params.userID);
 
     new Promise((resolve, reject) => {
@@ -654,21 +655,34 @@ app.post('/remove-lis',(req,res)=>{
 });
 
 //This is for updating listing, you can update by button press (needs to be implemented by john), TODO make the old data autofill also put errors for when there isn't any items in the form
-app.post('/update_lis',(req,res)=>{
-	const {title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
-	var myquery = { title: title}; //will probably have to change this to id
-	new Promise((resolve, reject) => {
-		var newvalues = { $set: {title, authorName, description, price, address1, address2, city, province, zipCode}};
-		con.collection(listingsCollection).updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			});
-		})
-		.then((result) => {
-        	res.send(result);
-    		})
-    		.catch((error) => {
-        	res.status(400).send(error);
-    		});
+app.put('/update_lis', (req,res)=>{
+    //Get the values from the request
+	const {listingID, title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
+    const ObjectId = require('mongodb').ObjectId;
+
+    //Set the update stuff
+    const listingUpdate = {
+        $set : {
+            title: title,
+            authorName : authorName,
+            description: description,
+            price : price,
+            address1 : address1,
+            address2 : address2,
+            city : city,
+            province : province,
+            zipCode : zipCode,
+        }
+    }
+	const query = {_id : new ObjectId(listingID)};
+
+    con.collection(listingsCollection).updateOne(query, listingUpdate)
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.status(400).send(`Error updating listing: ${listingID}`);
+    });
 });
 
 
@@ -691,26 +705,36 @@ app.get('/listings', (req,res) => {
 
 //This will return all of a users listings
 //Requires user to be logged in to return value
-app.get('/user/listings', (req, res) => {
-    const query = {username : req.session.user.username};
+//Handles both user and bookstore
+app.get('/user/my/listings', (req, res) => {
+    const query = {_id : req.session.user._id};
+    let collection = userCollection;
+    const projection = {
+        projection : {
+            listings : 1
+        }
+    }
+
+    //Check for the account
+    if (req.session.user.isBookstore) {
+        collection = bookstoreCollection;
+    } else if (!req.session.user.isBasic) {
+        return res.status(400).send("Not a user or bookstore");
+    }
 
     new Promise((resolve, reject) => {
-        con.collection.findOne(query, (err, result) => {
+        con.collection(collection).findOne(query, projection,(err, result) => {
             if (err) { reject(err) } else { resolve(result) }
         });
     })
-    .then((result) => {
-        const listingIDs = {ids : []}
-        result.listings.forEach(element => {
-            listingIDs.ids.push(element);
-        });
-        const listingQuery = {_id : {$in : listingIDs.ids}};
-        console.log(listingQuery);
-        con.collection(listingsCollection).find(listingQuery).toArray((err, result2) => {
+    .then((listings) => {
+        //Get all of the listing information
+        const listingQuery = {_id : {$in : listings.listings}};
+        con.collection(listingsCollection).find(listingQuery).toArray((err, result) => {
             if (err) {
                 res.status(400).send(err);
             } else {
-                res.send(result2);
+                res.send(result);
             }
         });
     })

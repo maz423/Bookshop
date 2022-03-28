@@ -44,37 +44,10 @@ function App() {
   const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
   const [listingID, setListingID] = useState('');
   
-
-
-
-// window.onunload = () => {
-//     // Clear the local storage
-//     window.localStorage.clear()
-//  } 
   
 
 //for loading state once when app restarts.
  useEffect(() => {
-  //  const loginURL = 'http://localhost:8000/isLoggedIn';
-  //  const requestOptions = {
-  //     credentials: 'include',
-  //     method: 'GET',
-  //  }
-  //  fetch(loginURL, requestOptions)
-  //  .then((response) => {
-  //    if (!response.ok){
-  //      setLoggedIn(false);
-  //      setIsAdmin(false);
-  //    }
-  //    else {
-  //      //Todo check for admin
-  //      setLoggedIn(true);
-  //    }
-  //  })
-  //  .catch((err) => {
-  //   setLoggedIn(false);
-  //   setIsAdmin(false);
-  //  });
   try {
     const serializedState = sessionStorage.getItem('Login');
     const serializedState2 = sessionStorage.getItem('Admin');
@@ -270,7 +243,7 @@ useEffect(() => {
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
           <Route exact path='Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
-          <Route exact path='updatelisting' element={<Createlisting update = {1} />}/>
+          <Route exact path='update/:listingID' element={<Createlisting update = {1} />}/>
           <Route path='/*' element={<Lost/>}/>
     
         </Routes>)

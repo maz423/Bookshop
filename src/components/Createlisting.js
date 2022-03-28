@@ -1,7 +1,7 @@
 import React,{useEffect, useState,Component} from 'react';
 import Popup from './Offerpopup.js';
 import Button from 'react-bootstrap/Button'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { isAccordionItemSelected } from 'react-bootstrap/esm/AccordionContext';
 import "./Createlisting.css"
 import Form from 'react-bootstrap/Form'
@@ -12,9 +12,10 @@ import { propTypes } from 'react-bootstrap/esm/Image';
 
 
 function Createlisting(props){
-    
-   const [ form, setForm ] = useState({})
-   const [ errors, setErrors ] = useState({})
+     //State for the images no file initially selected 
+    const [image, setImage]=useState(''); 
+    const [ form, setForm ] = useState({})
+    const [ errors, setErrors ] = useState({})
     const navigate = useNavigate();
    
 
@@ -24,18 +25,17 @@ function Createlisting(props){
      const [formGridCity, setformGridCity] = useState('');
      const [formGridState, setformGridState] = useState('');
      const [formGridZip, setformGridZip] = useState('');
+     const [formDescription, setFormDescription] = useState('');
 
      const [formBookTitle,setformBookTitle] = useState('');
 
      const [authorName, setauthorName] = useState('');
 
      const [formPrice,setformPrice] = useState('');
+      //Stuff to be grabbed from the database
+      const {listingID} = useParams();
 
-    //After the button is clicked the the information stored in textname and description will be sent to the database.
-    //NOT TESTING CONDITION YET.  
-
-    //ComponentDid mount
-    useEffect(() => {
+    const getUserInfo = () => {
       const requestOptions = {
         credentials: 'include',
         method: 'GET',
@@ -57,18 +57,47 @@ function Createlisting(props){
         setformGridCity(data.city);
         setformGridState(data.province);
         setformGridZip(data.zipcode);
-        //if props.update == 1 Also autofill other form elements, eg.Bookname, authorname
-        if (props.update == 1){
-          setauthorName(data.authorName);
-          setformBookTitle(data.title);
-          setformPrice(data.price);
-        }
       })
       .catch((error) => {
         console.log(error);
         //navigate("/Login");
       });
-        
+    }
+
+    //This will get info about listing when updating it
+    const getListingInfo = () => {
+      const listingURL = 'http://localhost:8000/listing/' + listingID;
+      console.log(listingURL);
+      const requestOptions = {
+          credentials: 'include',
+          method: 'GET',
+          headers: {'Content-Type' : 'application/json'},
+      };
+
+      fetch(listingURL, requestOptions)
+      .then((response) => {
+          if (response.ok) {
+              return response.json();
+          } else {
+          }
+      })  
+      .then((data) => {
+          setauthorName(data.authorName);
+          setformBookTitle(data.title);
+          setformPrice(data.price);
+          setFormDescription(data.description);
+      })
+    }
+
+    //ComponentDid mount
+    useEffect(() => {
+      getUserInfo();
+      
+      //Check if we are updating
+      //if props.update == 1 Also autofill other form elements, eg.Bookname, authorname  
+      if (props.update == 1) {
+        getListingInfo();
+      }
     }, []);
 
 
@@ -115,8 +144,6 @@ function Createlisting(props){
     setIsOpen(!isOpen);
   }
   
-  //State for the images no file initially selected 
-  const [image, setImage]=useState('');
   
   // On file select (from the pop up)
   const onFileChange = (event) => {
@@ -127,7 +154,48 @@ function Createlisting(props){
   };
 
   const handleupdate = () => { //handle update of listings here.
+    togglePopup();
+      const newErrors = findFormErrors()
 
+      // Conditional logic:
+    if ( Object.keys(newErrors).length > 0 ) {
+      //errors!
+      setErrors(newErrors)
+    } else {
+        //Prepare the information to send
+        const body = {
+          listingID : listingID,
+          title : formBookTitle,
+          authorName : authorName,
+          description : formDescription,
+          price : formPrice,
+          address1 : formGridAddress1,
+          address2 : address2,
+          city : formGridCity,
+          province : formGridState,
+          zipCode : formGridZip,
+        };
+        const requestOptions = {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify(body)
+        };
+        
+        //Send the update information
+        fetch('http://localhost:8000/update_lis', requestOptions)
+        .then((response) => {
+          if (!response.ok){
+            console.log("error sending info");
+          } else {
+            //After successful update return to my listings page
+            navigate('/Mylistings');
+          }
+        })
+        .catch( (error)=>{
+            console.log(error);
+        });
+    }
   }
   
   const handleSubmitClick = (e) => { 
@@ -169,7 +237,6 @@ function Createlisting(props){
             console.log("error sending info");
           } else {
             return response.json();
-            //navigate('/')
           }
         })
         .then((data) => {
@@ -188,7 +255,7 @@ function Createlisting(props){
           }
 
           fetch("http://localhost:8000/uploadImage", request2Options)
-          .then((result) => console.log(result))
+          .then((result) => navigate('/'))
           .catch((error) => console.log(error));
         })
         .catch( (error)=>{
@@ -291,7 +358,7 @@ function Createlisting(props){
 
     <InputGroup>
     <InputGroup.Text>Description:</InputGroup.Text>
-    <Form.Control id="formDescription" as="textarea" aria-label="With textarea"  />
+    <Form.Control id="formDescription" as="textarea" aria-label="With textarea" value={formDescription} onChange={e =>setFormDescription(e.target.value)} />
   </InputGroup>
   </Row>
 
