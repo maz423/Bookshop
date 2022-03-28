@@ -197,7 +197,7 @@ app.post('/login', (req, res)=>{
 
 app.post("/register", (req, res)=> {
     //TODO make register handle both basic and bookstore accounts
-    const {username, password, email, address1, address2, fName, lName, city, province, zipcode} = req.body;
+    const {username, password, email, address1, address2, fName, lName, city, province, zipcode,rating} = req.body;
 
     new Promise((resolve, reject) => {
         con.collection(userCollection).countDocuments(
@@ -225,6 +225,7 @@ app.post("/register", (req, res)=> {
                 profilePicture : "",
                 listings : [],
                 wishlist : [],
+                rating:0
                 };
             con.collection(userCollection).insertOne(newUser, (err, result) =>{
                 if (err) { throw err } else {res.send("Success")}
@@ -878,6 +879,12 @@ app.get('/get-offers',function(req,res){
     })
 });
 
+
+/************************** Rating stuff  **************************/
+app.post('/compute-rating',(req,res) =>{
+    score_total 
+
+})
 
 app.post('/add-to-wishlist', (req, res) => {
 

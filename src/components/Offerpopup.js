@@ -1,6 +1,6 @@
 import React from "react";
 import './Offerpopup.css';
- 
+
 const Offerpopup = props => {
   return (
     <div className="popup-box">
