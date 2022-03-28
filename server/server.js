@@ -297,6 +297,7 @@ app.post("/registerBookstore", (req, res) => {
                 isBanned : false,
                 profilePicture : "",
                 brandingImage : "",
+                booksSold : [],
                 };
             con.collection(bookstoreCollection).insertOne(newUser, (err, result) => {
                 if (err) { throw err } else {
@@ -648,6 +649,61 @@ app.delete('/remove-lis',(req, res)=>{
         fs.remove(dir, (err) => {
             if (err) {res.status(400).send(err)} else {res.send(result)}
         })
+    })
+    .catch((error) => {
+        res.status(400).send(error);
+    })
+});
+
+//This is for a bookstore to "sell" it's book
+//This will both delete the listing and it's images
+//And add information about the sold book to the bookstore's entry in the database
+app.delete('/bookstore/sell/lisiting', (req, res) => {
+    //First check if we are a bookstore
+    if (!req.session.user.isBookstore){
+        return res.status(400).send("Not a Bookstore");
+    }
+
+    //Get ID from request
+	const {listingID, finalPrice} = req.body;
+    const ObjectId = require('mongodb').ObjectId;
+    const query =  {_id : new ObjectId(listingID)};
+
+    //Now find and delete the listing
+    con.collection(listingsCollection).findOneAndDelete(query)
+    .then((listing) => {
+        if (listing == null) {
+            throw `Listing: "${listingID}" not found`
+        } else {
+            //We have found the listing we want to delete
+            const dir = `uploads/listings/${listingID}`
+
+            //Now that we removed it from our fatabase, remove images from server
+            fs.remove(dir, (err) => {
+                if (err) {throw err} else {return listing}
+            })
+        }
+    })
+    .then((listing) => {
+        //Push book info into bookstore storage
+        const datetime = new Date()
+        const bookSold = {
+            $push : {
+                booksSold : {
+                    intialPrice : listing.price,
+                    finalPrice : finalPrice,
+                    title : listing.title,
+                    dateListed : listing.timestamp,
+                    dateSold : datetime,
+                }
+            }
+        }
+        const query = {_id : req.session.user._id};
+
+        //Now add it to the bookstore's account
+        con.collection(bookstoreCollection).updateOne(query, bookSold, (err, result) => {
+            if (err) {throw err} else {return res.send("Sold Book")}
+        });
     })
     .catch((error) => {
         res.status(400).send(error);
@@ -1093,7 +1149,8 @@ app.post('/banUser', (req, res) => {
     const ObjectId = require('mongodb').ObjectId;
 
     let collection = userCollection;
-    let query = {_id : new ObjectId(accountID)};
+    //Check for users that are not already banned
+    let query = {_id : new ObjectId(accountID), isBanned : false};
     let update = {$set : {isBanned : true}}
     if (accountType =="Bookstore"){
         collection = bookstoreCollection;
@@ -1134,8 +1191,10 @@ app.post('/unbanUser', (req, res) => {
     const ObjectId = require('mongodb').ObjectId;
 
     let collection = userCollection;
-    let query = {_id : new ObjectId(accountID)};
+    //Check for only banned users
+    let query = {_id : new ObjectId(accountID), isBanned : true};
     let update = {$set : {isBanned : false}}
+
     if (accountType =="Bookstore"){
         collection = bookstoreCollection;
     } else if (accountType != "User"){
