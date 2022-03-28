@@ -29,6 +29,7 @@ export const ListingView = (props) => {
 
     //Stuff to be grabbed from the database
     const {listingID} = useParams();
+    const navigate = useNavigate();
     
     const [user, setUser] = useState('');
     const [image, setImage] = useState();
@@ -129,7 +130,7 @@ export const ListingView = (props) => {
 
       const requestOptions = {
         credentials: 'include',
-        method: 'POST',
+        method: 'DELETE',
         headers: {'Content-Type' : 'application/json'},
         body : JSON.stringify({listingID : listingID})
       };
@@ -140,8 +141,11 @@ export const ListingView = (props) => {
           console.log("ok");
         }
         else{
-
+          alert(response);
         }
+      })
+      .then(() =>{ 
+        navigate('/Mylistings');
       })
       .catch((error) => {
         console.log(error);

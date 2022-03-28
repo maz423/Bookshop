@@ -643,9 +643,11 @@ app.delete('/remove-lis',(req, res)=>{
     //Delete listing from database
     con.collection(listingsCollection).deleteOne(query)
     .then((result) => {
+        const dir = `uploads/listings/${listingID}`
         //Now that we removed it from our fatabase, remove images from server
-        const dir = `uploads/listings/${listingID}`;
-        fs.rmSync(dir, { recursive: true, force: true });
+        fs.remove(dir, (err) => {
+            if (err) {res.status(400).send(err)} else {res.send(result)}
+        })
     })
     .catch((error) => {
         res.status(400).send(error);
@@ -689,7 +691,7 @@ app.put('/update_lis', (req,res)=>{
 app.get('/listings', (req,res) => {
 	//console.log("here")
     new Promise((resolve, reject) => {
-        con.collection("listings").find({}).toArray((err,result) => {
+        con.collection(listingsCollection).find({}).toArray((err,result) => {
             if(err) {reject(err)} else{resolve(result)}
         }
     )}).then((result) => {
