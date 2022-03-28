@@ -51,6 +51,9 @@ import { LinkContainer } from 'react-router-bootstrap'
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
+
+        <Dropdown.Item as={Link} to="/user">My Account</Dropdown.Item>
+          
         <Dropdown.Item as={Link} to="/Mylistings">Manage Listings</Dropdown.Item>
 
         <Dropdown.Item as={Link} to='/createlisting'> Create new Listing</Dropdown.Item>
@@ -58,6 +61,8 @@ import { LinkContainer } from 'react-router-bootstrap'
         <Dropdown.Item as={Link} to="/report">Report User</Dropdown.Item>
         
         <Dropdown.Item as={Link} to='#action'>Offers</Dropdown.Item>
+
+
 
         
         
