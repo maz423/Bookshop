@@ -380,6 +380,7 @@ app.get('/user', (req, res) => {
 app.get('/user/:userID', (req, res) => {
     //This will return some baisc information about the user being requested
     const ObjectId = require('mongodb').ObjectId;
+
     const userID = new ObjectId(req.params.userID);
 
     new Promise((resolve, reject) => {
@@ -632,44 +633,54 @@ app.post('/make-lis' ,(req,res)=>{
     });
 });
 
-//John change this to button delete instead of deleting by name
-//TODO figure out a delete by button once we actually implement it
-app.post('/remove-lis',(req,res)=>{
-	const {title} = req.body; //for now have it as the title TODO change to id from button press
-	const myquery = { title: title};
-	new Promise((resolve, reject) => {
-		con.collection(listingsCollection).deleteOne(myquery, function(err,response){
-			if (err) {
-			console.log(err);
-			} else{
-			console.log('listing deleted')	
-			}
-		});
-	})
-	.then((result) => {
-        res.send(result);
-    	})
-    	.catch((error) => {
+//Deletes a listing and its images
+app.delete('/remove-lis',(req, res)=>{
+    //Get ID from request
+	const listingID = req.body.listingID;
+    const ObjectId = require('mongodb').ObjectId;
+    const query =  {_id : new ObjectId(listingID)};
+
+    //Delete listing from database
+    con.collection(listingsCollection).deleteOne(query)
+    .then((result) => {
+        //Now that we removed it from our fatabase, remove images from server
+        const dir = `uploads/listings/${listingID}`;
+        fs.rmSync(dir, { recursive: true, force: true });
+    })
+    .catch((error) => {
         res.status(400).send(error);
-    	});
+    })
 });
 
 //This is for updating listing, you can update by button press (needs to be implemented by john), TODO make the old data autofill also put errors for when there isn't any items in the form
-app.post('/update_lis',(req,res)=>{
-	const {title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
-	var myquery = { title: title}; //will probably have to change this to id
-	new Promise((resolve, reject) => {
-		var newvalues = { $set: {title, authorName, description, price, address1, address2, city, province, zipCode}};
-		con.collection(listingsCollection).updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			});
-		})
-		.then((result) => {
-        	res.send(result);
-    		})
-    		.catch((error) => {
-        	res.status(400).send(error);
-    		});
+app.put('/update_lis', (req,res)=>{
+    //Get the values from the request
+	const {listingID, title, authorName, description, price, address1, address2, city, province, zipCode} = req.body;
+    const ObjectId = require('mongodb').ObjectId;
+
+    //Set the update stuff
+    const listingUpdate = {
+        $set : {
+            title: title,
+            authorName : authorName,
+            description: description,
+            price : price,
+            address1 : address1,
+            address2 : address2,
+            city : city,
+            province : province,
+            zipCode : zipCode,
+        }
+    }
+	const query = {_id : new ObjectId(listingID)};
+
+    con.collection(listingsCollection).updateOne(query, listingUpdate)
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((error) => {
+        res.status(400).send(`Error updating listing: ${listingID}`);
+    });
 });
 
 
@@ -692,26 +703,36 @@ app.get('/listings', (req,res) => {
 
 //This will return all of a users listings
 //Requires user to be logged in to return value
-app.get('/user/listings', (req, res) => {
-    const query = {username : req.session.user.username};
+//Handles both user and bookstore
+app.get('/user/my/listings', (req, res) => {
+    const query = {_id : req.session.user._id};
+    let collection = userCollection;
+    const projection = {
+        projection : {
+            listings : 1
+        }
+    }
+
+    //Check for the account
+    if (req.session.user.isBookstore) {
+        collection = bookstoreCollection;
+    } else if (!req.session.user.isBasic) {
+        return res.status(400).send("Not a user or bookstore");
+    }
 
     new Promise((resolve, reject) => {
-        con.collection.findOne(query, (err, result) => {
+        con.collection(collection).findOne(query, projection,(err, result) => {
             if (err) { reject(err) } else { resolve(result) }
         });
     })
-    .then((result) => {
-        const listingIDs = {ids : []}
-        result.listings.forEach(element => {
-            listingIDs.ids.push(element);
-        });
-        const listingQuery = {_id : {$in : listingIDs.ids}};
-        console.log(listingQuery);
-        con.collection(listingsCollection).find(listingQuery).toArray((err, result2) => {
+    .then((listings) => {
+        //Get all of the listing information
+        const listingQuery = {_id : {$in : listings.listings}};
+        con.collection(listingsCollection).find(listingQuery).toArray((err, result) => {
             if (err) {
                 res.status(400).send(err);
             } else {
-                res.send(result2);
+                res.send(result);
             }
         });
     })
@@ -761,70 +782,6 @@ app.get('/listings/:numberOfListings/:pageNumber', (req, res) => {
     .catch((error) => {
         res.status(400).send(error);
     });
-});
-
-
-
-//John change this to button delete instead of deleting by name
-//TODO figure out a delete by button once we actually implement it
-app.post('/remove-lis',(req,res)=>{
-	var name = req.body.name;
-	function removelis(varname){
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-		var dbo = db.db("ecomDB");
-		var myquery = { name: varname};
-		dbo.collection("listings").deleteOne(myquery, function(err,response){
-			if (err) throw err;
-			console.log("1 listing deleted");
-			db.close();
-			});
-		});
-	}
-	removelis(name);
-	res.redirect("/main");
-});
-
-//This is for updating listing, you can update by button press (needs to be implemented by john)
-app.post('/update_lis',(req,res)=>{
-	var textname = req.body.name;
-	var condition = req.body.condition;
-	var description = req.body.descript;
-	function addchild(varname,varcon,vardesc){
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-		var dbo = db.db("ecomDB");
-		var myquery = { name: varname};
-		if(varcon.length == 0 && vardesc.length == 0){
-			console.log("Nothing to update");
-		}
-		else if(varcon.length == 0){
-		var newvalues = { $set: {description: vardesc}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("only description updated");
-			db.close();
-			});
-		
-		} else if(vardesc.length == 0){
-		var newvalues = { $set: {condition: varcon}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("only condition updated");
-			db.close();
-			});
-		} else{
-		var newvalues = { $set: {condition: varcon, description: vardesc}};
-		dbo.collection("children").updateOne(myquery, newvalues, function(err,response){
-			if (err) throw err;
-			console.log("1 document updated");
-			db.close();
-			});
-			}
-		});
-	}
-	addchild(name,condition,description);
-	res.redirect("/postingpage");
 });
 
 app.put('/update_user',(req,res)=>{
