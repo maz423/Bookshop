@@ -17,9 +17,10 @@ import { Link } from 'react-router-dom';
 
 
 export const ListingView = (props) => {
-    const [loggedIn, setLoggedIn] = useState(0)
+    const [loggedIn, setLoggedIn] = useState()
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
+    //console.log(props.update)
 
     // constant that will check if the wishlist button should be shown
     const [showWishlistButton, setShowWishlistButton] = useState(true);
@@ -29,10 +30,10 @@ export const ListingView = (props) => {
     const {listingID} = useParams();
     
     const [user, setUser] = useState('');
-
      //Stuff to be grabbed from the database
     const [posterName, setPosterName] = useState('');
     const [image, setImage] = useState();
+    const [email, setEmail] = useState();
     const [price, setPrice] = useState('');
     const [title, setTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
@@ -49,13 +50,13 @@ export const ListingView = (props) => {
 
     useEffect(() => {
         const listingURL = 'http://localhost:8000/listing/' + listingID;
-        console.log(listingURL);
+        //console.log(listingURL);
+        
         const requestOptions = {
             credentials: 'include',
             method: 'GET',
             headers: {'Content-Type' : 'application/json'},
         };
-
         fetch(listingURL, requestOptions)
         .then((response) => {
             if (response.ok) {
@@ -71,15 +72,26 @@ export const ListingView = (props) => {
           setPrice(data.price);
           setBookDescription(data.description);
           setTimestamp(data.timestamp);
+          setUser(data.user);
+          setEmail(data.email)
+          //Constantly checking if a user is logged in  
+          setLoggedIn(props.user);
+
         })
         .catch((error) =>{
             console.log(error);
         });
+    
+
     }, []);
+
     useEffect(() => {
       fetchIamge();
     }, [imageName]);
 
+    const posterListingCheck = () =>{
+      
+    }   
     
     const popover = (
         <Popover id="popover-basic">
@@ -151,18 +163,25 @@ export const ListingView = (props) => {
         console.log(error);
       });
     }
+
+    //Trigger display if the offer if from a guest or not 
     const [showResults, setShowResults] = useState(false);
 
    //Sending offer to the server
    const handleSubmitClick = (e) => { 
+     //alert(loggedIn);
     if (loggedIn == 1){
       e.preventDefault();
-      console.log("Here")
-      //alert(loggedIn)
         const formItems = e.target.elements;
         alert(formItems.formOffer.value)
         const body = {
+          posterName: user,
+          email : email,
+          //phone_number : formItems.formPhoneNumber.value,
+          guest: false,
           offer : formItems.formOffer.value,
+          listingID: listingID,
+          title: title,
         };
         console.log(formItems);
         console.log(body);
@@ -205,8 +224,9 @@ export const ListingView = (props) => {
         const body = {
           posterName: posterName,
           email : formItems.formEmail.value,
-          phone_number : formItems.formPhoneNumber.value,
+          //phone_number : formItems.formPhoneNumber.value,
           guest: true,
+          listingID: listingID,
           offer : formItems.formOffer.value,
           title: title,
 
@@ -255,7 +275,7 @@ export const ListingView = (props) => {
              <Row>
             
             
-             <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {user} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
+             <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {posterName} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
              <p> Description: {bookDescription} </p>
              
              
@@ -267,16 +287,15 @@ export const ListingView = (props) => {
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
 
-             
-             {props.update == true
-             ? <div className='bttns' >
+             {posterName == user
+             ? <div className='bttns'>
                 
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button>
-               <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='Listing-update' type='submit' onClick={addToWishlist}>Update Listing</Button>
+               <Button  variant="outline-danger" size='sm' className='offer-btn-del' type="submit" onClick={handleDelete}>Delete Listing</Button>
 
             </div>
-             : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+             : <div className='bttns' ><Button 
+             variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
               
              <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
              <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
@@ -311,17 +330,13 @@ export const ListingView = (props) => {
                 <h1>Create an offer</h1>
                 <Form onSubmit={handleSubmitClick}>
                 <Col style = {{visibility : showResults ? "visibile" : "hidden"}}>
-                  <h4>Your not logged in as a user. Please provide your email and phone number so the seller may reply to your offer.</h4>
+                  <h4>Your not logged in as a user. Please provide your email so the seller may reply to your offer.</h4>
                     <Row>
                       <Form.Group as={Col} controlId="formEmail">
                         <Form.Label>Email:</Form.Label>
                         <Form.Control size='sm' type="text" placeholder="Enter Email"/>
                       </Form.Group>
                       
-                      <Form.Group as={Col} controlId="formPhoneNumber">
-                        <Form.Label>Phone_Number:</Form.Label>
-                        <Form.Control size='sm' type="text" placeholder="Enter Phone Number"/>
-                      </Form.Group>
                     </Row> 
                 </Col>
 

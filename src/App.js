@@ -266,7 +266,7 @@ useEffect(() => {
           <Route exact path='/' element={<Homepage/>} />
          
          
-          <Route exact path='/listing/:listingID' element={<ListingView log={LoggedIn}/>} component={listingID}/>
+          <Route exact path='/listing/:listingID' element={<ListingView user = {1}/>} component={listingID}/>
           <Route exact path='/user' element={<AccountView/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
           <Route exact path='Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>

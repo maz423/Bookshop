@@ -657,7 +657,9 @@ app.get('/user/listings', (req, res) => {
 //Returns the listing for a given ID
 app.get('/listing/:listingID', (req, res) => {
      const ObjectId = require('mongodb').ObjectId;
-     const listingOID = new ObjectId(req.params.listingID);
+     const listingOID = new ObjectId(req.params.listingID); 
+     var usera='';
+
 
      new Promise((resolve, reject) => {
          con.collection(listingsCollection).findOne({_id : listingOID}, (err, result) => {
@@ -665,6 +667,13 @@ app.get('/listing/:listingID', (req, res) => {
          });
      })
      .then((result) => {
+        if (req.session.user != undefined){
+            //console.log("here")
+               usera = req.session.user.username;
+               result.user=usera;
+            //   console.log(result.user);
+           }//
+         //console.log(result);
          res.send(result);
      })
      .catch((error) =>{
@@ -721,85 +730,112 @@ app.put('/update_user',(req,res)=>{
 app.post('/make-offer',(req,res)=>{
 
     var guest = req.body.guest //Checks if the buyer is a logged in user or a guest buyer
-
+    var email = req.body.email 
 	var posterName = req.body.posterName; //Name of the user who listed the textbook 
+    var listingID = req.body.listingID 
 	var title = req.body.title; //Name of the textbook 
 	var offer = req.body.offer;//Contains the description of the textbook 
 	var datetime = new Date();
-    var resultArray = [];
-    //console.log(posterName+' '+title+' '+offer+' '+datetime);
-    console.log("SEND OFFER......................");
+    var offersL = '';
     if (guest==true){
-        console.log("OFFER  FROM GUEST.......................");
-        var email = req.body.email ;
-        var phone_number = req.body.phone_number;
-
-        const offersL = {
+        offersL = {
+            name:"guest",
             email: email,
-            phone_number: phone_number,
             guest: guest,
             title:title,
-            offer: offer
+            offer: offer,
+            listingID:listingID,
+            date: datetime
         }
-        //console.log(email," ", phone_number," ",posterName," ",title)
-        new Promise((resolve, reject) => {
-            con.collection("offers").countDocuments(
+    }
+    else {
+        var nameAccount = req.body.nameAccount//if the offer is from someone who is logged in give the object the name 
+        offersL = {
+            name: nameAccount,
+            email: email,
+            guest: guest,
+            title:title,
+            offer: offer,
+            listingID:listingID,
+            date: datetime
+        }
+    }
+
+    console.log("Offering now" );
+    console.log(offersL);
+    //console.log(email," ", phone_number," ",posterName," ",title)
+    new Promise((resolve, reject) => {
+            con.collection(offersCollection).countDocuments(
                 {_id : posterName}, (err, result) => {
                 if (err) {reject(err)} else {resolve(result)}
             });
         }).then((result) => {
+            let resultArray=[];
             if (result <= 0){
                 //Initialize the document and offers array
                 console.log("Insert One");
-                con.collection("offers").insertOne({_id:posterName},{$push:{offers:[]}},(err,result) =>{
+                con.collection(offersCollection).insertOne({_id:posterName,offers:[offersL]},(err,result) =>{
                     if (err) {console.log(err)} else {console.log(result)}
                 })
-                //Then append to the array field offer
-                con.collection("offers").update({_id:posterName},{$push: {offers:offersL}},(err,result) => {
-                    if (err) {console.log(err)} else {console.log(result)}
-                })
+                // //Then append to the array field offer
+                // con.collection(offersCollection).updateOne({_id:posterName},{$addToSet: {offers:offersL}},(err,result) => {
+                //     if (err) {console.log(err)} else {console.log(result)}
+                // })
+                // con.collection(offersCollection).find({_id:posterName}).forEach(function(doc,err){
+                //     if (err) throw err;
+                //     resultArray.push(doc);
+                // }, function(){
+                //     console.log(resultArray.forEach(function(x){
+                //      console.log("Whole db",resultArray);
+                //      console.log(x.offers);
+ 
+                //     }));});
             }
             else{
                 //Updating into the document instead 
+                let resultArray=[];
                 console.log("Updating instead");
-                con.collection("offers").update({_id:posterName},{$addToSet: {offers:offersL}},(err,result) => {
-                    if (err) {console.log(err)} else {console.log(result)}
+                // con.collection("offers").update({_id:posterName},{$addToSet: {email:email,listingID:listingID}},(err,result) => {
+                //     if (err) {console.log(err)} else {console.log(result)}
+                // })
+                new Promise((resolve, reject) => {
+                con.collection(offersCollection).countDocuments({_id:posterName, offers: {$elemMatch:{email:email,listingID:listingID}}},(err,result) =>{
+                    if (err) {reject(err)} else {resolve(result)}
                 })
-            //            con.collection("offers").find({_id:posterName}).forEach(function(doc,err){
-            //        if (err) throw err;
-            //        resultArray.push(doc);
-            //    }, function(){
-            //        console.log(resultArray.forEach(function(x){
-            //         console.log(resultArray);
-            //         console.log(x.offers);
-
-            //        }));});
+            }).then((result)=>{
+                console.log(result);
+                    if (result <= 0){
+                        console.log("here")
+                        con.collection(offersCollection).updateOne({_id:posterName},{$push: {offers:offersL}})
+                    }
+                })
             }
         })
-    }
+        let resultArray=[]
+        con.collection(offersCollection).find({_id:posterName}).forEach(function(doc,err){
+            if (err) throw err;
+            resultArray.push(doc);
+        }, function(){
+            console.log(resultArray.forEach(function(x){
+             console.log("Whole db",resultArray);
+             console.log(x.offers);
+
+            }));});
     //The offer is from a user. Bookstores won't have the option of creating an offer ???? 
-    else{
-        var email = req.body.email ;
-        var phone_number = req.body.phone_number;
-        new Promise((resolve, reject) => {
-            con.collection("offers").countDocuments(
-                {_id : posterName}, (err, result) => {
-                if (err) {reject(err)} else {resolve(result)}
-            });
-        })//.then((result)=> if(result <= 0 ) )  
-        
-    }
 	res.redirect("/main");
 });
 
 
 //TODO figure out a delete by button once we actually implement it
 app.post('/remove-offers',(req,res)=>{
-	var posterName = req.body.posterName; ; //for now have it as the title TODO change to id from button press
+	var posterName = req.session.user.username; ; //for now have it as the title TODO change to id from button press
 	const myquery = {_id : posterName}; //query for finding the offers for the user
 	const email = req.body.email //query for the actual offer
+    console.log("REMOVING OFFERS.........");
+    console.log(posterName);
+    console.log(email);
 	new Promise((resolve, reject) => {
-		con.collection("offers").findOneAndUpdate(myquery,{$pull: {email: email}}, function(err,response){
+		con.collection("offers").findOneAndUpdate(myquery,{$pull: { offers: {$elemMatch: {email: email,listingID:listingID}}}}, function(err,response){
 			if (err) {
 			console.log("error in deleting offer");
 			} else{
@@ -903,7 +939,6 @@ app.post('/wishlist', (req, res) => {
 
     //var id = req.body.id;
     var username = req.session.user.username;
-
 
     async function getUser(){
 
