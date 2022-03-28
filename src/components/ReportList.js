@@ -1,5 +1,5 @@
 import './Report.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
@@ -22,7 +22,21 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 export const ReportList = (props) => {
 
-const [ListofReports,setListofReports] = useState(0);
+const [ListofReports,setListofReports] = useState([]);
+
+
+useEffect(() => {
+    setListofReports([]);
+}, []);
+
+useEffect(() => {
+    if(props.reports != ""){
+        setListofReports(props.reports);
+    }
+    else{
+        setListofReports([]);
+    }
+}, [props.reports]);
 
 
 
@@ -47,7 +61,7 @@ return (
 {
                 ListofReports.map(element => { 
                     return <div className="text-center">
-                        <MiniReport/>
+                        <MiniReport report={element}/>
                     </div>
                 })
             }

@@ -2,3 +2,9 @@
 
     background-color: white;
 }
+
+.userSearchForm{
+ display: flex;
+ flex-direction: row;
+    
+}

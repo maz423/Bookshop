@@ -41,6 +41,7 @@ const listingsCollection = 'listings';
 const adminCollection = 'admins';
 const offersCollection = 'offers';
 const bannedUsersCollection = "bannedUsers";
+const reportsCollection = "reports";
 
 const PORT = 8000;
 const HOST = '0.0.0.0';
@@ -1228,6 +1229,101 @@ app.post('/unbanUser', (req, res) => {
         })
     }
 });
+
+
+app.post('/reportUser', (req, res) => {
+
+    var userID = req.body.userID;
+    var user = req.body.username;
+    var reason = req.body.reason;
+
+
+    async function addReport(){
+
+        try{
+            const reports = await con.collection(reportsCollection);
+
+            const newReport = {
+                userID : userID,
+                username : user,
+                reason : reason
+            }
+
+            await reports.insertOne(newReport)
+        }
+        catch(error){
+            console.log(error);
+            res.status(400).send(error);
+        }
+    };
+
+    (async function() {
+        await addReport();
+
+        res.send("ok");
+    })();
+});
+
+
+app.post('/resolveReport', (req, res) => {
+
+    var username = req.body.username;
+
+    async function resolveReport(){
+        
+        try{
+            const reports = await con.collection(reportsCollection);
+
+            await reports.deleteOne({username : username});
+
+        }
+        catch(error){
+            console.log(error);
+            res.status(400).send(error);
+        }
+    };
+
+    (async function() {
+        await resolveReport();            
+
+        res.send("ok");
+    })();
+
+})
+
+
+app.post('/getReports', (req, res) => {
+
+    async function getReports(){
+        try{
+
+            let reportArray = [];
+
+            const reports = await con.collection(reportsCollection);
+
+            const the_reports = await reports.find();
+
+            for await (const report of the_reports){
+                reportArray.push(report);
+            }
+
+            return reportArray;
+
+        }
+        catch(error){
+            console.log(error);
+            res.status(400).send(error);
+        }
+    };
+
+    (async function() {
+        const reports = await getReports();
+        res.send(reports);
+    })();
+
+
+})
+
 
 app.use('/', express.static('pages'));
 

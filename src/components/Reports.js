@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ListOfListings } from './ListOfListings';
+import { ReportList } from './ReportList';
 
 
-export const Wishlist = (props) => {
+export const Reports = (props) => {
 
     const {userID} = useParams();
 
-    const [wishlist, setWishlist] = useState([]);
+    const [reportList, setReportList] = useState([]);
 
 
 useEffect(() => {
@@ -20,7 +20,7 @@ useEffect(() => {
         body : JSON.stringify({id : userID})
     };
 
-    fetch('http://localhost:8000/wishlist', requestOptions)
+    fetch('http://localhost:8000/getReports', requestOptions)
     .then((response) => {
 
         if(response.ok){
@@ -32,7 +32,7 @@ useEffect(() => {
 
     })
     .then((data) => {
-        setWishlist(data);
+        setReportList(data);
     })
     .catch((error) => {
         console.log(error);
@@ -44,8 +44,8 @@ useEffect(() => {
 
 return (
 
-<section className='wishlist-display'>
-    <ListOfListings listings={wishlist} wish = {1}/>
+<section className='report-display'>
+    <ReportList reports={reportList}/>
 </section>
 
 
