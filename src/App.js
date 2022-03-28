@@ -238,7 +238,7 @@ useEffect(() => {
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting update = {0}/>}/>
-          <Route exact path='/updatelisting' element={<Createlisting update = {1}/>}/>
+          <Route exact path='/updatelisting/:listingID' element={<Createlisting update = {1}/>}/>
           <Route exact path='/report' element={<Report_users/>} />
           <Route exact path='/' element={<Homepage/>} />
           <Route exact path='/Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
