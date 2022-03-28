@@ -12,6 +12,7 @@ import Figure from 'react-bootstrap/Figure'
 import { Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
+import StarRatingInput from './StarRatingInput.js';
 
 import { Link } from 'react-router-dom';
 
@@ -330,8 +331,13 @@ export const ListingView = (props) => {
             
             
              <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {posterName} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
-             <p> Description: {bookDescription} </p>
+             <p> Description: {bookDescription}  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+             <p style = {{visibility : user != posterName && loggedIn==1 ? "visible" : "hidden"}}> 
+             {StarRatingInput("hello")}
+             </p> </p>  
+            
              
+            
              
 
              
@@ -350,6 +356,7 @@ export const ListingView = (props) => {
             </div>
              : <div className='bttns' ><Button 
              variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
+             
               
              <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
              <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
