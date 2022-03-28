@@ -658,7 +658,7 @@ app.delete('/remove-lis',(req, res)=>{
 //This is for a bookstore to "sell" it's book
 //This will both delete the listing and it's images
 //And add information about the sold book to the bookstore's entry in the database
-app.delete('/bookstore/sell/lisiting', (req, res) => {
+app.delete('/bookstore/sell/listing', (req, res) => {
     //First check if we are a bookstore
     if (!req.session.user.isBookstore){
         return res.status(400).send("Not a Bookstore");
@@ -679,9 +679,8 @@ app.delete('/bookstore/sell/lisiting', (req, res) => {
             const dir = `uploads/listings/${listingID}`
 
             //Now that we removed it from our fatabase, remove images from server
-            fs.remove(dir, (err) => {
-                if (err) {throw err} else {return listing}
-            })
+            fs.removeSync(dir);
+            return listing
         }
     })
     .then((listing) => {
@@ -690,10 +689,10 @@ app.delete('/bookstore/sell/lisiting', (req, res) => {
         const bookSold = {
             $push : {
                 booksSold : {
-                    intialPrice : listing.price,
+                    intialPrice : listing.value.price,
                     finalPrice : finalPrice,
-                    title : listing.title,
-                    dateListed : listing.timestamp,
+                    title : listing.value.title,
+                    dateListed : listing.value.timestamp,
                     dateSold : datetime,
                 }
             }

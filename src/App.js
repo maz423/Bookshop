@@ -280,6 +280,7 @@ useEffect(() => {
        <Route exact path='/logout' element={<Logout  set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>}/>
        <Route exact path='/createlisting' element={<Createlisting update = {0}/>}/>
        <Route exact path='Mylistings' element={<MyListings bookstore = {1} user = {0} />}/>
+       <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} bookstore={1}/>}/>
        <Route path='/*' element={<Lost/>}/>
     </Routes>)
     : <></>

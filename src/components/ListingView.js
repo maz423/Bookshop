@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 export const ListingView = (props) => {
     const [update,setUpdate] = useState(props.update);
     const [wish,setWish] = useState(props.wish);
+    const [bookstore, setbookStore] = useState(props.bookstore);
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
     const [reportIsOpen, setReportIsOpen] = useState(false);
@@ -41,6 +42,9 @@ export const ListingView = (props) => {
     const [timestamp, setTimestamp] = useState('');
     const [isBookstoreBook, setIsBookstoreBook] = useState(false);
     const [posterID, setPosterID] = useState('');
+    const [newPrice, setNewPrice] = useState('');
+    const [ errors, setErrors ] = useState({})
+    const [sellIsOpen, setSellIsOpen] = useState(false);
 
     const fetchIamge = async () => {
       const imageURL = "http://localhost:8000/image/listings/" + listingID + "/" + imageName;
@@ -89,26 +93,69 @@ export const ListingView = (props) => {
             console.log(error);
         });
     }, []);
+
     useEffect(() => {
       fetchIamge();
     }, [imageName]);
+
     useEffect(() => {
       if (isBookstoreBook) {
         fetchBranding();
       } else {
         setStoreBranding();
       }
-    }, [isBookstoreBook])
+    }, [isBookstoreBook]);
 
-    
-    const popover = (
-        <Popover id="popover-basic">
-          <Popover.Header as="h3">Description</Popover.Header>
-          <Popover.Body>
-            Used like new, No ripped pages.
-          </Popover.Body>
-        </Popover>
-      );
+    const handleSellBook = (e) => {
+      e.preventDefault()
+      //Find if we have errors with the price
+      let newErrors = findErrors();
+      if ( Object.keys(newErrors).length > 0 ) {
+        //errors!
+        setErrors(newErrors)
+        return; //Exit early
+      }
+      //This will handle when a bookstore chooses to sell a book
+      //TODO 
+      const body = {
+        listingID : listingID,
+        finalPrice : 0,
+      }
+      const requestOptions = {
+        credentials: 'include',
+        method: 'DELETE',
+        headers: {'Content-Type' : 'application/json'},
+        body : JSON.stringify(body)
+      };
+      const URL = 'http://localhost:8000/bookstore/sell/listing'
+
+      fetch(URL, requestOptions)
+      .then((response) => {
+        if(response.ok){
+          console.log("ok");
+        }
+        else{
+          alert(response);
+        }
+      })
+      .then(() =>{ 
+        navigate('/Mylistings');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+    const findErrors = () => {
+      let newErrors = {}
+      if ( !newPrice || newPrice === '' ) newErrors.newPrice = ' Price cannot be blank!'
+      else if ( isNaN(newPrice) ) newErrors.newPrice = ' Price must be a numeric value!'
+      return newErrors
+    }
+
+    const toggleSell = () => {
+      setSellIsOpen(!sellIsOpen);
+    }
 
 
     useEffect(() => {
@@ -125,9 +172,7 @@ export const ListingView = (props) => {
     //     setReportIsOpen(!reportIsOpen);
     // }
 
-    const handleDelete = () => {  //TODO-----
-      // delete listing from DB. 
-
+    const handleDelete = () => { 
       const requestOptions = {
         credentials: 'include',
         method: 'DELETE',
@@ -299,12 +344,25 @@ export const ListingView = (props) => {
              </OverlayTrigger> <br></br> */}
 
              
-             {update == 1 && wish == 0
+             {update == 1 && wish == 0 && bookstore == 0
              ? <div className='bttns' >
                 
                 <Button as={Link} to={`/updatelisting/${listingID}`} variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
                 {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button> */}
                <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+               <>&nbsp;</>
+
+            </div>
+             : <></>
+
+             }
+
+            {update == 1 && wish == 0 && bookstore == 1 //Check when updating as a bookstore
+             ? <div className='bttns' >
+                
+                <Button as={Link} to={`/updatelisting/${listingID}`} variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
+                <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+                <Button variant ="outline-succes" size ='sm' className='sellBookButton' type='submit' onClick={toggleSell}>Sell The Book</Button>
                <>&nbsp;</>
 
             </div>
@@ -390,7 +448,22 @@ export const ListingView = (props) => {
                 handleClose={toggleReportPopup}
             />} */}
             
-            
+            {sellIsOpen && <Popup
+              content ={<>
+              <Form onSubmit={handleSellBook}>
+                <InputGroup as={Col}  >
+                  <InputGroup.Text >$</InputGroup.Text>
+                  <Form.Control id="formPrice" aria-label="Amount (to the nearest dollar)" value = {newPrice} onChange={ e => setNewPrice(e.target.value) } isInvalid={ !!errors.newPrice } />
+                  <Form.Control.Feedback type='invalid'>
+                      { errors.newPrice }
+                  </Form.Control.Feedback> 
+                  <InputGroup.Text >.00</InputGroup.Text>
+                </InputGroup>
+                <Button  type="submit">Sell Book</Button>
+              </Form>
+              </>}
+              handleClose={toggleSell}
+            />}
         </div>
         
     );
