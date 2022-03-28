@@ -155,6 +155,7 @@ export const ListingView = (props) => {
       .then((response) => {
         if(response.ok){
           console.log('ok');
+          alert("item added to whishlist");
         }
         else{
 
@@ -178,6 +179,7 @@ export const ListingView = (props) => {
       .then((response) => {
         if(response.ok){
           console.log('ok');
+          alert("item removed from whishlist");
         }
         else{
           console.log("error");
@@ -259,15 +261,15 @@ export const ListingView = (props) => {
              {props.update == true
              ? <div className='bttns' >
                 
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Update Listing</Button>
-                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button>
+                <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button>
+                {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button> */}
                <Button  variant="outline-danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
 
             </div>
              : <div className='bttns'><Button   variant="outline-success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>
               
              <Button variant="outline-success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button>
-             <Button variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
+             <Button variant="outline-danger" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Remove from wishlist</Button>
              </div>
 
              }

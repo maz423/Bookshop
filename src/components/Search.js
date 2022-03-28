@@ -122,12 +122,15 @@ return (
     alignItems: 'center',
     justifyContent: 'center',
 }}>
-<ListOfListings listings={listingsList} MyListings = {0}/>
+<ListOfListings listings={listingsList} MyListings = {0}/> 
 
 </div>
+<h1 className='end-search'> &nbsp;</h1>
+<p className='end'>End of results</p>
+<h1 className='end-search'> &nbsp;</h1>
 
 
-<h1 className='end-search'> End of results</h1>
+
      
 </section>  
 
