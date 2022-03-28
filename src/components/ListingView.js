@@ -119,7 +119,7 @@ export const ListingView = (props) => {
       //TODO 
       const body = {
         listingID : listingID,
-        finalPrice : 0,
+        finalPrice : newPrice,
       }
       const requestOptions = {
         credentials: 'include',

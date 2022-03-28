@@ -6,14 +6,12 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require("bcryptjs");
 const path = require('path');
-//const fs = require('fs');
-const http = require('http');
-const https = require('https');
 const bodyParser = require("body-parser");
 const MongoDBSession = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
 const fs = require('fs-extra');
 const multerHelper = require(path.join(__dirname, "multerHelper"));
+const jsonexport = require('jsonexport')
 
 require('dotenv/config');
 
@@ -689,7 +687,7 @@ app.delete('/bookstore/sell/listing', (req, res) => {
         const bookSold = {
             $push : {
                 booksSold : {
-                    intialPrice : listing.value.price,
+                    initialPrice : listing.value.price,
                     finalPrice : finalPrice,
                     title : listing.value.title,
                     dateListed : listing.value.timestamp,
@@ -707,6 +705,48 @@ app.delete('/bookstore/sell/listing', (req, res) => {
     .catch((error) => {
         res.status(400).send(error);
     })
+});
+
+app.get('/bookstore/sales/report', (req, res) => {
+    //First check if we are a bookstore
+    if (!req.session.user.isBookstore){
+        return res.status(400).send("Not a Bookstore");
+    }
+
+    //Get the sale reports from the bookstore
+    const query = {_id : req.session.user._id};
+    const projection = {
+        projection : {
+            booksSold : 1,
+        }
+    }
+
+    con.collection(bookstoreCollection).findOne(query, projection)
+    .then((data) => {
+        let csvData = [];
+        //Get all the data from the books sold
+        data.booksSold.forEach((listing) => {
+            let listingData = {
+                title : listing.title,
+                initialPrice : listing.initialPrice,
+                finalPrice : listing.finalPrice,
+                dateListed : listing.dateListed,
+                dateSold : listing.dateSold,
+            }
+            csvData.push(listingData);
+        });
+        
+        jsonexport(csvData, (err, csv) => {
+            if (err) {return res.status(400).send(err);}
+            else {
+                res.attachment('sales.csv');
+                return res.send(csv);
+            }
+        })
+    })
+    .catch((error => {
+        res.status(400).send(error);
+    }))
 });
 
 //This is for updating listing, you can update by button press (needs to be implemented by john), TODO make the old data autofill also put errors for when there isn't any items in the form
