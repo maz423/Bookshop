@@ -27,6 +27,7 @@
   background-image: 
   url(
   "https://img-cdn.inc.com/image/upload/w_1920,h_1080,c_fill/images/panoramic/GettyImages-577674005_492115_zfpgiw.jpg");
+  background-repeat: repeat-y;
   background-size: "cover";
   height: 100vh;
   margin-top: -70px;
