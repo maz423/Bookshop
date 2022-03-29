@@ -40,6 +40,7 @@ function AccountView(props){
 
     //Username is the only constant that needs to be updated 
     const [oldUserName, setOldUserName] = useState('');
+    const [bookstore, setBookstore] = useState(props.bookstore);
 
     //User info to grab from the database 
     const [username, setUsername] = useState('');
@@ -136,6 +137,36 @@ function AccountView(props){
          });
             
       };
+
+      const handleGetSalesReport = (e) => {
+          e.preventDefault();
+        const requestOptions = {
+            credentials: 'include',
+            method: 'Get',
+            headers: {'Content-Type' : 'application/json', "Accept": "text/csv"},
+        };
+        fetch('http://localhost:8000/bookstore/sales/report', requestOptions)
+        .then((response) => {
+            if (!response.ok){
+                alert("error sending info");
+            } else {
+                return response.blob();
+            }
+        })
+        .then((blob) => {
+            //Download the file we just got
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = "sales.csv";
+            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+            a.click();    
+            a.remove(); 
+        })
+        .catch( (error)=>{
+            console.log(error);
+         });
+      }
   
 
     return (
@@ -186,6 +217,7 @@ function AccountView(props){
                         <h6>Zip Code: {zip} </h6>
                         <Col>
                         <Row>
+                            {/* Make this a link as button */}
                         <Button variant="success" type="submit">
                             My Listings
                         </Button> 
@@ -200,6 +232,12 @@ function AccountView(props){
                     </Col>
                 </Col>
             </Row>
+            {bookstore == 1 ?
+                <Form onSubmit={handleGetSalesReport}>
+                    <Button type='submit' variant="success">Get Sales Report</Button>
+                </Form>
+                : <></>
+            }
             {UserPU && <Popup
                 content={<>
                 <h1>Edit Personal Info</h1>

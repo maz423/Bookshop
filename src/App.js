@@ -220,7 +220,6 @@ useEffect(() => {
         <Route exact path='/' element={<Homepage/>} />
         <Route exact path='/Login' element={<Login set = {setLoggedIn} admin = {setIsAdmin} bookstore = {setbookStore}/>} />
         <Route exact path='/signup' element={<Register/>} />
-        {/* <Route exact path='/Update/:listingID' element={<ListingView update = {1}/>} component={listingID}  /> */}
         <Route exact path='/search/:keywordFromHomepage' />
         <Route exact path='/report' element={<Report/>} />
         
