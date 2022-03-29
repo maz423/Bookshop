@@ -1,4 +1,5 @@
 # How to run this website
+Requires docker
 1. Download or clone main
 2. In the directory of the project run docker-compose build
 3. Run docker-compose up
