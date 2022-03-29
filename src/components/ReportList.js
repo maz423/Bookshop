@@ -60,6 +60,7 @@ return (
 
 <div className='reportList'>
 {
+                // display a report object for each report in ListofReports
                 ListofReports.map(element => { 
                     return <div className="text-center">
                         {/* <MiniReport report={element}/> */}

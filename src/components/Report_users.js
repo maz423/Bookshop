@@ -129,9 +129,12 @@ return (
 
   <Form.Select   controlId='reason' onChange={e => setField('reason', e.target.value)} isInvalid={ !!errors.reason }  aria-label="Default select example" size='sm' >
   <option value= ''> Please choose a reason for reporting user:</option>
-  <option value='This listing is Spam'>This listing is Spam</option>
+  <option value='This user has been posting spam'>This user has been posting spam</option>
+  <option value='This user has been posting inappropriate content'>This user has been posting inappropriate content</option>
+  <option value='This user has been posting stolen books'>This user has been posting stolen books</option>
+  {/* <option value='This listing is Spam'>This listing is Spam</option>
   <option value='Listing contains inappropriate content'>Listing contains inappropriate content</option>
-  <option value='Listing is from a stolen book'>Listing is from a stolen book</option>
+  <option value='Listing is from a stolen book'>Listing is from a stolen book</option> */}
   <Form.Control.Feedback type='invalid'>
         { errors.reason }
     </Form.Control.Feedback>

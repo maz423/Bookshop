@@ -488,16 +488,12 @@ app.post('/regularSearch', (req, res) =>{
 
     let keyword = req.body.keyword;
 
-
-        // query the database for all the listings that match just the keyword
-
-
-        const pipeline = [
+        const pipeline = [          // query the database for all the listings that match just the keyword
             { $match: { title: { $regex: keyword, $options: "i" } } },
         ];
 
 
-        async function performSearch(){
+        async function performSearch(){         // search for the listings whose titles match the keyword, put them in an array, and return the array
             try{
                 const listings = await con.collection("listings");
                 const aggCursor = await listings.aggregate(pipeline);
@@ -511,8 +507,6 @@ app.post('/regularSearch', (req, res) =>{
 
         (async function() {
             let searchResults = await performSearch();
-            console.log(searchResults);
-            console.log(searchResults[0]);
             res.send(searchResults);
         })();
 
@@ -528,13 +522,13 @@ app.post('/advancedSearch', (req, res) =>{
     let price = req.body.price;
     let city = req.body.location;
 
-    const pipeline = [
+    const pipeline = [          // this pipeline searches for listings whose titles, prices, authors, and cities match the given values
         { $match: { title: { $regex: keyword, $options: "i" }, price: { $lte: price }, 
         authorName: { $regex: author, $options: "i" }, city: { $regex: city, $options: "i" } } },
     ];
 
 
-    async function performSearch(){
+    async function performSearch(){     // search for the listings, put them in an array, and return the array
         try{
             const listings = await con.collection("listings");
             const aggCursor = await listings.aggregate(pipeline);
@@ -548,7 +542,6 @@ app.post('/advancedSearch', (req, res) =>{
 
     (async function() {
         let searchResults = await performSearch();
-        console.log(searchResults[0]);
         res.send(searchResults);
     })();
 });
@@ -558,12 +551,12 @@ app.post('/searchUser', (req, res) => {
 
     let keyword = req.body.keyword;
 
-    const pipeline = [
+    const pipeline = [          // this pipeline searches for users whose usernames match the given keyword and returns the specified fields
         { $match: { username: { $regex: keyword, $options: "i"} } },
         { $project: {username: 1, email: 1, fName: 1, lName: 1, accountType: 1}}
     ];
 
-    async function performSearch(){
+    async function performSearch(){     // search for the users and put them in an array and return the array
         try{
             const users = await con.collection(userCollection);
             const aggCursor = await users.aggregate(pipeline);
@@ -957,10 +950,9 @@ app.post('/add-to-wishlist', (req, res) => {
 
     var listingID = req.body.listingID;       // this is the id of the listing to be added to the wishlist
     var user = req.session.user.username;
-    //var userID = req.body.userID;
     console.log(listingID);
 
-    async function addToWishlist(){
+    async function addToWishlist(){         // add the listing ID of the specified listing to the wishlist array in the user's document in the users collection
 
         try{
             const users = await con.collection(userCollection);
@@ -989,7 +981,7 @@ app.post('/remove-from-wishlist', (req, res) => {
     var listingID = req.body.listingID;
     var user = req.session.user.username;
 
-    async function removeFromWishlist(){
+    async function removeFromWishlist(){        // delete a specific listing from a specific user's wishlist
         
         try{
             const users = await con.collection(userCollection);
@@ -1019,7 +1011,7 @@ app.post('/wishlist', (req, res) => {
     var username = req.session.user.username;
 
 
-    async function getUser(){
+    async function getUser(){           // retrieve the current user from the user collection
 
         try{
             const users = await con.collection(userCollection);
@@ -1032,10 +1024,9 @@ app.post('/wishlist', (req, res) => {
             console.log(error);
             res.status(400).send(error);
         }
-
     };
 
-    async function getWishlist(user){
+    async function getWishlist(user){       // retrieve the IDs for the listings in the user's wishlist, put them in an array, and return the array
 
         try{
 
@@ -1045,7 +1036,7 @@ app.post('/wishlist', (req, res) => {
 
             const userWishlist = await user.wishlist;
 
-            for await (const listingID of userWishlist){
+            for await (const listingID of userWishlist){        // we must convert each of the listing ID strings into ObjectId's
                 let listingOID = new ObjectId(listingID);
                 listingIDs.push(listingOID);
             }
@@ -1057,11 +1048,9 @@ app.post('/wishlist', (req, res) => {
             console.log(error);
             res.status(400).send(error);
         }
-
-
     };
 
-    async function getListings(listingIDs){
+    async function getListings(listingIDs){         // find all the listings in the listing collection whose listing IDs match those in the user's wishlist
 
         try{
 
@@ -1070,8 +1059,6 @@ app.post('/wishlist', (req, res) => {
             const books = [];
 
             for await (const listingID of listingIDs){
-
-
 
                 let listing = await listings.findOne({_id : listingID});
 
@@ -1088,8 +1075,6 @@ app.post('/wishlist', (req, res) => {
             console.log(error);
             res.status(400).send(error);
         }
-
-
     };
 
     (async function() {
@@ -1104,11 +1089,6 @@ app.post('/wishlist', (req, res) => {
 
 
     })();
-
-
-
-
-
 });
 
 app.post('/uploadImage', multerHelper.uploadImage, (req, res) => {
@@ -1271,7 +1251,7 @@ app.post('/reportUser', (req, res) => {
     var reason = req.body.reason;
 
 
-    async function addReport(){
+    async function addReport(){     // add a report to the report collection
 
         try{
             const reports = await con.collection(reportsCollection);
@@ -1302,7 +1282,7 @@ app.post('/resolveReport', (req, res) => {
 
     var username = req.body.username;
 
-    async function resolveReport(){
+    async function resolveReport(){     // delete the report from the collection
         
         try{
             const reports = await con.collection(reportsCollection);
@@ -1327,7 +1307,7 @@ app.post('/resolveReport', (req, res) => {
 
 app.post('/getReports', (req, res) => {
 
-    async function getReports(){
+    async function getReports(){        // put all the reports from the report collection into an array and return the array
         try{
 
             let reportArray = [];
