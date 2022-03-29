@@ -17,6 +17,8 @@ export const Report_users = (props) => {
   const [ form, setForm ] = useState({})
   const [ errors, setErrors ] = useState({})
   
+
+  
 const navigate = useNavigate();
 
 const setField = (field, value) => {
@@ -81,6 +83,7 @@ const handleSubmitClick = (e) => { //handle submit event.
               
               if(response.ok){
                   console.log("ok");
+                  alert("Report sent");
               }
               else{
 
@@ -144,7 +147,7 @@ return (
    <Row>
    <InputGroup>
     <InputGroup.Text>Comments:</InputGroup.Text>
-    <Form.Control id="formDescription" as="textarea" aria-label="With textarea"  />
+    <Form.Control id="formDescription" as="textarea" aria-label="With textarea" onChange={ e => setField('formDescription', e.target.value) } />
   </InputGroup>
    
 
