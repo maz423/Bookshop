@@ -1365,6 +1365,7 @@ app.post('/reportUser', (req, res) => {
     var userID = req.body.userID;
     var user = req.body.username;
     var reason = req.body.reason;
+    var comments = req.body.comments;
 
 
     async function addReport(){     // add a report to the report collection
@@ -1375,7 +1376,8 @@ app.post('/reportUser', (req, res) => {
             const newReport = {
                 userID : userID,
                 username : user,
-                reason : reason
+                reason : reason,
+                comments : comments
             }
 
             await reports.insertOne(newReport)

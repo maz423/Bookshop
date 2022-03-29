@@ -46,6 +46,7 @@ const [listingsList, setListingsList] = useState([]);
 useEffect(() => {
        setUsername(props.report.username);
        setReason(props.report.reason);
+       setComments(props.report.comments);
 }, []);
 
 
@@ -90,7 +91,7 @@ return (
 <Container fluid>
        <Row>
 
-       <p> Username: {username} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Reason: {reason}</p>
+       <p> Username: {username} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Reason: {reason} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Comments: {comments}</p>
 
        </Row>
 

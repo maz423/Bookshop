@@ -66,14 +66,14 @@ const handleSubmitClick = (e) => { //handle submit event.
 
       //handle submit
 
-      const {formUsername, reason} = form;
+      const {formUsername, reason, formDescription} = form;
 
 
       const requestOptions = {
         credentials: 'include',
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
-        body : JSON.stringify({username : formUsername, reason : reason})
+        body : JSON.stringify({username : formUsername, reason : reason, comments : formDescription})
       }
 
       fetch('http://localhost:8000/reportUser', requestOptions)
