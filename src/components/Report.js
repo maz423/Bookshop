@@ -20,6 +20,7 @@ import Row from 'react-bootstrap/Row'
 
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
 
 export const Report = (props) => {
 
@@ -90,7 +91,7 @@ return (
 
 <Container fluid>
        <Row>
-
+       &nbsp;
        <p> Username: {username} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Reason: {reason} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Comments: {comments}</p>
 
        </Row>
@@ -100,12 +101,13 @@ return (
 
        <div className='btn-report'>
         {resolve == 0
-        ? <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleResolve} > Resolve</Button>
+        ? <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleResolve} > Resolve</Button> 
         :
 
            
        <Button  variant="success" size='sm' className='offer-btn' type="submit" onClick={handleResolve} > Resolved</Button>}
        </div>
+       <>&nbsp;</>
        
 </div>
 
