@@ -30,6 +30,7 @@ import {Report} from './components/Report';
 import {Reports} from './components/Reports';
 import {Lost} from './components/Lost'
 import OffersRecieved from './components/OffersRecieved.js'
+import { BookstoreView } from './components/BookstoreView';
 
 
 
@@ -46,6 +47,7 @@ function App() {
 
   const [keywordFromHomepage, setKeywordFromHomepage] = useState('');
   const [listingID, setListingID] = useState('');
+  const [bookstoreID, setBookstoreID] = useState('');
   const [username, setUsername] = useState('');
   
   
@@ -234,6 +236,7 @@ useEffect(() => {
         <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
         <Route exact path='/listing/:listingID' element={<ListingView update = {0}/>} component={listingID} update = {0}/>
+        <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
         
         <Route exact path='/wishlist' element={<Wishlist/>}/>
         <Route path='/*' element={<Lost/>}/>
@@ -268,6 +271,7 @@ useEffect(() => {
           <Route exact path='/wishlistItem/:listingID' element={<ListingView update = {0} wish = {1} />} component={listingID}   />
           <Route exact path='/search/:keywordFromHomepage' />
           <Route exact path='/get-offers' element={<OffersRecieved/>} />
+          <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
           <Route path='/*' element={<Lost/>}/>
     
         </Routes>)
@@ -285,6 +289,7 @@ useEffect(() => {
        <Route exact path='/report/:username' element={<Report/>} component={username}/>
        <Route exact path='/search/:keywordFromHomepage' />
        <Route exact path='/SearchUser'  />
+       <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
        <Route path='/*' element={<Lost/>}/>
        
     
@@ -306,6 +311,7 @@ useEffect(() => {
        <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
        <Route exact path='/search/:keywordFromHomepage' />
        <Route exact path='/user' element={<AccountView bookstore = {1}/>} />
+       <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
        
        <Route path='/*' element={<Lost/>}/>
     </Routes>)

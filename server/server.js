@@ -444,18 +444,42 @@ app.get('/bookstore/:bookstoreID', (res, req) => {
                 password : 0
             }
         }
-        con.collection.findOne(query, projection, (err, result) => {
+        con.collection(bookstoreCollection).findOne(query, projection, (err, result) => {
             if (err) {reject(err)} else {resolve(result)}
         })
+    })
         .then((result) => {
             res.send(result);
         })
         .catch((error) => {
             res.status(400).send(error);
         })
-    })
 });
+app.get('/bookstore/listings/:bookstoreID', (req, res) => {
+    //This will return listings from a bookstore
+    const ObjectId = require('mongodb').ObjectId;
+    const bookstoreID = new ObjectId(req.params.bookstoreID);
 
+    new Promise((resolve, reject) => {
+        const query = {_id : bookstoreID}
+        const projection = {
+            projection: {
+                password : 0
+            }
+        }
+        con.collection(bookstoreCollection).findOne(query, projection, (err, result) => {
+            if (err) {reject(err)} else {resolve(result)}
+        })
+    })
+        .then((result) => {
+            con.collection(listingsCollection).find({_id : {$in : result.listings}}).toArray()
+            .then((lisitngs) => {return res.send(lisitngs)})
+            .catch((error) => {return res.status(400).send(error)})
+        })
+        .catch((error) => {
+            res.status(400).send(error);
+        })
+});
 
 app.get('/bookstoreUsers', (_, res) => {
     new Promise((resolve, reject) => {
@@ -971,7 +995,6 @@ app.post('/make-offer',(req,res)=>{
                         console.log("here")
                         con.collection(offersCollection).updateOne({_id:posterName},{$push: {offers:offersL}})
                     }
-                    else{throw "You already sent an offer for this listing"}
                 })
             }
         })
@@ -985,8 +1008,6 @@ app.post('/make-offer',(req,res)=>{
              console.log(x.offers);
 
             }));});
-    //The offer is from a user. Bookstores won't have the option of creating an offer ???? 
-	res.redirect("/main");
 });
 
 
