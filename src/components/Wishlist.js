@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ListOfListings } from './ListOfListings';
+import { NoResult } from './NoResult';
 
 
 export const Wishlist = (props) => {
@@ -45,7 +46,12 @@ useEffect(() => {
 return (
 
 <section className='wishlist-display'>
-    <ListOfListings listings={wishlist} wish = {1}/>
+{wishlist.length == 0
+  
+  ? <NoResult/>
+  :<></>
+  }
+<ListOfListings listings={wishlist} wish = {1}/>
 </section>
 
 

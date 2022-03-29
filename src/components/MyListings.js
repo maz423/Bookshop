@@ -2,6 +2,7 @@ import React from 'react';
 import {faCode} from "react-icons/fa";
 import { ListOfListings } from './ListOfListings';
 import { useState,useEffect } from 'react';
+import {NoResult} from './NoResult'
 
 
 
@@ -44,7 +45,15 @@ function MyListings (props){
 
     return (
         <div>
-        <ListOfListings listings = {Listings} MyListings = {1}/></div>
+        {Listings.length == 0
+  
+         ? <NoResult/>
+         :<></>
+          }
+            
+        <ListOfListings listings = {Listings} MyListings = {1}/>
+        
+        </div>
     )
 }
 
