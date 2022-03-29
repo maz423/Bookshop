@@ -60,7 +60,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 
         <Dropdown.Item as={Link} to="/report">Report User</Dropdown.Item>
         
-        <Dropdown.Item as={Link} to='#action'>Offers</Dropdown.Item>
+        <Dropdown.Item as={Link} to='/get-offers'>Offers</Dropdown.Item>
+
 
 
 

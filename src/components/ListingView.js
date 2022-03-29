@@ -460,10 +460,9 @@ export const ListingView = (props) => {
 
             </div>
              : <></>
-
+              
              }
-
-            {update == 1 && wish == 0 && bookstore == 1 //Check when updating as a bookstore
+              {bookstore ==1 && update ==1 && wish ==0 ///Check when updating as a bookstore
              ? <div className='bttns' >
                 
                 <Button as={Link} to={`/updatelisting/${listingID}`} variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
@@ -476,6 +475,8 @@ export const ListingView = (props) => {
 
              }
 
+
+
              {wish == 1 && update == 0 
              ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>&nbsp;
               
@@ -487,13 +488,13 @@ export const ListingView = (props) => {
 
 
              }
-              {update==0  ? 
+              {update==0 && loggedIn ==0 ? 
             <div className='bttns'>
               <Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
                    </div>   : <></>}
 
 
-             {update == 0 && wish == 0 && posterName!=user
+             {update == 0 && wish == 0 && posterName!=user && loggedIn ==1
              ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
               
              <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button> 

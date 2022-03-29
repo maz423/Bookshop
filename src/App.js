@@ -236,7 +236,7 @@ useEffect(() => {
        
         <Route path='/search/:keywordFromHomepage' component={keywordFromHomepage}/>
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
-        <Route exact path='/listing/:listingID' element={<ListingView update = {0}/>} component={listingID} update = {0}/>
+        <Route exact path='/listing/:listingID' element={<ListingView update = {0} loggedIn={0}/>} component={listingID} update = {0}/>
         <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
         
         <Route exact path='/wishlist' element={<Wishlist/>}/>
@@ -271,7 +271,8 @@ useEffect(() => {
           <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} bookstore = {0} />}/>
           <Route exact path='/wishlistItem/:listingID' element={<ListingView update = {0} wish = {1} />} component={listingID}   />
           <Route exact path='/search/:keywordFromHomepage' />
-          <Route exact path='/get-offers' element={<OffersRecieved/>} />
+          <Route exact path='/get-offers' element={<OffersRecieved update = {1} wish = {0} bookstore={0}/>} />
+          
           <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
           
           <Route path='/*' element={<Lost/>}/>
@@ -310,11 +311,11 @@ useEffect(() => {
        <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} bookstore={1}/>}/>
        <Route exact path='/report' element={<Report_users/>} />
        <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
-       <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0}/>} component={listingID}  />
+       <Route exact path='/listing/:listingID' element={<ListingView update = {0} wish = {0} bookstore={1}/>} component={listingID}  />
        <Route exact path='/search/:keywordFromHomepage' />
        <Route exact path='/user' element={<AccountView bookstore = {1}/>} />
        <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
-       
+       <Route exact path='/get-offers' element={<OffersRecieved update = {1} wish = {0} bookstore={1}/>} />
        <Route path='/*' element={<Lost/>}/>
     </Routes>)
     : <></>
