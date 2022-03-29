@@ -21,10 +21,12 @@ export const ListingView = (props) => {
     const [update,setUpdate] = useState(props.update);
     const [wish,setWish] = useState(props.wish);
     const [bookstore, setbookStore] = useState(props.bookstore);
+    const [admin,setadmin] = useState(props.admin)
+    const [loggedIn, setLoggedIn] = useState(props.loggedIn);
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
     const [reportIsOpen, setReportIsOpen] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(props.loggedIn);
+    
     //Constant that will check if the popup page is open 
     //console.log(props.update)
   
@@ -449,13 +451,12 @@ export const ListingView = (props) => {
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
              
-             {posterName == user && bookstore==0
+             {update == 1 && wish == 0 && bookstore == 0 //update as a Basic user.
              ? <div className='bttns' >
                 
                 <Button as={Link} to={`/updatelisting/${listingID}`} variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
-                {/* <Button as={Link} to="/updatelisting" variant="outline-success" size='sm' className='wishlist-remove-btn' type='submit' onClick={removeFromWishlist}>Update Listing</Button> */}
-               <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
-
+                <Button  variant="danger" size='sm' className='offer-btn' type="submit" onClick={handleDelete}>Delete Listing</Button>
+                
                <>&nbsp;</>
 
             </div>
@@ -463,7 +464,9 @@ export const ListingView = (props) => {
 
              }
 
-            {update == 1 && wish == 0 && bookstore == 1 //Check when updating as a bookstore
+
+             
+             {update == 1 && wish == 0 && bookstore == 1 //Check when updating as a bookstore
              ? <div className='bttns' >
                 
                 <Button as={Link} to={`/updatelisting/${listingID}`} variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
@@ -476,7 +479,7 @@ export const ListingView = (props) => {
 
              }
 
-             {wish == 1 && update == 0 
+             {wish == 1 && update == 0 && bookstore == 0 && loggedIn == 1 && admin == 0
              ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>&nbsp;
               
              
@@ -487,13 +490,8 @@ export const ListingView = (props) => {
 
 
              }
-              {update==0  ? 
-            <div className='bttns'>
-              <Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
-                   </div>   : <></>}
 
-
-             {update == 0 && wish == 0 && posterName!=user
+             {update == 0 && wish == 0  && bookstore == 0 && loggedIn == 1 && admin == 0
              ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
               
              <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button> 
@@ -503,7 +501,21 @@ export const ListingView = (props) => {
              :<></>
 
 
-             } 
+             }
+
+             {update == 0 && wish == 0 && admin == 0 && bookstore == 0 && loggedIn == 0
+             ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;</div>
+             :<></>
+
+             }
+
+             {update == 0 && wish == 0 && admin == 0  && loggedIn == 1
+             ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;</div>
+             :<></>
+
+             }
+
+
              
             
              
@@ -596,3 +608,4 @@ export const ListingView = (props) => {
         
     );
 }
+{/* <Button variant ="outline-succes" size ='sm' className='sellBookButton' type='submit' onClick={toggleSell}>Sell The Book</Button> */}

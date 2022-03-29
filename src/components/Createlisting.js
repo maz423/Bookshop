@@ -439,9 +439,15 @@ function Createlisting(props){
   ? <Button variant="success" type="submit">
   Post
 </Button>
-: <Button variant="success"  onClick={handleupdate}>
+: <></>
+
+  }
+
+  {props.update == 1
+  ? <Button variant="success"  onClick={handleupdate}>
   update
 </Button>
+ :<></>
 
   }
 

@@ -44,7 +44,13 @@ function MyListings (props){
     }
 
     return (
-        <div>
+
+        <section>
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        }}>
         {Listings.length == 0
   
          ? <NoResult/>
@@ -53,7 +59,14 @@ function MyListings (props){
             
         <ListOfListings listings = {Listings} MyListings = {1}/>
         
+        
         </div>
+
+      <h1 className='end-search'> &nbsp;</h1>
+      <p className='end'>End of Listings</p>
+      <h1 className='end-search'> &nbsp;</h1>
+
+       </section> 
     )
 }
 
