@@ -11,6 +11,7 @@ import { NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import { ListOfListings } from './ListOfListings';
+import { NoResult } from './NoResult';
 
 
 
@@ -122,12 +123,19 @@ return (
     alignItems: 'center',
     justifyContent: 'center',
 }}>
+{listingsList.length == 0
+  
+? <NoResult/>
+:<></>
+}
 <ListOfListings listings={listingsList} MyListings = {0}/> 
 
 </div>
 <h1 className='end-search'> &nbsp;</h1>
 <p className='end'>End of results</p>
 <h1 className='end-search'> &nbsp;</h1>
+
+
 
 
 
