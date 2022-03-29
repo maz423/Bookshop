@@ -12,6 +12,7 @@ import Figure from 'react-bootstrap/Figure'
 import { Popover } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
+import StarRatingInput from './StarRatingInput.js';
 
 import { Link } from 'react-router-dom';
 
@@ -23,6 +24,9 @@ export const ListingView = (props) => {
     //Constant that will check if the popup page is open 
     const [isOpen, setIsOpen] = useState(false);
     const [reportIsOpen, setReportIsOpen] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(props.loggedIn);
+    //Constant that will check if the popup page is open 
+    //console.log(props.update)
 
     // constant that will check if the wishlist button should be shown
     const [showWishlistButton, setShowWishlistButton] = useState(true);
@@ -33,8 +37,11 @@ export const ListingView = (props) => {
     const navigate = useNavigate();
     
     const [user, setUser] = useState('');
+     //Stuff to be grabbed from the database
+    const [posterName, setPosterName] = useState('');
     const [image, setImage] = useState();
     const [storeBranding, setStoreBranding] = useState();
+    const [email, setEmail] = useState();// This is for getting the users email 
     const [price, setPrice] = useState('');
     const [title, setTitle] = useState('');
     const [bookDescription, setBookDescription] = useState('');
@@ -61,16 +68,42 @@ export const ListingView = (props) => {
       const imageObjectURL = URL.createObjectURL(imageBlob);
       setStoreBranding(imageObjectURL);
     }
+  useEffect(() => {
+    const listingURL = 'http://localhost:8000/user';
+    //console.log(listingURL);
+    
+    const requestOptions = {
+        credentials: 'include',
+        method: 'GET',
+        headers: {'Content-Type' : 'application/json'},
+    };
+    fetch(listingURL, requestOptions)
+    .then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+        }
+    })
+    .then((data) => {
+      console.log(data);
+      setEmail(data.email);
+    })
+    .catch((error) =>{
+        console.log(error);
+    });
+
+
+}, []);
 
     useEffect(() => {
         const listingURL = 'http://localhost:8000/listing/' + listingID;
-        console.log(listingURL);
+        //console.log(listingURL);
+        
         const requestOptions = {
             credentials: 'include',
             method: 'GET',
             headers: {'Content-Type' : 'application/json'},
         };
-
         fetch(listingURL, requestOptions)
         .then((response) => {
             if (response.ok) {
@@ -92,6 +125,8 @@ export const ListingView = (props) => {
         .catch((error) =>{
             console.log(error);
         });
+    
+
     }, []);
 
     useEffect(() => {
@@ -251,61 +286,125 @@ export const ListingView = (props) => {
       });
     }
 
-    // const reportListing = (e) => {
-    //     e.preventDefault();
-    //     const formItems = e.target.elements;
-    //     const reason = formItems.formReport.value;
+    //Trigger display if the offer if from a guest or not 
+    const [showResults, setShowResults] = useState(false);
 
-    //     const requestOptions = {
-    //       credentials: 'include',
-    //       method: 'POST',
-    //       headers: {'Content-Type' : 'application/json'},
-    //       body: JSON.stringify({user : user, listingID : listingID, reason : reason})
-    //     }
+   //Sending offer to the server
+   const handleSubmitClick = (e) => { 
+     //alert(loggedIn);
+    if (loggedIn == 1){
+      e.preventDefault();
+        const formItems = e.target.elements;
+        alert(formItems.formOffer.value)
+        const body = {
+          nameUserOffer:user,
+          posterName: posterName,
+          email : email,
+          //phone_number : formItems.formPhoneNumber.value,
+          guest: false,
+          offer : formItems.formOffer.value,
+          listingID: listingID,
+          title: title,
+        };
+        console.log(formItems);
+        console.log(body);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify(body)
+        };
+        
+        fetch('http://localhost:8000/make-offer', requestOptions)
+        .then((response) => {
+          if (!response.ok){
+            console.log("error sending offer");
+          } else {
+          }
+        }).catch( (error)=>{
+            console.log(error); 
+        });
+        setIsOpen(false)
 
-    //     fetch('http://localhost:8000/reportPost', requestOptions)
-    //     .then((response) => {
-    //       if(response.ok){
-    //         console.log("ok");
-    //       }
-    //       else{
-    //         console.log("error");
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
-
-    const handleSubmitClick = (e) => { 
-        e.preventDefault();
-          const formItems = e.target.elements;
-          //TODO check to ensure price is int
-          //TODO File input
-          const body = {
-            offer : formItems.formOffer.value,
-          };
-          console.log(formItems);
-          console.log(body);
-          const requestOptions = {
-              credentials: 'include',
-              method: 'POST',
-              headers: {'Content-Type' : 'application/json'},
-              body : JSON.stringify(body)
-          };
-          
-          fetch('http://localhost:8000/make-offer', requestOptions)
-          .then((response) => {
-            if (!response.ok){
-              console.log("error sending offer");
-            } else {
-            }
-          }).catch( (error)=>{
-              console.log(error);
-          });
-          setIsOpen(false)
-      };
+    }
+    //Users not logged then its a guest write a 
+    else {      
+      e.preventDefault();
+      console.log('Went to else statement')
+      if (showResults==false){
+        setShowResults(true);
   
+        setIsOpen(false)
+        setTimeout(function() {
+          console.log("in the setTimout")  
+          setIsOpen(true);
+        },250)
+      }
+      //Finally send a fetch call to the server to store the guest
+      else{
+        e.preventDefault();
+         // Conditional logic:
+         const newErrors = findFormErrors()
+        if ( Object.keys(newErrors).length > 0 ) {
+        //errors!
+        setErrors(newErrors)
+        }
+
+        const formItems = e.target.elements;
+        const body = {
+          posterName: posterName,
+          email : formItems.formGridEmail.value,
+          //phone_number : formItems.formPhoneNumber.value,
+          guest: true,
+          listingID: listingID,
+          offer : formItems.formOffer.value,
+          title: title,
+
+        };
+        console.log(formItems);
+        console.log(body);
+        const requestOptions = {
+            credentials: 'include',
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body : JSON.stringify(body)
+        };
+        
+        fetch('http://localhost:8000/make-offer', requestOptions)
+        .then((response) => {
+          if (!response.ok){
+            alert("You already sent an offer to this listing");
+          } else {
+          }
+        }).catch( (error)=>{
+            console.log(error); 
+        });
+        setIsOpen(false)
+        setShowResults(false);
+      }
+   }
+  }
+  const [ form, setForm ] = useState({})
+
+  const setField = (field, value) => {
+    setForm({
+      ...form,
+      [field]: value
+    })
+    if ( !!errors[field] ) setErrors({
+      ...errors,
+      [field]: null
+    })
+  }
+
+  const findFormErrors = () => {
+    const formGridEmail = form;
+    const newErrors = {}
+    if ( !formGridEmail || formGridEmail === '' ) newErrors.formGridEmail = 'Email cannot be blank!'
+    return newErrors;
+  }
+  
+
   
     return (
         
@@ -332,9 +431,14 @@ export const ListingView = (props) => {
              <Row>
             
             
-             <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {user} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
-             <p> Description: {bookDescription} </p>
+             <p> Title : {title} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Price : {price}$   &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Uploaded by : {posterName} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Upload date :{timestamp}</p> 
+             <p> Description: {bookDescription}  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+             <p style = {{visibility : user != posterName && loggedIn==1 ? "visible" : "hidden"}}> 
+             {StarRatingInput("hello")}
+             </p> </p>  
+            
              
+            
              
 
              
@@ -416,18 +520,35 @@ export const ListingView = (props) => {
            
             {/* <input type ="button" variant= "success" value ="Make a bid!" onClick={togglePopup}/>   */}
            
-              
             {isOpen && <Popup
                 content={<>
                 
-                <p>Create an offer</p>
+                <h1>Create an offer</h1>
                 <Form onSubmit={handleSubmitClick}>
+                <Col style = {{visibility : showResults ? "visibile" : "hidden"}}>
+                  <h4>Your not logged in as a user. Please provide your email so the seller may reply to your offer.</h4>
+                    <Row>
+                      <Form.Group as={Col} controlId="formGridEmail">
+                        <Form.Label>Email:</Form.Label>
+                         <Form.Control size='sm' type="email" placeholder="Enter email" onChange={ e => setField('formGridEmail', e.target.value) } isInvalid={ !!errors.formGridEmail }/>
+                        <Form.Control.Feedback type='invalid'>
+                        { errors.formGridEmail }
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      
+                    </Row> 
+                </Col>
+
                 <InputGroup>
                 <InputGroup.Text>Offer:</InputGroup.Text>
                 <Form.Control id="formOffer" as="textarea" aria-label="With textarea" />
                 </InputGroup>
+            
+                
                 <Button  type="submit">Send Offer</Button>
                 </Form>
+                
+
 
             </>}
       handleClose={togglePopup}

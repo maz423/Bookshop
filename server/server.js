@@ -602,7 +602,7 @@ app.post('/make-lis' ,(req,res)=>{
     }
 
     new Promise((resolve, reject) => {
-        //Add new listing to the database
+        //Add new listing to the databasesession
         con.collection(listingsCollection).insertOne(newListing, (err, result) => {
             if(err) {reject(err)}  else { resolve(result)}
         });
@@ -834,7 +834,9 @@ app.get('/user/my/listings', (req, res) => {
 //Returns the listing for a given ID
 app.get('/listing/:listingID', (req, res) => {
      const ObjectId = require('mongodb').ObjectId;
-     const listingOID = new ObjectId(req.params.listingID);
+     const listingOID = new ObjectId(req.params.listingID); 
+     var usera='';
+    console.log(req.session.user);
 
      new Promise((resolve, reject) => {
          con.collection(listingsCollection).findOne({_id : listingOID}, (err, result) => {
@@ -842,6 +844,14 @@ app.get('/listing/:listingID', (req, res) => {
          });
      })
      .then((result) => {
+        if (req.session.user != undefined){
+            //console.log("here")
+               usera = req.session.user.username;
+               
+               result.user=usera;
+            //   console.log(result.user);
+           }//
+         //console.log(result);
          res.send(result);
      })
      .catch((error) =>{
@@ -894,55 +904,140 @@ app.put('/update_user',(req,res)=>{
     }
 });
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// Maybe we should talk about the offers part of this project. /////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//SPAGHETTI!!!! CODE. WILL FIX IF TIME PERMITS BUT WORKS
 app.post('/make-offer',(req,res)=>{
-	var name = req.body.name;
-	var subject = req.body.sub; //this is suppopsed to be the name of the textbook you are making an offer for. TODO make sure to find out how to get the specific name
-	var reason = req.body.reason;
+
+    var guest = req.body.guest //Checks if the buyer is a logged in user or a guest buyer
+    var email = req.body.email 
+	var posterName = req.body.posterName; //Name of the user who listed the textbook 
+    var listingID = req.body.listingID 
+	var title = req.body.title; //Name of the textbook 
+	var offer = req.body.offer;//Contains the description of the textbook 
 	var datetime = new Date();
-	function addoffer(varname,varsubject,varreason,date){
-		MongoClient.connect(DB_Url,function(err,db){
-			var dbo = db.db("ecomDB");
-			var myobj = {name: varname, subject: "offer for: " + varsubject, reason: varreason, timestamp: datetime};
-			dbo.collection("offers").insertOne(myobj, function(err,response){
-				if (err) throw err;
-				console.log("inserted into offers succesfully");
-				db.close();
-			});
-			
-		});
-	}
-	addoffer(name,subject, reason, datetime);
+    var offersL = '';
+    if (guest==true){
+        offersL = {
+            name:"guest",
+            email: email,
+            guest: guest,
+            title:title,
+            offer: offer,
+            listingID:listingID,
+            date: datetime
+        }
+    }
+    else {
+        var nameUserOffer= req.body.nameUserOffer//if the offer is from someone who is logged in give the object the name 
+        offersL = {
+            name: nameUserOffer,
+            email: email,
+            guest: guest,
+            title:title,
+            offer: offer,
+            listingID:listingID,
+            date: datetime
+        }
+    }
+
+    console.log("Offering now" );
+    console.log(offersL);
+    //console.log(email," ", phone_number," ",posterName," ",title)
+    new Promise((resolve, reject) => {
+            con.collection(offersCollection).countDocuments(
+                {_id : posterName}, (err, result) => {
+                if (err) {reject(err)} else {resolve(result)}
+            });
+        }).then((result) => {
+            let resultArray=[];
+            if (result <= 0){
+                //Initialize the document and offers array
+                console.log("Insert One");
+                con.collection(offersCollection).insertOne({_id:posterName,offers:[offersL]},(err,result) =>{
+                    if (err) {console.log(err)} else {console.log(result)}
+                })
+            }
+            else{
+                //Updating into the document instead 
+                let resultArray=[];
+                console.log("Updating instead");
+                
+                new Promise((resolve, reject) => {
+                con.collection(offersCollection).countDocuments({_id:posterName, offers: {$elemMatch:{email:email,listingID:listingID}}},(err,result) =>{
+                    if (err) {reject(err)} else {resolve(result)}
+                })
+            }).then((result)=>{
+                console.log(result);
+                    if (result <= 0){
+                        console.log("here")
+                        con.collection(offersCollection).updateOne({_id:posterName},{$push: {offers:offersL}})
+                    }
+                    else{throw "You already sent an offer for this listing"}
+                })
+            }
+        })
+        let resultArray=[]
+        con.collection(offersCollection).find({_id:posterName}).forEach(function(doc,err){
+            if (err) throw err;
+            resultArray.push(doc);
+        }, function(){
+            console.log(resultArray.forEach(function(x){
+             console.log("Whole db",resultArray);
+             console.log(x.offers);
+
+            }));});
+    //The offer is from a user. Bookstores won't have the option of creating an offer ???? 
 	res.redirect("/main");
 });
 
+
+//TODO figure out a delete by button once we actually implement it
+app.post('/remove-offers',(req,res)=>{
+	var posterName = req.session.user.username; ; //for now have it as the title TODO change to id from button press
+	const myquery = {_id : posterName}; //query for finding the offers for the user
+	const email = req.body.email //query for the actual offer
+    const listingID = req.body.lid
+    console.log("REMOVING OFFERS.........");
+    console.log(posterName);
+    console.log(email);
+    console.log(listingID)
+	new Promise((resolve, reject) => {
+		con.collection("offers").updateOne(myquery,{$pull: { offers: {email: email,listingID:listingID}}}, function(err,response){
+			if (err) {
+			reject(err)
+			} else{
+			resolve(response)
+			}
+		});
+	})
+	.then((result) => {
+        res.send(result);
+    	})
+    	.catch((error) => {
+        res.status(400).send(error);
+    	});
+});
 
 
 //This was to get the offers and to display them (might change depending on how john actually wants to implement this.)
 //maybe also use this for messages in general
 //i have it grab all from one subject maybe figure out how to automatically get it from pushing reply (maybe just have the offer button on each posting instead)
-app.get('/get-offers',function(req,res){    
-    var subject = req.body.sub;//change this
-    var options = {
-        root: path.join(__dirname)
-    };
-	var resultArray = [];
-	MongoClient.connect(DB_Url,function(err,db){
-	  if (err) throw err;
-	  	var dbo = db.db("ecomDB");
-	  	var cursor = dbo.collection('offers').find(subject);
-		cursor.forEach(function(doc,err){
-			if (err) throw err;
-			resultArray.push(doc);
-		}, function(){
-			console.log(resultArray);
-			db.close();
-			res.send(resultArray);
-		});
-	});
+app.get('/get-offers',function(req,res){ 
+    console.log("GETTING OFFERS!!!!!!!!!!!!!!!");
+    var posterName  = req.session.user.username;
+    new Promise((resolve, reject) => {
+        
+        con.collection("offers").findOne({_id: posterName},(err,result) => {
+            if(err) {reject(err)} else{resolve(result)}
+        }
+    )}).then((result) => {
+		console.log(result);
+        console.log(result._id);
+        console.log(result.offers)
+        res.send(result.offers);
+    }).catch((error)=>{
+        console.log("error!!!!!!!!!!!!!!!!!!!")
+        res.status(400).send(error);
+    })
 });
 
 
