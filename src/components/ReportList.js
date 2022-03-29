@@ -14,6 +14,7 @@ import RangeSlider from 'react-bootstrap-range-slider';
 import ReactDOM from 'react-dom';
 import { ListOfListings } from './ListOfListings';
 import { MiniReport } from './MiniReport';
+import { Report } from './Report';
 
 
 
@@ -61,7 +62,8 @@ return (
 {
                 ListofReports.map(element => { 
                     return <div className="text-center">
-                        <MiniReport report={element}/>
+                        {/* <MiniReport report={element}/> */}
+                        <Report report={element}/>
                     </div>
                 })
             }

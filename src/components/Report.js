@@ -1,6 +1,7 @@
 import './Report.css';
 import React from 'react';
 import {useState} from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
@@ -13,6 +14,7 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import RangeSlider from 'react-bootstrap-range-slider';
 import ReactDOM from 'react-dom';
 import { ListOfListings } from './ListOfListings';
+import Row from 'react-bootstrap/Row'
 
 
 
@@ -41,6 +43,10 @@ const [listingID, setListingID] = useState('');
 const [listingsList, setListingsList] = useState([]);
 
 
+useEffect(() => {
+       setUsername(props.report.username);
+       setReason(props.report.reason);
+}, []);
 
 
 const handleResolve = (e) => {
@@ -80,10 +86,16 @@ const handleResolve = (e) => {
 return (
 
 <div className='Report'>
-       <p>&nbsp;&nbsp;</p>
-       <p className='report-para'> &nbsp;&nbsp;&nbsp;&nbsp;Username : John Doe   &nbsp;&nbsp;&nbsp;&nbsp;  Reason for Report : Spam    &nbsp;&nbsp;&nbsp;&nbsp;</p>
-       <p>&nbsp;&nbsp;&nbsp;&nbsp;Report Date: </p>
-       <p> &nbsp;&nbsp;&nbsp;&nbsp;Comments : User is not responding and posting spam ads.&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
+<Container fluid>
+       <Row>
+
+       <p> Username: {username} &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;   Reason: {reason}</p>
+
+       </Row>
+
+
+       </Container>
 
        <div className='btn-report'>
         {resolve == 0
