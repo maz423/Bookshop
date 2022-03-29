@@ -27,7 +27,7 @@ export const ListingView = (props) => {
     const [loggedIn, setLoggedIn] = useState(props.loggedIn);
     //Constant that will check if the popup page is open 
     //console.log(props.update)
-
+  
     // constant that will check if the wishlist button should be shown
     const [showWishlistButton, setShowWishlistButton] = useState(true);
     const [showRemoveFromWishlistButton, setShowRemoveFromWishlistButton] = useState(false);
@@ -85,7 +85,7 @@ export const ListingView = (props) => {
         }
     })
     .then((data) => {
-      console.log(data);
+      console.log(data.username);
       setEmail(data.email);
     })
     .catch((error) =>{
@@ -113,7 +113,7 @@ export const ListingView = (props) => {
         })
         .then((data) => {
             console.log(data);
-            setUser(data.posterName);
+            setUser(data.user);
             setImageName(data.imageNames[0]);
             setTitle(data.title);
             setPrice(data.price);
@@ -121,6 +121,7 @@ export const ListingView = (props) => {
             setTimestamp(data.timestamp);
             setPosterID(data.posterID);
             setIsBookstoreBook(data.postedByStore);
+            setPosterName(data.posterName);
         })
         .catch((error) =>{
             console.log(error);
@@ -447,9 +448,8 @@ export const ListingView = (props) => {
              {/* <OverlayTrigger trigger="click" placement="right" overlay={popover}>
              <Button variant="outline-success" size='sm'>Discription</Button>
              </OverlayTrigger> <br></br> */}
-
              
-             {update == 1 && wish == 0 && bookstore == 0
+             {posterName == user && bookstore==0
              ? <div className='bttns' >
                 
                 <Button as={Link} to={`/updatelisting/${listingID}`} variant="success" size='sm' className='wishlist-add-btn' type='submit' >Update Listing</Button> &nbsp;
@@ -475,7 +475,7 @@ export const ListingView = (props) => {
 
              }
 
-             {wish == 1 && update == 0
+             {wish == 1 && update == 0 
              ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button>&nbsp;
               
              
@@ -486,8 +486,13 @@ export const ListingView = (props) => {
 
 
              }
+              {update==0  ? 
+            <div className='bttns'>
+              <Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
+                   </div>   : <></>}
 
-             {update == 0 && wish == 0
+
+             {update == 0 && wish == 0 && posterName!=user
              ? <div className='bttns'><Button   variant="success" size='sm' className='offer-btn' type="submit" onClick={togglePopup}>Make a bid!</Button> &nbsp;
               
              <Button variant="success" size='sm' className='wishlist-add-btn' type='submit' onClick={addToWishlist}>Add to wishlist</Button> 
@@ -497,7 +502,7 @@ export const ListingView = (props) => {
              :<></>
 
 
-             }
+             } 
              
             
              

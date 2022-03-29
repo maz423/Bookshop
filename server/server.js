@@ -952,6 +952,7 @@ app.post('/make-offer',(req,res)=>{
     }
     else {
         var nameUserOffer= req.body.nameUserOffer//if the offer is from someone who is logged in give the object the name 
+        console.log(nameUserOffer);
         offersL = {
             name: nameUserOffer,
             email: email,
@@ -963,8 +964,6 @@ app.post('/make-offer',(req,res)=>{
         }
     }
 
-    console.log("Offering now" );
-    console.log(offersL);
     //console.log(email," ", phone_number," ",posterName," ",title)
     new Promise((resolve, reject) => {
             con.collection(offersCollection).countDocuments(
@@ -979,6 +978,15 @@ app.post('/make-offer',(req,res)=>{
                 con.collection(offersCollection).insertOne({_id:posterName,offers:[offersL]},(err,result) =>{
                     if (err) {console.log(err)} else {console.log(result)}
                 })
+                con.collection(offersCollection).find({_id:posterName}).forEach(function(doc,err){
+                    if (err) throw err;
+                    resultArray.push(doc);
+                }, function(){
+                    console.log(resultArray.forEach(function(x){
+                     console.log("Whole db",resultArray);
+                     console.log(x.offers);
+        
+                    }));});
             }
             else{
                 //Updating into the document instead 
@@ -1045,6 +1053,7 @@ app.post('/remove-offers',(req,res)=>{
 app.get('/get-offers',function(req,res){ 
     console.log("GETTING OFFERS!!!!!!!!!!!!!!!");
     var posterName  = req.session.user.username;
+    console.log("Getting offers of user",posterName);
     new Promise((resolve, reject) => {
         
         con.collection("offers").findOne({_id: posterName},(err,result) => {
@@ -1057,7 +1066,7 @@ app.get('/get-offers',function(req,res){
         res.send(result.offers);
     }).catch((error)=>{
         console.log("error!!!!!!!!!!!!!!!!!!!")
-        res.status(400).send(error);
+        res.send("No offers yet")
     })
 });
 
