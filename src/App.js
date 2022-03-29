@@ -166,6 +166,7 @@ useEffect(() => {
     
     <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
     
+    
     </Routes>
     : <></>
     
@@ -257,7 +258,7 @@ useEffect(() => {
 
         <Route exact path='/advancedSearch' element={<AdvancedSearch/>} />
           <Route exact path='/createlisting' element={<Createlisting update = {0}/>}/>
-          <Route exact path='/updatelisting/:listingID' element={<Createlisting update = {1} bookstore={0}/>}/>
+          <Route exact path='/updatelisting/:listingID' element={<Createlisting update = {1}/>}/>
           <Route exact path='/report' element={<Report_users/>} />
           <Route exact path='/' element={<Homepage/>} />
           <Route exact path='/Mylistings' element={<MyListings  bookstore = {0} user = {1}/>}/>
@@ -267,11 +268,12 @@ useEffect(() => {
           <Route exact path='/user' element={<AccountView bookstore = {0}/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
           
-          <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} />}/>
+          <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} bookstore = {0} />}/>
           <Route exact path='/wishlistItem/:listingID' element={<ListingView update = {0} wish = {1} />} component={listingID}   />
           <Route exact path='/search/:keywordFromHomepage' />
           <Route exact path='/get-offers' element={<OffersRecieved/>} />
           <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
+          
           <Route path='/*' element={<Lost/>}/>
     
         </Routes>)
