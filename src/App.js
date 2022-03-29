@@ -166,6 +166,7 @@ useEffect(() => {
     
     <Route exact path='/search/:keywordFromHomepage' element={<Search/>} component={keywordFromHomepage}/>
     
+    
     </Routes>
     : <></>
     
@@ -267,11 +268,12 @@ useEffect(() => {
           <Route exact path='/user' element={<AccountView bookstore = {0}/>} />
           <Route exact path='/wishlist' element={<Wishlist/>}/>
           
-          <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} />}/>
+          <Route exact path='update/:listingID' element={<ListingView update = {1} wish = {0} bookstore = {0} />}/>
           <Route exact path='/wishlistItem/:listingID' element={<ListingView update = {0} wish = {1} />} component={listingID}   />
           <Route exact path='/search/:keywordFromHomepage' />
           <Route exact path='/get-offers' element={<OffersRecieved/>} />
           <Route exact path='/bookstore/:bookstoreID' element={<BookstoreView/>} component={bookstoreID}/>
+          
           <Route path='/*' element={<Lost/>}/>
     
         </Routes>)

@@ -97,7 +97,6 @@ function OffersRecieved (params){
  
  
  }
-  
 
     return (
         <div ClassName="Offers-Recieved">
